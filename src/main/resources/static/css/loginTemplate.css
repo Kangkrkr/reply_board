@@ -1,0 +1,13 @@
+@CHARSET "UTF-8";
+
+div .input-group{
+	margin-top: 20px;
+}
+
+.submit-form{
+	margin-top: 20px;
+}
+
+.form-signin-heading{
+	text-align: center;
+}

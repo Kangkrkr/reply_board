@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>회원가입</title>
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+	<link rel="stylesheet" th:href="@{/css/joinTemplate.css}"/>
+</head>
+<body>
+	<div class = "container">
+		<div class="wrapper">
+			<form action="/form/join" method="post" name="join_Form" class="form-signin">       
+			    <h3 class="form-signin-heading">회원가입</h3>
+				  <hr class="colorgraph"/><br/>
+				  
+				  <div class="col-md-4"></div>
+				  <div class="col-md-4">
+					  <input type="email" class="form-control" name="email" placeholder="이메일" required="required" autofocus="autofocus" />
+					  <input type="text" class="form-control" name="name" placeholder="이름" required="required"/>
+					  <input type="password" class="form-control" name="password" placeholder="암호" required="required"/>     		  
+					  <button class="btn btn-lg btn-primary btn-block" name="submit" value="join" type="submit">회원가입</button>  			
+				  </div>
+			</form>			
+		</div>
+	</div>
+</body>
+</html>
