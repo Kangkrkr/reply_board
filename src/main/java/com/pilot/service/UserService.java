@@ -16,7 +16,7 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public User findOne(Long id){
+	public User findOne(Integer id){
 		return userRepository.findOne(id);
 	}
 	

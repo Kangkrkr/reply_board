@@ -47,9 +47,7 @@ public class FormController {
 		User user = new User();
 		BeanUtils.copyProperties(loginForm, user);
 
-		int ret = userService.login(user);
-		System.out.println("로그인 결과 : " + ret);
-		if (ret < 1) {
+		if (userService.login(user) < 1) {
 			return login();
 		}
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.pilot.domain.User;
 
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Integer>{
 
 	/*
 	@Query("SELECT x FROM User x WHERE x.email = ?1 AND x.password = ?2")
