@@ -37,4 +37,8 @@ public class UserService {
 		System.out.println("다음의 사용자가 로그인을 시도함 : " + user.getEmail());
 		return userRepository.countByEmailAndPassword(user.getEmail(), user.getPassword());
 	}
+	
+	public User findByEmail(String email){
+		return userRepository.findUserByEmail(email);
+	}
 }

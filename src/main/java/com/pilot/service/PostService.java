@@ -24,9 +24,13 @@ public class PostService {
 		return postRepository.findAll();
 	}
 	
-	public Post write(Post post){
+	public void write(Post post){
 		System.out.println("다음의 글이 작성됨 : " + post.getContent());
-		return postRepository.save(post);
+		postRepository.save(post);
 	}
 	
+	// 게시글의 id가 아니라, 게시글을 작성한 유저의 id여야함.
+	public void delete(Integer postId){
+		postRepository.deletePostById(postId);
+	}
 }

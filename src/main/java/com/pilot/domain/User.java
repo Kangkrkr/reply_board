@@ -9,25 +9,23 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity
 @Table(name = "users")
-@ToString(exclude = "posts")
+@ToString(exclude = "posts, replies")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
+	@Column(name = "id")
 	private Integer id;
 	
 	@Column(name = "email", unique = true, nullable = false)
@@ -36,11 +34,10 @@ public class User {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
-	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
 	
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private List<Post> posts;
+	
 }
