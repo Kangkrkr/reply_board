@@ -1,14 +1,12 @@
 package com.pilot.repository;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.pilot.domain.Post;
 import com.pilot.domain.Reply;
 
-import javafx.geometry.Pos;
-
 public interface ReplyRepository extends JpaRepository<Reply, Integer>{
-	public List<Reply> findAllByPost(Integer id);
+	public Set<Reply> findAllByPost(Integer id);
+	public void deleteByPost(Integer id);
 }

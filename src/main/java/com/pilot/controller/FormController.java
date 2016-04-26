@@ -46,12 +46,12 @@ public class FormController {
 
 		if (result.hasErrors()) {
 			System.out.println("올바른 로그인 정보가 들어오지 않았음.");
-			return "login";
+			return "redirect:login";
 		}
 
 		User user = userService.findByEmail(loginForm.getEmail());
 		if (userService.login(user) < 1) {
-			return "login";
+			return "redirect:login";
 		}
 		
 		// 보안 관련 기능이 추가되지 않은 관계로, 임시로 세션을 이용함.

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,7 +28,6 @@ import com.pilot.domain.User;
 import com.pilot.service.PostService;
 import com.pilot.service.ReplyService;
 import com.pilot.service.UserService;
-import com.pilot.util.HibernateUtil;
 
 @Controller
 @RequestMapping("list")
@@ -98,16 +98,16 @@ public class ListController {
 
 	// 겟터와 셋터가 있어야 타임리프에서 접근이 가능하다.
 	public class PostDTO {
-		private String uploader;
+		private User user;
 		private Post post;
 		private String replySize;
 
-		public String getUploader() {
-			return uploader;
+		public User getUser() {
+			return user;
 		}
 
-		public void setUploader(String uploader) {
-			this.uploader = uploader;
+		public void setUser(User user) {
+			this.user = user;
 		}
 
 		public Post getPost() {
@@ -124,17 +124,17 @@ public class ListController {
 
 		public void setPost(Post post) {
 			this.post = post;
-			this.uploader = userService.findOne(this.post.getUser()).getName();
+			this.user = post.getUser();
 		}
 
-		public void setRepliesToPost(List<Reply> replies) {
+		public void setRepliesToPost(Set<Reply> replies) {
 			post.setReplies(replies);
 			this.replySize = String.valueOf(replies.size());
 		}
 
 		@Override
 		public String toString() {
-			return "PostDTO [uploader=" + uploader + ", post=" + post + ", replySize=" + replySize + "]";
+			return "PostDTO [user=" + user + ", post=" + post + ", replySize=" + replySize + "]";
 		}
 	}
 }

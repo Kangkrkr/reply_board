@@ -1,6 +1,7 @@
 package com.pilot.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,19 @@ public class ReplyService {
 		replyReposioty.save(reply);
 	}
 	
-	public List<Reply> findAllByPost(Integer id){
+	public Reply findOne(Integer id){
+		return replyReposioty.findOne(id);
+	}
+	
+	public Set<Reply> findAllByPost(Integer id){
 		return replyReposioty.findAllByPost(id);
+	}
+	
+	public void delete(Integer id){
+		replyReposioty.delete(id);
+	}
+	
+	public void deleteByPostId(Integer id){
+		replyReposioty.deleteByPost(id);
 	}
 }

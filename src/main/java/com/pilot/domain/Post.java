@@ -1,50 +1,45 @@
 package com.pilot.domain;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.AssociationOverride;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import org.hibernate.metamodel.relational.ForeignKey;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pilot.service.UserService;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "posts")
-@ToString(exclude = "replies")
+@Access(AccessType.FIELD)
 public class Post {
 	
 	@Id
 	@GeneratedValue
-	@Column(name = "id")
+	@Column(name = "post_id")
 	private Integer id;
+	
+	@Column(name = "image", nullable = true)
+	private String image;
 	
 	// 기본타입과 크기 varchar(6000)을 주어야한다.
 	@Column(name = "content", nullable = false)
@@ -57,9 +52,18 @@ public class Post {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
-	@JoinColumn(name = "id")
-	private Integer user;
+	@ManyToOne(targetEntity = User.class)
+	private User user;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
-	private List<Reply> replies;
+	@OneToMany(targetEntity = Reply.class, orphanRemoval = true)
+	@Cascade(value = {CascadeType.SAVE_UPDATE, CascadeType.REMOVE})
+	@Fetch(FetchMode.SELECT)
+	@JoinTable(name = "post_reply", joinColumns = { @JoinColumn(name = "post_id") }, inverseJoinColumns = { @JoinColumn(name = "reply_id") })
+	private Set<Reply> replies;
+	
+	// A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance 에러를 방지하기 위해 setter 재정의.
+	public void setReplies(Set<Reply> replies){
+		this.replies.clear();
+		this.replies.addAll(replies);
+	}
 }
