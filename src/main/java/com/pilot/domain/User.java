@@ -1,6 +1,6 @@
 package com.pilot.domain;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,12 +21,12 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @Access(AccessType.FIELD)
 public class User {
 	@Id
 	@GeneratedValue
-	@Column(name = "user_id", updatable=false, nullable=false)
+	@Column(name = "id", updatable=false, nullable=false)
 	private Integer id;
 	
 	@Column(name = "email", unique = true, nullable = false)
@@ -42,12 +41,12 @@ public class User {
 	@OneToMany(targetEntity = Post.class, orphanRemoval = true)
 	@Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
 	@Fetch(FetchMode.SELECT)
-    @JoinTable(name = "user_post", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "post_id") })
-	private Set<Post> posts;
+    @JoinColumn(name="post_id")
+	private List<Post> posts;
 	
 	// 롬복의 getter, setter 자동 생성 기능 때문에 이상현상 발생.
 	// A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance 에러를 방지하기 위해 setter 재정의.
-	public void setPosts(Set<Post> posts){
+	public void setPosts(List<Post> posts){
 		this.posts.clear();
 		this.posts.addAll(posts);
 	}
