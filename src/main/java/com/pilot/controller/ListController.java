@@ -1,21 +1,11 @@
 package com.pilot.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -124,10 +114,10 @@ public class ListController {
 
 		public void setPost(Post post) {
 			this.post = post;
-			this.user = post.getUser();
+			this.user = userService.findOne(post.getUser());
 		}
 
-		public void setRepliesToPost(Set<Reply> replies) {
+		public void setRepliesToPost(List<Reply> replies) {
 			post.setReplies(replies);
 			this.replySize = String.valueOf(replies.size());
 		}

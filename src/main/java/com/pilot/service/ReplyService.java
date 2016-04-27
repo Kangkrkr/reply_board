@@ -26,7 +26,7 @@ public class ReplyService {
 		return replyReposioty.findOne(id);
 	}
 	
-	public Set<Reply> findAllByPost(Integer id){
+	public List<Reply> findAllByPost(Integer id){
 		return replyReposioty.findAllByPost(id);
 	}
 	
@@ -34,7 +34,7 @@ public class ReplyService {
 		replyReposioty.delete(id);
 	}
 	
-	public void deleteByPostId(Integer id){
+	public void deleteByPost(Integer id){
 		replyReposioty.deleteByPost(id);
 	}
 }

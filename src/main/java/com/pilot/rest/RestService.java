@@ -5,12 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pilot.ReplyBoardApplication;
 import com.pilot.domain.Post;
@@ -65,7 +61,7 @@ public class RestService {
 		post.setContent(writeForm.getContent());
 		post.setPassword(writeForm.getPassword());
 		post.setRegdate(new Date());
-		post.setUser(user);
+		post.setUser(user.getId());
 		
 		postService.write(post);
 		
@@ -88,9 +84,11 @@ public class RestService {
 	public String delete(@RequestParam("type") String type, @RequestParam("postId") Integer postId){
 		try{
 			if(type.equals("post")){
-				replyService.deleteByPostId(postId);
+				// 먼저 하위 댓글들을 모두 지운뒤, 게시글을 삭제한다.
+				replyService.deleteByPost(postId);
 				postService.delete(postId);
 			}else if(type.equals("reply")){
+				// 먼저 하위 댓글들을 모두 지운뒤, 자신(댓글)을 삭제한다.
 				replyService.delete(postId);
 			}
 			
@@ -102,15 +100,17 @@ public class RestService {
 	
 	// 이미지 업로드
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
-	public String uploadPost(@RequestParam("type") String type, @RequestParam("photo") MultipartFile photo, 
+	public String uploadPost(MultipartRequest mr, @RequestParam("type") String type, 
 			@RequestParam("content") String content, @RequestParam("password") String password, HttpSession session){
 
 		System.out.println("type : " + type);
 		
+		MultipartFile photo = (MultipartFile)mr.getFile("photo");
+		
 		BufferedOutputStream stream = null;
 		String fixedPath = null;
 		
-		if (!photo.isEmpty()) {
+		if (null != photo && !photo.isEmpty()) {
 			try {
 				File imageFile = new File(ReplyBoardApplication.ROOT + "/" + photo.getOriginalFilename());
 				String filePath = imageFile.getPath();
@@ -123,20 +123,31 @@ public class RestService {
                 FileCopyUtils.copy(photo.getInputStream(), stream);
                 
                 // 왜인지 images 폴더를 새로고침 해줘야 이미지가 정상출력 되는 경우가 간혹 발생함.
+                if(stream != null){
+        			try {
+        				stream.close();
+        			} catch (IOException e) {
+        				e.printStackTrace();
+        			}
+        		}
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-			}finally {
-				if(type.equals("post")){
-					wirtePost(content, password, session, fixedPath, stream);
-				}else{
-					String distinction = type.split("#")[0];
-					if(distinction.equals("reply")){
-						wirteReply(Integer.parseInt(type.split("#")[1]), content, password, session, fixedPath, stream);
-					}else if(distinction.equals("reply_on_reply")){
-//						wirteReplyOnReply(Integer.parseInt(type.split("#")[1]), content, password, session, fixedPath, stream);
-					}
-				}
+			}
+		}
+		
+		if(type.equals("post")){
+			wirtePost(content, password, session, fixedPath);
+		}else{
+			String typeDistiction = type.split("#")[0];
+			String idDistiction = type.split("#")[1];
+			
+			int id = toInteger(idDistiction);
+			
+			if(typeDistiction.equals("reply")){
+				wirteReply(id, content, password, session, fixedPath);
+			}else if(typeDistiction.equals("reply_on_reply")){
+				wirteReplyOnReply(id, content, password, session, fixedPath);
 			}
 		}
 		/*
@@ -147,7 +158,7 @@ public class RestService {
 		return "와우";
 	}
 	
-	private void wirtePost(String content, String password, HttpSession session, String fixedPath, BufferedOutputStream stream) {
+	private void wirtePost(String content, String password, HttpSession session, String fixedPath) {
 		User user = (User)session.getAttribute("userInfo");
 		
 		Post post = new Post();
@@ -155,25 +166,18 @@ public class RestService {
 		post.setContent(content);
 		post.setPassword(password);
 		post.setRegdate(new Date());
-		post.setUser(user);
+		post.setUser(user.getId());
 		
 		postService.write(post);
-		
-		if(stream != null){
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
-	private void wirteReply(int postId, String content, String password, HttpSession session, String fixedPath, BufferedOutputStream stream) {
+	private void wirteReply(int postId, String content, String password, HttpSession session, String fixedPath) {
 		User user = (User)session.getAttribute("userInfo");
 		
 		Post post = postService.findOne(postId);
 		
 		Reply reply = new Reply();
+		reply.setDepth(1);
 		reply.setImage(fixedPath);
 		reply.setContent(content);
 		reply.setPassword(password);
@@ -182,39 +186,27 @@ public class RestService {
 		reply.setUser(user);
 		
 		replyService.write(reply);
-		
-		if(stream != null){
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
-	/*
-	private void wirteReplyOnReply(int replyId, String content, String password, HttpSession session, String fixedPath, BufferedOutputStream stream) {
+	private void wirteReplyOnReply(int replyId, String content, String password, HttpSession session, String fixedPath) {
 		User user = (User)session.getAttribute("userInfo");
 		
 		Reply reply = replyService.findOne(replyId);
 		
 		Reply replyOnReply = new Reply();
+		replyOnReply.setDepth(reply.getDepth() + 1);
 		replyOnReply.setImage(fixedPath);
 		replyOnReply.setContent(content);
 		replyOnReply.setPassword(password);
 		replyOnReply.setRegdate(new Date());
-//		reply.setReply_user(userService.findOne(Integer.parseInt(userId)));
-		replyOnReply.setReply(reply.getId());
+		replyOnReply.setUser(user);
+		replyOnReply.setPost(reply.getPost());
+//		replyOnReply.setReply(reply);
 		
 		replyService.write(replyOnReply);
-		
-		if(stream != null){
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
-	*/
+	
+	private int toInteger(String num){
+		return Integer.parseInt(num);
+	}
 }

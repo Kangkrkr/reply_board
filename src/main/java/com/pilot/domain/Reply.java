@@ -1,10 +1,9 @@
 package com.pilot.domain;
 
 
-import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,9 +11,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,12 +28,16 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "replies")
+@Table(name = "reply")
 public class Reply {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "reply_id")
+	@JoinColumn(name = "id")
 	private Integer id;
+	
+	@Column(name="depth", columnDefinition = "int default 1")
+	private int depth;
 	
 	@Column(name = "image", nullable = true)
 	private String image;
@@ -36,17 +46,23 @@ public class Reply {
 	@Column(name = "content", nullable = false)
 	private String content;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "regdate")
-	private Date regdate;
+	private java.util.Date regdate;
 	
 	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
 	
-	
 	@JoinColumn(name = "post_id", nullable = false)
 	private int post;
 	
 	@ManyToOne(targetEntity = User.class)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	@ManyToOne(targetEntity = Reply.class)
+	@Cascade(value = {CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Fetch(FetchMode.SELECT)
+	private List<Reply> replies;
 }
