@@ -120,10 +120,5 @@ public class ListController {
 			post.setReplies(replies);
 			this.replySize = String.valueOf(replies.size());
 		}
-
-		@Override
-		public String toString() {
-			return "PostDTO [user=" + user + ", post=" + post + ", replySize=" + replySize + "]";
-		}
 	}
 }
