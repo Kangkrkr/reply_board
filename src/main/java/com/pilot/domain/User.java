@@ -1,7 +1,6 @@
 package com.pilot.domain;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -38,6 +37,8 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
+	// JoinTable을 사용하면 그 테이블의 이름인 post_reply 라는 테이블에 포스트의 아이디와, 댓글의 아이디가 함께 들어가버려서 삭제에 실패하는 경우가 생김.
+	// 그래서, JoinColumn을 사용하여 외래키가 낑기지 않게 만들었다.
 	@OneToMany(targetEntity = Post.class, orphanRemoval = true)
 	@Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
 	@Fetch(FetchMode.SELECT)

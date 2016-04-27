@@ -8,11 +8,6 @@ import com.pilot.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Integer>{
 
-	/*
-	@Query("SELECT x FROM User x WHERE x.email = ?1 AND x.password = ?2")
-	User loginByInputInfo(String email, String password);
-	*/
-	
 	// 메소드 명명 규칙을 사용한 쿼리 메소드.
 	List<User> findAllByOrderByEmailAsc();
 	

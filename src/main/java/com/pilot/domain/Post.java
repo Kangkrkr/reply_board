@@ -2,7 +2,6 @@ package com.pilot.domain;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -54,12 +53,9 @@ public class Post {
 	@OneToMany(targetEntity = Reply.class, orphanRemoval = true)
 	@Cascade(value = {CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	@Fetch(FetchMode.SELECT)
-	// JoinTable을 사용하면 그 테이블의 이름인 post_reply 라는 테이블에 포스트의 아이디와, 댓글의 아이디가 함께 들어가버려서 삭제에 실패하는 경우가 생김.
-	// 그래서, JoinColumn을 사용하여 외래키가 낑기지 않게 만들었다.
 	@JoinColumn(name="reply_id")
 	private List<Reply> replies;
 	
-	// A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance 에러를 방지하기 위해 setter 재정의.
 	public void setReplies(List<Reply> replies){
 		this.replies.clear();
 		this.replies.addAll(replies);

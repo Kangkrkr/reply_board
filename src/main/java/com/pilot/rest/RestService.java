@@ -1,32 +1,26 @@
 package com.pilot.rest;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.pilot.ReplyBoardApplication;
 import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
 import com.pilot.domain.User;
 import com.pilot.service.PostService;
 import com.pilot.service.ReplyService;
 import com.pilot.service.UserService;
+import com.pilot.util.ExtraInfo;
+import com.pilot.util.ImageUploader;
+import com.pilot.util.WriterImpl;
 import com.pilot.validator.WriteForm;
 
 @RestController
@@ -40,6 +34,12 @@ public class RestService {
 	
 	@Autowired
 	ReplyService replyService;
+	
+	@Autowired
+	WriterImpl postWriter;
+
+	@Autowired
+	WriterImpl replyWriter;
 	
 	@RequestMapping(value = "write", method = RequestMethod.POST)
 	public String write(@RequestParam("email") String email, @Validated WriteForm writeForm, BindingResult result){
@@ -98,112 +98,33 @@ public class RestService {
 		}
 	}
 	
-	// 이미지 업로드
+	// 글 업로드
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
-	public String uploadPost(MultipartRequest mr, @RequestParam("type") String type, 
-			@RequestParam("content") String content, @RequestParam("password") String password, HttpSession session){
+	public String uploadPost(MultipartRequest mr, @Validated WriteForm writeForm, HttpSession session){
 
-		System.out.println("type : " + type);
+		String fixedPath = ImageUploader.uploadAndSavePath(mr, writeForm);
 		
-		MultipartFile photo = (MultipartFile)mr.getFile("photo");
+		String distictions[] = writeForm.getType().split("#");
 		
-		BufferedOutputStream stream = null;
-		String fixedPath = null;
-		
-		if (null != photo && !photo.isEmpty()) {
-			try {
-				File imageFile = new File(ReplyBoardApplication.ROOT + "/" + photo.getOriginalFilename());
-				String filePath = imageFile.getPath();
-				
-				// 순수 파일이름만 DB에 저장하는 방식을 취함.(뭔가 좀 이상한데...)
-				fixedPath = imageFile.getPath().substring(filePath.lastIndexOf('\\') + 1, filePath.length());
-				
-				stream = new BufferedOutputStream(
-						new FileOutputStream(imageFile));
-                FileCopyUtils.copy(photo.getInputStream(), stream);
-                
-                // 왜인지 images 폴더를 새로고침 해줘야 이미지가 정상출력 되는 경우가 간혹 발생함.
-                if(stream != null){
-        			try {
-        				stream.close();
-        			} catch (IOException e) {
-        				e.printStackTrace();
-        			}
-        		}
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
+		for(String s : distictions){
+			System.out.println(s);
 		}
 		
-		if(type.equals("post")){
-			wirtePost(content, password, session, fixedPath);
+		String typeDistinction = distictions[0];
+		
+		if(typeDistinction.equals("post")){
+			postWriter.setWriteForm(writeForm);
+			postWriter.setExtraInfo(new ExtraInfo(null, session, fixedPath));
+			postWriter.write();
 		}else{
-			String typeDistiction = type.split("#")[0];
-			String idDistiction = type.split("#")[1];
-			
-			int id = toInteger(idDistiction);
-			
-			if(typeDistiction.equals("reply")){
-				wirteReply(id, content, password, session, fixedPath);
-			}else if(typeDistiction.equals("reply_on_reply")){
-				wirteReplyOnReply(id, content, password, session, fixedPath);
+			if(typeDistinction.contains("reply")){
+				replyWriter.setWriteForm(writeForm);
+				replyWriter.setExtraInfo(new ExtraInfo(toInteger(distictions[1]), session, fixedPath));
+				replyWriter.write();
 			}
 		}
-		/*
-		else {
-			wirtePost(content, password, session, null, stream);
-		}*/
 		
-		return "와우";
-	}
-	
-	private void wirtePost(String content, String password, HttpSession session, String fixedPath) {
-		User user = (User)session.getAttribute("userInfo");
-		
-		Post post = new Post();
-		post.setImage(fixedPath);
-		post.setContent(content);
-		post.setPassword(password);
-		post.setRegdate(new Date());
-		post.setUser(user.getId());
-		
-		postService.write(post);
-	}
-	
-	private void wirteReply(int postId, String content, String password, HttpSession session, String fixedPath) {
-		User user = (User)session.getAttribute("userInfo");
-		
-		Post post = postService.findOne(postId);
-		
-		Reply reply = new Reply();
-		reply.setDepth(1);
-		reply.setImage(fixedPath);
-		reply.setContent(content);
-		reply.setPassword(password);
-		reply.setRegdate(new Date());
-		reply.setPost(post.getId());
-		reply.setUser(user);
-		
-		replyService.write(reply);
-	}
-	
-	private void wirteReplyOnReply(int replyId, String content, String password, HttpSession session, String fixedPath) {
-		User user = (User)session.getAttribute("userInfo");
-		
-		Reply reply = replyService.findOne(replyId);
-		
-		Reply replyOnReply = new Reply();
-		replyOnReply.setDepth(reply.getDepth() + 1);
-		replyOnReply.setImage(fixedPath);
-		replyOnReply.setContent(content);
-		replyOnReply.setPassword(password);
-		replyOnReply.setRegdate(new Date());
-		replyOnReply.setUser(user);
-		replyOnReply.setPost(reply.getPost());
-//		replyOnReply.setReply(reply);
-		
-		replyService.write(replyOnReply);
+		return "성공";
 	}
 	
 	private int toInteger(String num){

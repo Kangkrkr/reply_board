@@ -32,6 +32,7 @@ $(function(){
 	
     $('#upload').ajaxForm({
             beforeSubmit: function (data,form,option) {
+            	
                 //validation체크 
                 var photo = $('input[type=file]').val();
             	var content = $('#content').val();

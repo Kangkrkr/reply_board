@@ -1,31 +1,25 @@
 package com.pilot.util;
 
+
 import java.util.Date;
 
-public class PostWriter implements Writer {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.pilot.domain.Post;
+import com.pilot.service.PostService;
+
+@Component
+public class PostWriter extends WriterImpl {
+
+	@Autowired
+	PostService postService;
 
 	@Override
-	public void setImage(String fixedPath) {
-
-	}
-
-	@Override
-	public void setContent(String content) {
-
-	}
-
-	@Override
-	public void setPassword(String password) {
-
-	}
-
-	@Override
-	public void setRegdate(Date date) {
-
-	}
-
-	@Override
-	public void setUser(Integer id) {
-
+	public void write() {
+		Post post = postConstructor();
+		post.setRegdate(new Date());
+		
+		postService.write(post);
 	}
 }
