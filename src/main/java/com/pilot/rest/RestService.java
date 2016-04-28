@@ -41,42 +41,15 @@ public class RestService {
 	@Autowired
 	WriterImpl replyWriter;
 	
-	@RequestMapping(value = "write", method = RequestMethod.POST)
-	public String write(@RequestParam("email") String email, @Validated WriteForm writeForm, BindingResult result){
-		
-		if(result.hasErrors()){
-			if(result.hasFieldErrors("content")){
-				return "실패 - 글자수는 2000자 이하여야합니다.";
-			}
-			if(result.hasFieldErrors("password")){
-				return "실패 - 비밀번호는 8자 이상 20자 이하여야합니다.";
-			}
-			
-			return "실패";
-		}
-		
-		User user = userService.findByEmail(email);
-		
-		Post post = new Post();
-		post.setContent(writeForm.getContent());
-		post.setPassword(writeForm.getPassword());
-		post.setRegdate(new Date());
-		post.setUser(user.getId());
-		
-		postService.write(post);
-		
-		return "성공";
-	}
-	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
 	public String logout(HttpSession session){
 		
 		if(null != session.getAttribute("userInfo")){
 			session.invalidate();
 			session = null;
-			return "성공하였습니다.";
+			return "로그인에 성공하였습니다.";
 		}else{
-			return "실패하였습니다.";
+			return "로그인에 실패하였습니다.";
 		}
 	}
 	
@@ -92,16 +65,27 @@ public class RestService {
 				replyService.delete(postId);
 			}
 			
-			return "성공하였습니다.";
+			return "글 삭제에 성공하였습니다.";
 		}catch(Exception e){
-			return "실패하였습니다.";
+			return "글 삭제에 실패하였습니다.";
 		}
 	}
 	
 	// 글 업로드
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
-	public String uploadPost(MultipartRequest mr, @Validated WriteForm writeForm, HttpSession session){
+	public String uploadPost(MultipartRequest mr, @Validated WriteForm writeForm, BindingResult result, HttpSession session){
 
+		if(result.hasErrors()){
+			if(result.hasFieldErrors("content")){
+				return "글 작성 실패 - 글자수는 2000자 이하여야합니다.";
+			}else if(result.hasFieldErrors("password")){
+				return "글 작성 실패 - 비밀번호는 8자 이상 20자 이하여야합니다.";
+			}else{
+				// type 에러
+				return "글 게시 중 에러가 발생하였습니다.";
+			}
+		}
+		
 		String fixedPath = ImageUploader.uploadAndSavePath(mr, writeForm);
 		
 		String distictions[] = writeForm.getType().split("#");
@@ -124,7 +108,7 @@ public class RestService {
 			}
 		}
 		
-		return "성공";
+		return "글 게시에 성공하였습니다.";
 	}
 	
 	private int toInteger(String num){

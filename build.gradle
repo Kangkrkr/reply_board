@@ -4,6 +4,7 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
@@ -14,7 +15,6 @@ apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'spring-boot' 
 apply plugin: 'war'
-
 
 war {
 	baseName = 'board'
@@ -39,7 +39,6 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.mariadb.jdbc:mariadb-java-client:1.1.7')
-	compile('org.springframework.boot:springloaded')
 	runtime('com.h2database:h2')
 	runtime('mysql:mysql-connector-java')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')

@@ -39,6 +39,7 @@ public class ReplyWriter extends WriterImpl {
 			Reply originalReply = replyService.findOne(targetId);
 			reply.setDepth(originalReply.getDepth() + 1);
 			reply.setPost(originalReply.getPost());
+			reply.setReplies(originalReply.getReplies()); // 기존에 있는 게시글(id)에 추가(addToList)하는방식으로..
 		}
 		
 		replyService.write(reply);

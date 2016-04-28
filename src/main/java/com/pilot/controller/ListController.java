@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +35,12 @@ public class ListController {
 	ReplyService replyService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String showList(Model model, HttpSession session) {
+	public String showList(@PathParam("page") Integer page, Model model, HttpSession session) {
 
+		page = (page == null || page < 0) ? 0 : page;
+		
+		System.out.println("페이지 : " + page);
+		
 		User userInfo = (User) session.getAttribute("userInfo");
 
 		if (userInfo == null) {
@@ -41,6 +48,7 @@ public class ListController {
 		} else {
 			List<PostDTO> posts = new ArrayList<>();
 
+			/*
 			for (Post post : postService.findAll()) {
 				PostDTO dto = new PostDTO();
 
@@ -48,6 +56,18 @@ public class ListController {
 				dto.setRepliesToPost(replyService.findAllByPost(post.getId()));
 
 				System.out.println(dto);
+
+				posts.add(dto);
+			}
+			*/
+			Pageable pageable = new PageRequest(page, 3);
+			for(Post post : postService.findAllByPage(pageable)){
+				PostDTO dto = new PostDTO();
+
+				dto.setPost(post);
+				dto.setRepliesToPost(replyService.findAllByPost(post.getId()));
+				
+				System.out.println("게시글과 해당 게시글에 포함된 댓글수의 총합 : " + dto.getReplySize());
 
 				posts.add(dto);
 			}

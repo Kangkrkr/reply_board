@@ -12,8 +12,15 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
-<script type="text/javascript">
+<script th:inline="javascript">
 $(function(){
+	
+	/*<![CDATA[*/
+	for(var i=1; i<=10/3; i++){
+		$('#next').before('<li><a href="/list?page='+(i-1)+'">'+i+' </a></li>');
+	}
+	/*]]>*/
+	
 	$('.photo_uploader').MultiFile({
 		max: 1, //업로드 최대 파일 갯수 (지정하지 않으면 무한대)
         accept: 'jpg|png|gif', //허용할 확장자(지정하지 않으면 모든 확장자 허용)
@@ -38,13 +45,6 @@ $(function(){
             	var content = $('#content').val();
             	var password = $('#password').val();
             	
-            	/*
-            	if('' === photo || undefined === photo){
-            		alert("이미지를 선택하세요.");
-            		return false;
-            	}
-            	*/
-            	
             	if('' === content || undefined === content){
             		alert("글을 작성해 주세요.");
             		return false;
@@ -59,7 +59,7 @@ $(function(){
             },
             success: function(response,status){
                 //성공 후 서버에서 받은 데이터 처리
-                alert("업로드 성공 - " + response);
+                alert(response);
                 $('#myModal').modal('hide');
                 location.href="/list";
             },
@@ -91,8 +91,8 @@ function deletePost(type, currentUser, uploader, postId){
         	type : type,
         	postId : postId
         },
-        success:function(data){   
-        	alert('글 삭제에 ' + data);
+        success:function(result){   
+        	alert(result);
             location.href = '/list';
         },   
         error:function(e){ 
@@ -105,8 +105,8 @@ function logout(){
 	$.ajax({      
         type:"POST",  
         url:"/logout",      
-        success:function(data){   
-        	alert('로그아웃에 ' + data);
+        success:function(result){   
+        	alert(result);
             location.href = '/form/login';
         },   
         error:function(e){ 
@@ -225,11 +225,11 @@ function openModal(){
 	  <div class="container" style="text-align: center;">
 	    <ul class="pagination">
 	    	<!-- class="disabled" 시 마우스 클릭 불가 -->
-		    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-		    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-		    <li><a href="#">2 <span class="sr-only">(current)</span></a></li>
-		    <li><a href="#">3 <span class="sr-only">(current)</span></a></li>
-		    <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+		    <li class="disabled" id="previous"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+		    <!-- <li class="active"><a href="/list?page=0">1 </a></li>
+		    <li><a href="/list?page=1">2 </a></li>
+		    <li><a href="/list?page=2">3 </a></li> -->
+		    <li id="next"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 	  	</ul>
 	  </div>
 	</nav><!-- 네비게이션 풋터 -->
