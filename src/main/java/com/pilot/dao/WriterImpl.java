@@ -2,6 +2,7 @@ package com.pilot.dao;
 
 
 import com.pilot.domain.Post;
+import com.pilot.domain.Reply;
 import com.pilot.util.ExtraInfo;
 import com.pilot.validator.WriteForm;
 
@@ -35,6 +36,16 @@ public abstract class WriterImpl implements Writer {
 		post.setUser(info.getUploader());
 		
 		return post;
+	}
+	
+	public Reply replyConstructor(){
+		Reply reply = new Reply();
+		reply.setImage(info.getFixedPath());
+		reply.setContent(writeForm.getContent());
+		reply.setPassword(writeForm.getPassword());
+		reply.setUser(info.getUploader());
+		
+		return reply;
 	}
 	
 }

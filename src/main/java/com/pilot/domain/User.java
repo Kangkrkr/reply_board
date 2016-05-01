@@ -4,22 +4,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "USER")
+@Table
 public class User implements Serializable{
 
 	private Integer id;
@@ -72,7 +72,10 @@ public class User implements Serializable{
 		this.password = password;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", targetEntity = Post.class)
+	// 하나의 유저는 다수의 Post를 가질수 있지만, 누가 썼는지를 알아야하기 때문에 User객체의 변수명인 user와 맵핑되어야 함.
+	@OneToMany(mappedBy = "user", targetEntity = Post.class)
+	// CascadeType.DELETE 까지 줬더니 Post row가 사라질때 해당 User도 같이 사라져버리는 문제 발생..
+	@Cascade(value = {CascadeType.SAVE_UPDATE})
 	public List<Post> getPosts() {
 		return posts;
 	}

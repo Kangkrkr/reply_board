@@ -16,6 +16,8 @@ import com.pilot.util.CustomUtil;
 @Service
 @Transactional
 public class PostService {
+	
+	public static final int MAX_SIZE = 3;
 
 	@Autowired
 	CustomUtil customUtil;
@@ -45,9 +47,9 @@ public class PostService {
 	}
 	
 	public List<Post> selectPost(int currentPage, int pageSize){
-		
 		try{
-			Criteria result = customUtil.orderGenerator(Post.class, "post", "id", "depth"); 
+			Criteria result = customUtil.getSession().createCriteria(Post.class);
+			// Criteria result = customUtil.orderGenerator(Post.class, "post", "id", "depth"); 
 			return result.setFirstResult(currentPage).setMaxResults(pageSize).list();
 		}catch(Exception e){
 			e.printStackTrace();

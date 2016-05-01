@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	List<User> findAllByOrderByEmailAsc();
 	
 	// 로그인 정보 확인.
-	int countByEmailAndPassword(String email, String password);
+	User findByEmailAndPassword(String email, String password);
 	
 	// 로그인시 폼에서 입력한 이메일로 유저 객체 얻어오기.
 	User findUserByEmail(String email);
