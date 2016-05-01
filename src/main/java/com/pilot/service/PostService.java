@@ -2,6 +2,7 @@ package com.pilot.service;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,11 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pilot.domain.Post;
 import com.pilot.repository.PostRepository;
+import com.pilot.util.CustomUtil;
 
 @Service
 @Transactional
 public class PostService {
 
+	@Autowired
+	CustomUtil customUtil;
+	
 	@Autowired
 	private PostRepository postRepository;
 
@@ -31,12 +36,23 @@ public class PostService {
 	}
 	
 	public void write(Post post){
-		System.out.println("다음의 글이 작성됨 : " + post.getContent());
 		postRepository.save(post);
 	}
 	
 	// 게시글의 id가 아니라, 게시글을 작성한 유저의 id여야함.
-	public void delete(Integer postId){
-		postRepository.deletePostById(postId);
+	public void delete(Post post){
+		postRepository.delete(post.getId());
+	}
+	
+	public List<Post> selectPost(int currentPage, int pageSize){
+		
+		try{
+			Criteria result = customUtil.orderGenerator(Post.class, "post", "id", "depth"); 
+			return result.setFirstResult(currentPage).setMaxResults(pageSize).list();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

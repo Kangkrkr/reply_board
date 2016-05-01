@@ -44,7 +44,6 @@ public class FormController {
 	public String loginProcess(@Validated LoginForm loginForm, BindingResult result, HttpSession session) {
 
 		if (result.hasErrors()) {
-			System.out.println("올바른 로그인 정보가 들어오지 않았음.");
 			return "redirect:login";
 		}
 

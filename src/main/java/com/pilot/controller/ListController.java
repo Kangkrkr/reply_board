@@ -6,6 +6,12 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,15 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
 import com.pilot.domain.User;
+import com.pilot.dto.PostDTO;
 import com.pilot.service.PostService;
-import com.pilot.service.ReplyService;
 import com.pilot.service.UserService;
+import com.pilot.util.HibernateUtil;
 
 @Controller
 @RequestMapping("list")
 public class ListController {
+
+	private static final int SIZE = 10;
 
 	@Autowired
 	PostService postService;
@@ -31,65 +39,49 @@ public class ListController {
 	@Autowired
 	UserService userService;
 
-	@Autowired
-	ReplyService replyService;
-
 	@RequestMapping(method = RequestMethod.GET)
 	public String showList(@PathParam("page") Integer page, Model model, HttpSession session) {
 
 		page = (page == null || page < 0) ? 0 : page;
-		
-		System.out.println("페이지 : " + page);
-		
+
 		User userInfo = (User) session.getAttribute("userInfo");
 
 		if (userInfo == null) {
 			return "redirect:/form/login";
 		} else {
-			List<PostDTO> posts = new ArrayList<>();
 
 			/*
-			for (Post post : postService.findAll()) {
-				PostDTO dto = new PostDTO();
-
-				dto.setPost(post);
-				dto.setRepliesToPost(replyService.findAllByPost(post.getId()));
-
-				System.out.println(dto);
-
-				posts.add(dto);
-			}
-			*/
-			Pageable pageable = new PageRequest(page, 3);
-			for(Post post : postService.findAllByPage(pageable)){
-				PostDTO dto = new PostDTO();
-
-				dto.setPost(post);
-				dto.setRepliesToPost(replyService.findAllByPost(post.getId()));
-				
-				System.out.println("게시글과 해당 게시글에 포함된 댓글수의 총합 : " + dto.getReplySize());
-
-				posts.add(dto);
-			}
-
-			model.addAttribute("posts", posts);
-
-			/*
-			 * SessionFactory sessionFactory =
-			 * HibernateUtil.getSessionFactory(); Session sess =
-			 * sessionFactory.getCurrentSession(); Criteria cre =
-			 * sess.createCriteria(User.class);
+			 * for (Post post : postService.findAll()) { PostDTO dto = new
+			 * PostDTO();
 			 * 
-			 * ProjectionList projectionList = Projections.projectionList();
-			 * projectionList.add(Projections.id().as("id"));
-			 * projectionList.add(Projections.property("content").as("content"))
-			 * ;
+			 * dto.setPost(post);
+			 * dto.setRepliesToPost(replyService.findAllByPost(post.getId()));
 			 * 
-			 * cre.setProjection(projectionList); cre.setResultTransformer(new
-			 * AliasToBeanResultTransformer(User.class));
+			 * System.out.println(dto);
 			 * 
-			 * cre.list().forEach(System.out::println);
+			 * posts.add(dto); }
 			 */
+
+			// Pageable pageable = new PageRequest(page, 10);
+			
+			// selectPost()의 첫번째 인자는 쿼리결과의 시작점을 의미. 페이지마다 SIZE 갯수 만큼씩 건너뛰게 한다.
+			// 두번째 인자는 한페이지당 출력할 갯수를 의미.
+			int first = (page * SIZE);
+
+			// Data Transfer Object를 담을 Collection 객체 생성.
+			List<Post> posts = postService.selectPost(first, SIZE);
+			List<PostDTO> postDTOs = new ArrayList<>();
+			
+			if(null != posts){
+				for (Post post : postService.selectPost(first, SIZE)) {
+					PostDTO dto = new PostDTO();
+					dto.setPost(post);
+
+					postDTOs.add(dto);
+				}
+			}
+
+			model.addAttribute("posts", postDTOs);
 
 			/*
 			 * Post post = postService.findOne(1);
@@ -102,43 +94,6 @@ public class ListController {
 			 */
 
 			return "list";
-		}
-	}
-
-	// 겟터와 셋터가 있어야 타임리프에서 접근이 가능하다.
-	public class PostDTO {
-		private User user;
-		private Post post;
-		private String replySize;
-
-		public User getUser() {
-			return user;
-		}
-
-		public void setUser(User user) {
-			this.user = user;
-		}
-
-		public Post getPost() {
-			return post;
-		}
-
-		public String getReplySize() {
-			return replySize;
-		}
-
-		public void setReplySize(String replySize) {
-			this.replySize = replySize;
-		}
-
-		public void setPost(Post post) {
-			this.post = post;
-			this.user = userService.findOne(post.getUser());
-		}
-
-		public void setRepliesToPost(List<Reply> replies) {
-			post.setReplies(replies);
-			this.replySize = String.valueOf(replies.size());
 		}
 	}
 }

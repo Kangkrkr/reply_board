@@ -64,7 +64,7 @@ $(function(){
                 location.href="/list";
             },
             error: function(e){
-                alert('이미지 업로드를 하지 못하였습니다.');
+                alert('글 게시에 실패하였습니다.');
                 console.log(e);
             }                               
         });
@@ -137,8 +137,6 @@ function openModal(){
 		$('input[type=hidden]').val('reply_on_reply#' + args[1]);
 	}
 	
-	console.log($('input[type=hidden]').val());
-	
 	// 전송 역할을 하는 모달내의 버튼 클릭시 발생할 콜백 함수. 
 	var callback = function(){
 		$('#postModal').modal('hide');
@@ -147,6 +145,7 @@ function openModal(){
 	// 입력 폼 초기화 후 보여주기.
 	initContent();
 	$('#postModal').modal('show');
+	$('#upload').find('#content').focus();
 	
 	// 클릭시 수행될 콜백함수 지정.
 	$('#postModal #sendButton').click(callback);
@@ -177,15 +176,17 @@ function openModal(){
 	<table>
 		<tr th:each="post: ${posts}"><!-- post는 ListController 클래스 내의 PostDTO 객체이다. -->
 			<td class="col-md-1">
-				<div class="panel panel-default">
+				<div class="panel panel-default" th:style="'margin-left:' + (20 * ${post.post.depth}) + 'px;'">
+				
+					<!-- 게시글 폼 -->
 					<div class="panel-heading">
 						<div>
 							<div>
 								<span class="badge" th:text="${post.user.name}">작성자</span>
-								<span class="badge" th:text="'댓글 ' + ${post.replySize} + '개'">댓글 갯수</span>
+								<!-- <span class="badge" th:text="'댓글 ' + ${post.replySize} + '개'">댓글 갯수</span> -->
 								<span class="badge" th:text="${#dates.format(post.post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
 								<a th:onclick="'openModal(\'reply\', \''+${post.post.id}+'\');'">답글</a>
-								<a th:onclick="'deletePost(\'post\', \''+${session.userInfo.id}+'\', \''+${post.post.user}+'\', \''+${post.post.id}+'\');'">삭제</a>
+								<a th:onclick="'deletePost(\'post\', \''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\', \''+${post.post.id}+'\');'">삭제</a>
 							</div>
 						</div>
 					</div>
@@ -200,22 +201,25 @@ function openModal(){
 						</div>
 					</div>
 					<div class="panel-body" th:text="${post.post.content}">게시글 내용</div>
-						<div class="panel-footer" th:each="reply: ${post.post.replies}">
-							<div th:style="'margin-left:' + (20 * ${reply.depth}) + 'px;'">
-								<div>
-									<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
-									<b th:text="${reply.user.name}">댓글 게시자</b>
-									<small th:text="'(' + ${#dates.format(reply.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글 게시일자</small>
-									<a th:onclick="'openModal(\'reply_on_reply\', \''+${reply.id}+'\');'">답글</a>
-									<a th:onclick="'deletePost(\'reply\', \''+${session.userInfo.id}+'\', \''+${reply.user.id}+'\', \''+${reply.id}+'\');'">삭제</a>
-								</div>
-								<div th:switch="${reply.image}">
-								 	<div th:case="null"></div>
-								 	<img th:case="*" class="img-thumbnail" th:src="@{/images/} + ${reply.image}" alt="..."/>
-								 </div>
-								<p th:text="${reply.content}" style="margin: 15px;">답글 내용</p>
+					<!-- 댓글 폼 -->
+					<!-- 
+					<div class="panel-footer" th:each="reply: ${post.post.replies}">
+						<div th:style="'margin-left:' + (20 * ${reply.depth}) + 'px;'">
+							<div>
+								<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
+								<b th:text="${reply.user.name}">댓글 게시자</b>
+								<small th:text="'(' + ${#dates.format(reply.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글 게시일자</small>
+								<a th:onclick="'openModal(\'reply_on_reply\', \''+${reply.id}+'\');'">답글</a>
+								<a th:onclick="'deletePost(\'reply\', \''+${session.userInfo.id}+'\', \''+${reply.user.id}+'\', \''+${reply.id}+'\');'">삭제</a>
 							</div>
+							<div th:switch="${reply.image}">
+							 	<div th:case="null"></div>
+							 	<img th:case="*" class="img-thumbnail" th:src="@{/images/} + ${reply.image}" alt="..."/>
+							 </div>
+							<p th:text="${reply.content}" style="margin: 15px;">답글 내용</p>
 						</div>
+					</div>
+					 -->
 				</div>
 			</td>
 		</tr>

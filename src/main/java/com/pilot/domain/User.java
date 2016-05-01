@@ -1,52 +1,82 @@
 package com.pilot.domain;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.NoArgsConstructor;
 
-import lombok.Data;
-
-@Data
 @Entity
-@Table(name = "user")
-@Access(AccessType.FIELD)
-public class User {
-	@Id
-	@GeneratedValue
-	@Column(name = "id", updatable=false, nullable=false)
+@NoArgsConstructor
+@Table(name = "USER")
+public class User implements Serializable{
+
 	private Integer id;
-	
-	@Column(name = "email", unique = true, nullable = false)
 	private String email;
-	
-	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@Column(name = "password", nullable = false)
 	private String password;
+	private List<Post> posts = new ArrayList<>();
 	
-	// JoinTable을 사용하면 그 테이블의 이름인 post_reply 라는 테이블에 포스트의 아이디와, 댓글의 아이디가 함께 들어가버려서 삭제에 실패하는 경우가 생김.
-	// 그래서, JoinColumn을 사용하여 외래키가 낑기지 않게 만들었다.
-	@OneToMany(targetEntity = Post.class, orphanRemoval = true)
-	@Cascade(value = {org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE})
-	@Fetch(FetchMode.SELECT)
-    @JoinColumn(name="post_id")
-	private List<Post> posts;
+	public User(String email, String name, String password) {
+		this.email = email;
+		this.name = name;
+		this.password = password;
+	}
 	
-	// 롬복의 getter, setter 자동 생성 기능 때문에 이상현상 발생.
-	// A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance 에러를 방지하기 위해 setter 재정의.
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Column(name = "email", unique = true, nullable = false)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "name", nullable = false)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Column(name = "password", nullable = false)
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", targetEntity = Post.class)
+	public List<Post> getPosts() {
+		return posts;
+	}
+
 	public void setPosts(List<Post> posts){
 		this.posts.clear();
 		this.posts.addAll(posts);

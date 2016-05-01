@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.User;
+import com.pilot.dao.WriterImpl;
 import com.pilot.service.PostService;
-import com.pilot.service.ReplyService;
 import com.pilot.service.UserService;
 import com.pilot.util.ExtraInfo;
 import com.pilot.util.ImageUploader;
-import com.pilot.util.WriterImpl;
 import com.pilot.validator.WriteForm;
 
 @RestController
@@ -33,24 +30,22 @@ public class RestService {
 	PostService postService;
 	
 	@Autowired
-	ReplyService replyService;
-	
-	@Autowired
 	WriterImpl postWriter;
-
-	@Autowired
-	WriterImpl replyWriter;
 	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
 	public String logout(HttpSession session){
 		
-		if(null != session.getAttribute("userInfo")){
-			session.invalidate();
-			session = null;
-			return "로그인에 성공하였습니다.";
-		}else{
-			return "로그인에 실패하였습니다.";
+		try{
+			if(null != session.getAttribute("userInfo")){
+				session.invalidate();
+				session = null;
+				return "로그인에 성공하였습니다.";
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+		
+		return "로그인에 실패하였습니다.";
 	}
 	
 	@RequestMapping(value = "delete", method = RequestMethod.GET)
@@ -58,15 +53,14 @@ public class RestService {
 		try{
 			if(type.equals("post")){
 				// 먼저 하위 댓글들을 모두 지운뒤, 게시글을 삭제한다.
-				replyService.deleteByPost(postId);
-				postService.delete(postId);
+				postService.delete(postService.findOne(postId));
 			}else if(type.equals("reply")){
 				// 먼저 하위 댓글들을 모두 지운뒤, 자신(댓글)을 삭제한다.
-				replyService.delete(postId);
 			}
 			
 			return "글 삭제에 성공하였습니다.";
 		}catch(Exception e){
+			e.printStackTrace();
 			return "글 삭제에 실패하였습니다.";
 		}
 	}
@@ -87,26 +81,9 @@ public class RestService {
 		}
 		
 		String fixedPath = ImageUploader.uploadAndSavePath(mr, writeForm);
-		
-		String distictions[] = writeForm.getType().split("#");
-		
-		for(String s : distictions){
-			System.out.println(s);
-		}
-		
-		String typeDistinction = distictions[0];
-		
-		if(typeDistinction.equals("post")){
-			postWriter.setWriteForm(writeForm);
-			postWriter.setExtraInfo(new ExtraInfo(null, session, fixedPath));
-			postWriter.write();
-		}else{
-			if(typeDistinction.contains("reply")){
-				replyWriter.setWriteForm(writeForm);
-				replyWriter.setExtraInfo(new ExtraInfo(toInteger(distictions[1]), session, fixedPath));
-				replyWriter.write();
-			}
-		}
+		postWriter.setWriteForm(writeForm);
+		postWriter.setExtraInfo(new ExtraInfo(null, session, fixedPath));
+		postWriter.write();
 		
 		return "글 게시에 성공하였습니다.";
 	}

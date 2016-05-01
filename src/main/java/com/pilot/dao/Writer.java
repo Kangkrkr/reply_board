@@ -1,4 +1,4 @@
-package com.pilot.util;
+package com.pilot.dao;
 
 
 public interface Writer {

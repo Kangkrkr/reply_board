@@ -3,6 +3,7 @@ package com.pilot.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +30,10 @@ public class UserService {
 	}
 	
 	public User join(User user){
-		System.out.println("다음의 사용자가 가입을 시도함 : " + user.getEmail());
 		return userRepository.save(user);
 	}
 	
 	public int login(User user){
-		System.out.println("다음의 사용자가 로그인을 시도함 : " + user.getEmail());
 		return userRepository.countByEmailAndPassword(user.getEmail(), user.getPassword());
 	}
 	

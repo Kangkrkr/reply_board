@@ -1,7 +1,8 @@
-package com.pilot.util;
+package com.pilot.dao;
+
 
 import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
+import com.pilot.util.ExtraInfo;
 import com.pilot.validator.WriteForm;
 
 public abstract class WriterImpl implements Writer {
@@ -31,21 +32,9 @@ public abstract class WriterImpl implements Writer {
 		post.setContent(writeForm.getContent());
 		post.setPassword(writeForm.getPassword());
 		// 게시일자는 write 시점에서 생성해준다.
-		post.setUser(info.getUploader().getId());
+		post.setUser(info.getUploader());
 		
 		return post;
 	}
 	
-	public Reply replyConstructor(){
-		Reply reply = new Reply();
-		// depth 따로처리
-		reply.setImage(info.getFixedPath());
-		reply.setContent(writeForm.getContent());
-		reply.setPassword(writeForm.getPassword());
-		// 게시일자 따로 처리
-		// setPost 따로처리
-		reply.setUser(info.getUploader());
-		
-		return reply;
-	}
 }
