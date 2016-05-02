@@ -16,7 +16,7 @@ import com.pilot.domain.Post;
 import com.pilot.domain.Reply;
 import com.pilot.domain.User;
 import com.pilot.repository.ReplyRepository;
-import com.pilot.util.CustomUtil;
+import com.pilot.util.SessionUtil;
 import com.pilot.validator.WriteForm;
 
 @Service
@@ -36,7 +36,7 @@ public class ReplyService {
 	private EntityManager entityManager;
 	
 	@Autowired
-	CustomUtil util;
+	SessionUtil util;
 	
 	public Reply findOne(Integer id){
 		return replyRepository.findOne(id);

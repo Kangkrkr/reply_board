@@ -20,7 +20,7 @@ import com.pilot.dto.PostDTO;
 import com.pilot.service.PostService;
 import com.pilot.service.ReplyService;
 import com.pilot.service.UserService;
-import com.pilot.util.CustomUtil;
+import com.pilot.util.SessionUtil;
 
 @Controller
 @RequestMapping("list")
@@ -38,7 +38,7 @@ public class ListController {
 	UserService userService;
 	
 	@Autowired
-	CustomUtil util;
+	SessionUtil util;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showList(@PathParam("page") Integer page, Model model, HttpSession session) {

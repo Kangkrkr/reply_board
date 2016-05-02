@@ -1,18 +1,17 @@
 package com.pilot.util;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomUtil {
+public class SessionUtil {
 
 	@Autowired
 	SessionFactory sessionFactory;
 	
+	/*
 	public Criteria orderGenerator(Class<?> classType, String... orderConditions){
 		Criteria criteria = getSession().createCriteria(classType);
 		
@@ -22,6 +21,7 @@ public class CustomUtil {
 		
 		return criteria;
 	}
+	*/
 
 	public Session getSession(){
 		return sessionFactory.getCurrentSession();

@@ -1,4 +1,4 @@
-package com.pilot.rest;
+package com.pilot.controller;
 
 
 import javax.servlet.http.HttpSession;
@@ -19,16 +19,16 @@ import com.pilot.dto.ListSizeDTO;
 import com.pilot.service.PostService;
 import com.pilot.service.ReplyService;
 import com.pilot.service.UserService;
-import com.pilot.util.CustomUtil;
+import com.pilot.util.SessionUtil;
 import com.pilot.util.ExtraInfo;
 import com.pilot.util.ImageUploader;
 import com.pilot.validator.WriteForm;
 
 @RestController
-public class RestService {
+public class AjaxController {
 
 	@Autowired
-	CustomUtil util;
+	SessionUtil util;
 	
 	@Autowired
 	UserService userService;

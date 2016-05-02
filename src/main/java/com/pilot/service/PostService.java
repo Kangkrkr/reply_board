@@ -6,18 +6,21 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.transaction.TransactionManager;
 
 import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pilot.domain.Post;
 import com.pilot.domain.User;
 import com.pilot.repository.PostRepository;
-import com.pilot.util.CustomUtil;
+import com.pilot.util.SessionUtil;
 import com.pilot.validator.WriteForm;
 
 @Service
@@ -27,7 +30,7 @@ public class PostService {
 	public static final int MAX_SIZE = 3;
 
 	@Autowired
-	CustomUtil customUtil;
+	SessionUtil customUtil;
 	
 	@Autowired
 	private PostRepository postRepository;
@@ -81,6 +84,7 @@ public class PostService {
 	public List<Post> selectPost(int currentPage, int pageSize){
 		try{
 			Criteria result = customUtil.getSession().createCriteria(Post.class);
+			
 			return result.setFirstResult(currentPage).setMaxResults(pageSize).list();
 		}catch(Exception e){
 			e.printStackTrace();

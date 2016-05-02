@@ -95,6 +95,7 @@ public class Reply implements Serializable {	// Post와 유사한것이 대부�
 	// 어째서인지 DB 테이블에 기본타입이 TINYBLOB으로 설정되는 이유로,
 	// Data truncation: Data too long for column 에러가 떴음.
 	// 기본타입으로 LONGBLOB 을 주어서 해결.
+	// OneToMany로 관계 설정.
 	@Column(name = "user", nullable = false, columnDefinition = "LONGBLOB")
 	public User getUser() {
 		return user;
