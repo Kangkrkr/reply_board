@@ -2,20 +2,15 @@ package com.pilot.dto;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 import com.pilot.domain.Post;
+import com.pilot.domain.Reply;
 import com.pilot.domain.User;
-import com.pilot.service.UserService;
 
 //겟터와 셋터가 있어야 타임리프에서 접근이 가능하다.
 public class PostDTO {
 	private User user;
 	private Post post;
+	private List<Reply> replies;
 	private int replySize;
 
 	public User getUser() {
@@ -28,6 +23,14 @@ public class PostDTO {
 
 	public Post getPost() {
 		return post;
+	}
+
+	public List<Reply> getReplies() {
+		return replies;
+	}
+
+	public void setReplies(List<Reply> replies) {
+		this.replies = replies;
 	}
 
 	public int getReplySize() {
