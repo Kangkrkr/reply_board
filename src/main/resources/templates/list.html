@@ -15,11 +15,38 @@
 <script th:inline="javascript">
 $(function(){
 	
-	/*<![CDATA[*/
-	for(var i=1; i<=10/3; i++){
-		$('#next').before('<li><a href="/list?page='+(i-1)+'">'+i+' </a></li>');
-	}
-	/*]]>*/
+	$.ajax({      
+        type:"GET",  
+        url:"/list_size",      
+        success:function(result){  
+        	var totalSize = result.totalSize;
+        	var maxPageSize = result.maxPageSize;
+        	
+        	/*<![CDATA[*/
+        	for(var i=1; i<=Math.ceil(totalSize/maxPageSize); i++){
+        		$('#next').before('<li><a href="/list?page='+(i-1)+'">'+i+' </a></li>');
+        	}
+        	/*]]>*/
+        },   
+        error:function(e){ 
+            alert('조회 중 오류가 발생했습니다.');  
+        }  
+    });
+	
+	$(window).scroll(function() {
+		
+		// 스크롤바 현재 위치.
+		var curScrollbarPos = Math.ceil($(window).scrollTop());
+		
+		// footer가 사라지게 할 타겟 지점.
+		var targetPos = $(document).height() - $(window).height();
+		
+	    if (curScrollbarPos >= targetPos - 10){
+	        $('#footer').fadeOut('fast');
+	    }else{
+	    	$('#footer').fadeIn('fast');
+	    }
+	});
 	
 	$('.photo_uploader').MultiFile({
 		max: 1, //업로드 최대 파일 갯수 (지정하지 않으면 무한대)
@@ -61,7 +88,7 @@ $(function(){
                 //성공 후 서버에서 받은 데이터 처리
                 alert(response);
                 $('#myModal').modal('hide');
-                location.href="/list";
+                window.location.reload();
             },
             error: function(e){
                 alert('글 게시에 실패하였습니다.');
@@ -93,7 +120,7 @@ function deletePost(type, currentUser, uploader, postId){
         },
         success:function(result){   
         	alert(result);
-            location.href = '/list';
+        	window.location.reload();
         },   
         error:function(e){ 
             alert('삭제중 중 오류가 발생했습니다.');  
@@ -114,14 +141,6 @@ function logout(){
         }  
     });
 }
-
-$(window).scroll(function() {
-    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-        $('#footer').fadeOut('fast');
-    }else{
-    	$('#footer').fadeIn('fast');
-    }
-});
 
 function openModal(){
 	
@@ -176,7 +195,7 @@ function openModal(){
 	<table>
 		<tr th:each="post: ${posts}"><!-- post는 ListController 클래스 내의 PostDTO 객체이다. -->
 			<td class="col-md-1">
-				<div class="panel panel-default" th:style="'margin-left:' + (20 * ${post.post.depth}) + 'px;'">
+				<div class="panel panel-default">
 				
 					<!-- 게시글 폼 -->
 					<div class="panel-heading">
@@ -194,7 +213,7 @@ function openModal(){
 						<div class="col-xs-6 col-md-3">
 							 <div th:switch="${post.post.image}">
 							 	<div th:case="null"></div>
-							 	<a th:case="*" href="#" class="thumbnail" onclick="return false;">
+							 	<a th:case="*" href="#" class="thumbnail" onclick="return false;" style="margin-left: 15px; margin-top: 10px;">
 							 		<img class="img-thumbnail" th:src="@{/images/} + ${post.post.image}" alt="..."/>
 							 	</a>
 							 </div>
@@ -202,8 +221,7 @@ function openModal(){
 					</div>
 					<div class="panel-body" th:text="${post.post.content}">게시글 내용</div>
 					<!-- 댓글 폼 -->
-					<!-- 
-					<div class="panel-footer" th:each="reply: ${post.post.replies}">
+					<div class="panel-footer" th:each="reply: ${post.replies}">
 						<div th:style="'margin-left:' + (20 * ${reply.depth}) + 'px;'">
 							<div>
 								<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
@@ -219,7 +237,6 @@ function openModal(){
 							<p th:text="${reply.content}" style="margin: 15px;">답글 내용</p>
 						</div>
 					</div>
-					 -->
 				</div>
 			</td>
 		</tr>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>에러 페이지</title>
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+<link rel="stylesheet" th:href="@{/css/joinTemplate.css}" />
+</head>
+<body>
+<div style="margin: 20px;">
+	<div class="col-md-4"></div>
+	<div class="col-md-8">
+		<div class="jumbotron col-md-6">
+			<div class="col-md-12">
+				<h1>회원가입 오류!</h1>
+				<p>잘못된 정보를 입력하셨습니다.</p>
+				<p>
+					<a class="btn btn-primary btn-lg" href="/form/join" role="button">회원가입 화면으로</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
