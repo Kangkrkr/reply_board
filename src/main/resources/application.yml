@@ -1,5 +1,5 @@
 server:
-  port: 8010
+  port: 80
 security:
   basic:
     enabled: false
@@ -10,7 +10,7 @@ spring:
     proxy-target-class: true
     auto: true
   datasource:
-    url: jdbc:mysql://localhost:3306/reply_board?autoReconnect=true&useUnicode=false&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/reply_board?autoReconnect=true&useUnicode=false&characterEncoding=utf8&useSSL=false
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: tmddbs0723!@1!
