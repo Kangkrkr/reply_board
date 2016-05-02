@@ -6,175 +6,9 @@
 <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 <script src="../../../static/js/jquery.form.js" th:src="@{/js/jquery.form.js}"></script>
 <script src="../../../static/js/jquery.MultiFile.js" th:src="@{/js/jquery.MultiFile.js}"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
-<script th:inline="javascript">
-$(function(){
-	
-	$.ajax({      
-        type:"GET",  
-        url:"/list_size",      
-        success:function(result){  
-        	var totalSize = result.totalSize;
-        	var maxPageSize = result.maxPageSize;
-        	
-        	/*<![CDATA[*/
-        	for(var i=1; i<=Math.ceil(totalSize/maxPageSize); i++){
-        		$('#next').before('<li><a href="/list?page='+(i-1)+'">'+i+' </a></li>');
-        	}
-        	/*]]>*/
-        },   
-        error:function(e){ 
-            alert('조회 중 오류가 발생했습니다.');  
-        }  
-    });
-	
-	$(window).scroll(function() {
-		
-		// 스크롤바 현재 위치.
-		var curScrollbarPos = Math.ceil($(window).scrollTop());
-		
-		// footer가 사라지게 할 타겟 지점.
-		var targetPos = $(document).height() - $(window).height();
-		
-	    if (curScrollbarPos >= targetPos - 10){
-	        $('#footer').fadeOut('fast');
-	    }else{
-	    	$('#footer').fadeIn('fast');
-	    }
-	});
-	
-	$('.photo_uploader').MultiFile({
-		max: 1, //업로드 최대 파일 갯수 (지정하지 않으면 무한대)
-        accept: 'jpg|png|gif', //허용할 확장자(지정하지 않으면 모든 확장자 허용)
-        maxfile: 1024, //각 파일 최대 업로드 크기
-        maxsize: 3024,  //전체 파일 최대 업로드 크기
-        STRING: { //Multi-lingual support : 메시지 수정 가능
-            remove : "제거", //추가한 파일 제거 문구, 이미태그를 사용하면 이미지사용가능
-            duplicate : "$file 은 이미 선택된 파일입니다.", 
-            denied : "$ext 는(은) 업로드 할수 없는 파일 확장자입니다.",
-            selected:'$file 을 선택했습니다.', 
-            toomuch: "업로드할 수 있는 최대 크기를 초과하였습니다.($size)", 
-            toomany: "업로드할 수 있는 최대 갯수는 $max개 입니다.",
-            toobig: "$file 은 크기가 매우 큽니다. (max $size)"
-        }
-	});
-	
-    $('#upload').ajaxForm({
-            beforeSubmit: function (data,form,option) {
-            	
-                //validation체크 
-                var photo = $('input[type=file]').val();
-            	var content = $('#content').val();
-            	var password = $('#password').val();
-            	
-            	if('' === content || undefined === content){
-            		alert("글을 작성해 주세요.");
-            		return false;
-            	}
-            	
-            	if('' === password || undefined === password){
-            		alert("비밀번호를 설정해 주세요.");
-            		return false;
-            	}
-                
-                return true;
-            },
-            success: function(response,status){
-                //성공 후 서버에서 받은 데이터 처리
-                alert(response);
-                $('#myModal').modal('hide');
-                window.location.reload();
-            },
-            error: function(e){
-                alert('글 게시에 실패하였습니다.');
-                console.log(e);
-            }                               
-        });
-});
-
-function initContent(){
-	$('#content').val('');
-	$('#password').val('');
-}
-
-function deletePost(type, currentUser, uploader, postId){
-	
-	console.log(type + " , " + currentUser + " , " + uploader + " , " + postId)
-	
-	if(currentUser !== uploader){
-		alert('자신의 게시물만 삭제할 수 있습니다.');
-		return;
-	}
-	
-	$.ajax({      
-        type:"GET",  
-        url:"/delete",      
-        data : {
-        	type : type,
-        	postId : postId
-        },
-        success:function(result){   
-        	alert(result);
-        	window.location.reload();
-        },   
-        error:function(e){ 
-            alert('삭제중 중 오류가 발생했습니다.');  
-        }  
-    });
-}
-
-function logout(){
-	$.ajax({      
-        type:"POST",  
-        url:"/logout",      
-        success:function(result){   
-        	alert(result);
-            location.href = '/form/login';
-        },   
-        error:function(e){ 
-            alert('로그아웃 중 오류가 발생했습니다.');  
-        }  
-    });
-}
-
-function openModal(){
-	
-	var args = arguments;
-	
-	if(args[0] === 'post'){
-		//writePost(args[1]);
-		$('input[type=hidden]').val('post');
-	}else if(args[0] === 'reply'){
-		//reply(args[1], args[2], $('#content').val(), $('#password').val());
-		$('input[type=hidden]').val('reply#' + args[1]);
-	}else if(args[0] === 'reply_on_reply'){
-		$('input[type=hidden]').val('reply_on_reply#' + args[1]);
-	}
-	
-	// 전송 역할을 하는 모달내의 버튼 클릭시 발생할 콜백 함수. 
-	var callback = function(){
-		$('#postModal').modal('hide');
-	};
-	
-	// 입력 폼 초기화 후 보여주기.
-	initContent();
-	$('#postModal').modal('show');
-	$('#upload').find('#content').focus();
-	
-	// 클릭시 수행될 콜백함수 지정.
-	$('#postModal #sendButton').click(callback);
-	
-	// 모달이 화면에서 사라졌을 때 이벤트 지정. 버튼에 지정해둔 모든 콜백함수를 제거한다.
-	$('#postModal').on('hidden.bs.modal', function (e) {
-		$('#postModal #sendButton').unbind();
-	});
-}
-</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -292,5 +126,9 @@ function openModal(){
 			</div>
 		</div>
 	</div><!-- 글 입력 모달 -->
+	
+	<script src="../../../static/js/ajax/ajax.js" th:src="@{/js/ajax/ajax.js}"></script>
+	<script src="../../../static/js/common/common.js" th:src="@{/js/common/common.js}"></script>
+	<script src="../../../static/js/multipart/multipart.js" th:src="@{/js/multipart/multipart.js}"></script>
 </body>
 </html>
