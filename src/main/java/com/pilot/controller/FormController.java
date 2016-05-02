@@ -43,21 +43,30 @@ public class FormController {
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String loginProcess(@Validated LoginForm loginForm, BindingResult result, HttpSession session) {
 
-		if (result.hasErrors()) {
-			return "redirect:login";
+		try{
+			if (result.hasErrors()) {
+				System.err.println("잘못된 데이터를 입력함.");
+				return "redirect:login";
+			}
+
+			// 로그인 검증..
+			User user = userService.login(loginForm);
+			
+			if (user == null) {
+				System.err.println("해당 사용자 정보가 없음.");
+				return "redirect:login";
+			}
+			
+			// 보안 관련 기능이 추가되지 않은 관계로, 임시로 세션을 이용함.
+			session.setAttribute("userInfo", user);
+			
+			return "redirect:/list";
+		}catch(Exception e){
+			e.printStackTrace();
+			return "error/login_error";
 		}
 
-		/*
-		User user = userService.findByEmail(loginForm.getEmail());
-		if (userService.login(user) < 1) {
-			return "redirect:login";
-		}
-		*/
 		
-		// 보안 관련 기능이 추가되지 않은 관계로, 임시로 세션을 이용함.
-		//session.setAttribute("userInfo", user);
-
-		return "redirect:/list";
 	}
 
 	@RequestMapping(value = "join", method = RequestMethod.GET)
@@ -68,16 +77,19 @@ public class FormController {
 	@RequestMapping(value = "join", method = RequestMethod.POST)
 	public String joinProcess(@Validated JoinForm joinForm, BindingResult result) {
 		
-		if(result.hasErrors()){
-			System.out.println("회원가입시 올바르지 못한 정보를 입력함.");
-			return join();
+		try{
+			if(result.hasErrors()){
+				return join();
+			}
+			
+			User user = new User();
+			BeanUtils.copyProperties(joinForm, user);
+			
+			userService.join(user);
+			
+			return "redirect:login";
+		}catch(Exception e){
+			return "error/join_error";
 		}
-		
-		User user = new User();
-		BeanUtils.copyProperties(joinForm, user);
-		
-		userService.join(user);
-		
-		return "redirect:login";
 	}
 }
