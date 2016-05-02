@@ -39,7 +39,8 @@
 								<!-- <span class="badge" th:text="'댓글 ' + ${post.replySize} + '개'">댓글 갯수</span> -->
 								<span class="badge" th:text="${#dates.format(post.post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
 								<a th:onclick="'openModal(\'reply\', \''+${post.post.id}+'\');'">답글</a>
-								<a th:onclick="'deletePost(\'post\', \''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\', \''+${post.post.id}+'\');'">삭제</a>
+								<a th:onclick="'editArticle(\'edit_post\', \''+${post.post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\');'">수정</a>
+								<a th:onclick="'deleteArticle(\'post\', \''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\', \''+${post.post.id}+'\');'">삭제</a>
 							</div>
 						</div>
 					</div>
@@ -62,7 +63,8 @@
 								<b th:text="${reply.user.name}">댓글 게시자</b>
 								<small th:text="'(' + ${#dates.format(reply.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글 게시일자</small>
 								<a th:onclick="'openModal(\'reply_on_reply\', \''+${reply.id}+'\');'">답글</a>
-								<a th:onclick="'deletePost(\'reply\', \''+${session.userInfo.id}+'\', \''+${reply.user.id}+'\', \''+${reply.id}+'\');'">삭제</a>
+								<a th:onclick="'editArticle(\'edit_reply\', \''+${reply.id}+'\', \''+${session.userInfo.id}+'\', \''+${reply.user.id}+'\');'">수정</a>
+								<a th:onclick="'deleteArticle(\'reply\', \''+${session.userInfo.id}+'\', \''+${reply.user.id}+'\', \''+${reply.id}+'\');'">삭제</a>
 							</div>
 							<div th:switch="${reply.image}">
 							 	<div th:case="null"></div>

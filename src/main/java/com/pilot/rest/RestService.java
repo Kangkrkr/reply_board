@@ -87,6 +87,7 @@ public class RestService {
 		}
 	}
 	
+	
 	// 글 업로드
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public String uploadPost(MultipartRequest mr, @Validated WriteForm writeForm, BindingResult result, HttpSession session){
@@ -109,13 +110,21 @@ public class RestService {
 			postWriter.setWriteForm(writeForm);
 			postWriter.setExtraInfo(new ExtraInfo(null, session, fixedPath));
 			postWriter.write();
-		}else{
+		}else if(type.startsWith("reply")){
 			Integer targetId = toInteger(writeForm.getType().split("#")[1]);
 			
 			writeForm.setType(writeForm.getType().split("#")[0]);
 			replyWriter.setWriteForm(writeForm);
 			replyWriter.setExtraInfo(new ExtraInfo(targetId, session, fixedPath));
 			replyWriter.write();
+		}else{
+			if(type.contains("edit_post")){
+				// 게시물 수정처리
+				postService.update(writeForm, session, fixedPath);
+			}else{
+				// 댓글 수정처리
+				replyService.update(writeForm, session, fixedPath);
+			}
 		}
 		
 		

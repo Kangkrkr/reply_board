@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pilot.domain.Post;
 import com.pilot.domain.Reply;
@@ -72,6 +73,25 @@ public class ListController {
 
 			model.addAttribute("posts", postDTOs);
 
+			return "list";
+		}
+	}
+	
+	@RequestMapping(value = "edit", method = RequestMethod.GET)
+	public String edit(@RequestParam("type") String type, @RequestParam("postId") Integer postId, Model model){
+		try{
+			
+			if(type.equals("post")){
+				Post post = postService.findOne(postId);
+				model.addAttribute("post", post);
+			}else{
+				Reply reply = replyService.findOne(postId);
+				model.addAttribute("reply", reply);
+			}
+			
+			return (type.equals("post") ? "edit_post" : "edit_reply");
+		}catch(Exception e){
+			e.printStackTrace();
 			return "list";
 		}
 	}

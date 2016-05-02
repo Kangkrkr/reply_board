@@ -15,6 +15,12 @@ var openModal = function() {
 		$('input[type=hidden]').val('reply#' + args[1]);
 	} else if (args[0] === 'reply_on_reply') {
 		$('input[type=hidden]').val('reply_on_reply#' + args[1]);
+	}else{
+		if(args[0] === 'edit_post'){
+			$('input[type=hidden]').val('edit_post#' + args[1]);
+		}else{
+			$('input[type=hidden]').val('edit_reply#' + args[1]);
+		}
 	}
 
 	// 전송 역할을 하는 모달내의 버튼 클릭시 발생할 콜백 함수. 
@@ -36,7 +42,22 @@ var openModal = function() {
 	});
 }
 
-var deletePost = function(type, currentUser, uploader, postId) {
+var editArticle = function(type, postId, currentUser, uploader) {
+
+	if (currentUser !== uploader) {
+		alert('자신의 게시물만 수정할 수 있습니다.');
+		return;
+	}
+	
+	openModal(type, postId);
+
+	console.log("뭐지");
+	
+	//location.href="/list/edit?type=" + type + "&" + "postId=" + postId;
+	//doEdit(type, postId);
+}
+
+var deleteArticle = function(type, currentUser, uploader, postId) {
 
 	if (currentUser !== uploader) {
 		alert('자신의 게시물만 삭제할 수 있습니다.');

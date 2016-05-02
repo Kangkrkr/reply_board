@@ -1,6 +1,11 @@
 package com.pilot.service;
 
+import java.util.Date;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pilot.domain.Post;
 import com.pilot.domain.Reply;
+import com.pilot.domain.User;
 import com.pilot.repository.ReplyRepository;
 import com.pilot.util.CustomUtil;
+import com.pilot.validator.WriteForm;
 
 @Service
 @Transactional
@@ -18,6 +25,15 @@ public class ReplyService {
 	
 	@Autowired
 	ReplyRepository replyRepository;
+	
+	@Autowired
+	private EntityManager persistenceEntityManager;
+	
+	@Autowired
+    private EntityManagerFactory entityManagerFactory;
+	
+	@Autowired
+	private EntityManager entityManager;
 	
 	@Autowired
 	CustomUtil util;
@@ -28,6 +44,21 @@ public class ReplyService {
 	
 	public void write(Reply reply){
 		replyRepository.save(reply);
+	}
+	
+	public void update(WriteForm writeForm, HttpSession session, String fixedPath){
+		Reply reply = replyRepository.findOne(Integer.parseInt(writeForm.getType().split("#")[1]));
+		
+		Reply r = replyRepository.findOne(reply.getId());
+		
+		Reply update = entityManager.find(Reply.class, reply.getId());
+		update.setImage(fixedPath);
+		update.setContent(writeForm.getContent());
+		update.setPassword(writeForm.getPassword());
+		update.setRegdate(new Date());
+		update.setUser((User)session.getAttribute("userInfo"));
+		
+		entityManager.merge(update);
 	}
 	
 	public List<Reply> findRepliesByPost(Post post){

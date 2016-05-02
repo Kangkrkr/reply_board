@@ -20,6 +20,24 @@ var footerSetter = function(){
 	});
 }
 
+var doEdit = function(type, postId){
+	$.ajax({
+        type:"GET",  
+        url:"/list/edit",      
+        data : {
+        	type : type,
+        	postId : postId
+        },
+        success:function(result){   
+        	alert(result);
+        	window.location.reload();
+        },   
+        error:function(e){ 
+            alert('삭제중 중 오류가 발생했습니다.');  
+        }  
+    });
+}
+
 var doDelete = function(type, postId){
 	$.ajax({      
         type:"GET",  

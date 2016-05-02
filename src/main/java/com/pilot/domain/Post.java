@@ -108,30 +108,4 @@ public class Post implements Serializable, Cloneable {
 		return super.clone();
 	}
 
-	/*
-	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Post.class)
-	@JoinColumn(name = "post_id")
-	public Post getPost() {
-		return post;
-	}
-
-	public void setPost(Post post) {
-		this.post = post;
-	}
-
-	
-	/*
-	@OneToMany(targetEntity = Reply.class, orphanRemoval = true)
-	@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
-	@Fetch(FetchMode.SELECT)
-	@JoinColumn(name = "reply_id")
-	public List<Reply> getReplies() {
-		return replies;
-	}
-	
-	public void setReplies(List<Reply> replies) {
-		this.replies.clear();
-		this.replies.addAll(replies);
-	}
-	*/
 }
