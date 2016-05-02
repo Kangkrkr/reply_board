@@ -6,11 +6,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.pilot.domain.Post;
+
 /*
  * 해야할일 :
  * 
+ * 1. 페이징 작업
+ * 2. tag, scrpit 보안처리
  * 3. 글 수정
  * 4. 리팩토링
+ * 5. 비밀번호 암호화 (SHA-512) 처리
  * 6. 그리고 나머지 ...
  * 
  */

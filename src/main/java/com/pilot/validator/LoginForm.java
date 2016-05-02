@@ -2,8 +2,12 @@ package com.pilot.validator;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import org.apache.commons.codec.digest.DigestUtils;
+
 import com.nhncorp.lucy.security.xss.XssPreventer;
+
+import lombok.Data;
 
 public class LoginForm {
 	
