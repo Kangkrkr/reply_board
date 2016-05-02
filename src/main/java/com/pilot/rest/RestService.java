@@ -45,6 +45,7 @@ public class RestService {
 	@Autowired
 	WriterImpl replyWriter;
 	
+	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
 	public String logout(HttpSession session){
 		

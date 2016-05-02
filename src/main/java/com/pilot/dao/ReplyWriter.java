@@ -26,18 +26,15 @@ public class ReplyWriter extends WriterImpl {
 		String typeDistinction = getWriteForm().getType();
 		int targetId = getExtraInfo().getTargetId();
 		
-		// 게시글에 단일 댓글만 다는 경우.
 		if (typeDistinction.equals("reply")) {
 
 			reply.setDepth(1);
 			reply.setPost(postService.findOne(targetId));
 		} else {
-			// 댓글에 댓글을 달려고 하는 경우.
-			
 			Reply originalReply = replyService.findOne(targetId);
-			Post post = originalReply.getPost();
+			Post parnetPost = originalReply.getPost();
 			
-			List<Reply> replies = replyService.findRepliesByPost(post);	//게시글의 댓글목록을 불러온다.
+			List<Reply> replies = replyService.findRepliesByPost(parnetPost);	// 일단 게시글의 댓글목록을 불러온다.
 			
 			// 댓글을 달려고하는 원본 댓글의 index를 뽑아온다.
 			int originalIdx = 0;
@@ -48,19 +45,17 @@ public class ReplyWriter extends WriterImpl {
 				++originalIdx;
 			}
 			
-			// 달려고 하는 댓글의 기본 정보 설정.
 			reply.setDepth(originalReply.getDepth() + 1);
-			reply.setPost(post);
+			reply.setPost(parnetPost);
 			
 			replies.add(originalIdx + 1, reply);
 			
-			// 해당 게시글에 대한 모든 댓글을 삭제하고 갱신된 댓글들을 다시 삽입하는 방식.. (개선 필요)
-			replyService.deleteAllByPost(post);
+			replyService.deleteAllByPost(parnetPost);
 			for(Reply r : replies){
 				replyService.write(r);
 			}
 			
-			postService.write(post);
+			postService.write(parnetPost);
 			return;
 		}
 		
