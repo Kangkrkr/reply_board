@@ -35,11 +35,6 @@ public class ReplyService {
 		return util.getSession().createCriteria(Reply.class).add(Restrictions.eq("post", post)).list();
 	}
 	
-	public List<Reply> findRepliesByReply(Reply reply){
-		// Reply안의 post는 타입이 Post이기 때문에 비교할 대상 역시 클래스 객체여야한다.
-		return util.getSession().createCriteria(Reply.class).add(Restrictions.eq("parentReply", reply)).list();
-	}
-	
 	public void delete(Reply reply){
 		replyRepository.delete(reply.getId());
 	}

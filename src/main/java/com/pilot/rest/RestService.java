@@ -1,20 +1,9 @@
 package com.pilot.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,33 +44,6 @@ public class RestService {
 	
 	@Autowired
 	WriterImpl replyWriter;
-	
-	/*
-	@Transactional
-	@RequestMapping(value = "test", method = RequestMethod.GET)
-	public List test(@PathParam("page") Integer page){
-		
-		List<Post> posts = postService.findAll();
-		
-		Criteria containerCriteria = util.getSession().createCriteria(Reply.class, "reply");
-		// containerCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		
-		containerCriteria.createCriteria("post", "post");
-		
-		containerCriteria.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-		
-		List resultList = containerCriteria.setFirstResult(page).setMaxResults(2).list();
-		
-		for(int i=0; i<resultList.size(); i++){
-			Map<String, Object> map = resultList.get(i);
-			Post post = (Post)map.get("post");
-			
-			Reply reply = (Reply)map.get("reply");	
-		}
-		
-		return resultList;
-	}
-	*/
 	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
 	public String logout(HttpSession session){

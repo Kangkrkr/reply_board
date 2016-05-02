@@ -26,39 +26,35 @@ public class ReplyWriter extends WriterImpl {
 		String typeDistinction = getWriteForm().getType();
 		int targetId = getExtraInfo().getTargetId();
 		
+		// 게시글에 단일 댓글만 다는 경우.
 		if (typeDistinction.equals("reply")) {
-
-			//System.err.println("REPLY" + targetId);
 
 			reply.setDepth(1);
 			reply.setPost(postService.findOne(targetId));
-			// replyService.write(reply);
-			// post.setPost(originalPost);
-			// 원본 게시글의 아이디를 댓글게시글에 저장.
 		} else {
-			//System.err.println("REPLY_ON_REPLY" + targetId);
+			// 댓글에 댓글을 달려고 하는 경우.
 			
 			Reply originalReply = replyService.findOne(targetId);
-			List<Reply> replies = replyService.findRepliesByPost(originalReply.getPost());	// 일단 게시글의 댓글목록을 불러온다.
+			Post post = originalReply.getPost();
+			
+			List<Reply> replies = replyService.findRepliesByPost(post);	//게시글의 댓글목록을 불러온다.
 			
 			// 댓글을 달려고하는 원본 댓글의 index를 뽑아온다.
 			int originalIdx = 0;
 			for(int i=0; i<replies.size(); i++){
 				if(replies.get(i).getId() == originalReply.getId()){
-					//System.err.println("찾았당.");
 					break;
 				}
 				++originalIdx;
 			}
 			
-			//System.err.println("댓글 달려고 하는 대상의 idx : " + originalIdx);
-			
+			// 달려고 하는 댓글의 기본 정보 설정.
 			reply.setDepth(originalReply.getDepth() + 1);
-			reply.setPost(originalReply.getPost());
+			reply.setPost(post);
 			
-			Post post = originalReply.getPost();
 			replies.add(originalIdx + 1, reply);
 			
+			// 해당 게시글에 대한 모든 댓글을 삭제하고 갱신된 댓글들을 다시 삽입하는 방식.. (개선 필요)
 			replyService.deleteAllByPost(post);
 			for(Reply r : replies){
 				replyService.write(r);
@@ -66,16 +62,6 @@ public class ReplyWriter extends WriterImpl {
 			
 			postService.write(post);
 			return;
-			
-			/*
-			// 원본댓글의 아랫번째 댓글이 있다면, 그 사이에 쓰려는 댓글을 삽입한다.
-			if(replies.get(originalIdx + 1) != null){
-				replies.add(originalIdx + 1, reply);
-				originalReply.getPost().setReplies(replies);
-			}else{
-				replies.add(reply);
-			}
-			*/
 		}
 		
 		replyService.write(reply);
