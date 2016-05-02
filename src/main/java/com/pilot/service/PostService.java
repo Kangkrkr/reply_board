@@ -6,14 +6,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
-import javax.transaction.TransactionManager;
 
 import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +57,20 @@ public class PostService {
 	
 	public void write(Post post){
 		postRepository.save(post);
+	}
+	
+	public void test(){
+
+		// 해당 게시글과 그에 따른 댓글 뽑아오기.
+		Criteria c = customUtil.getSession().createCriteria(Post.class).createCriteria("replies")
+											.add(Restrictions.eq("post.id", 17)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		// 자식댓글의 부모 게시글을 뽑아온다.
+		System.err.println("부모 게시글 : " + c.createCriteria("post").setProjection(Projections.property("content")).list().get(0));
+		
+		// 댓글들의 내용을 뽑아낸다.
+		System.err.println("자식 댓글들 : " + c.setProjection(Projections.property("content")).list());
+		
 	}
 	
 	public void update(WriteForm writeForm, HttpSession session, String fixedPath){

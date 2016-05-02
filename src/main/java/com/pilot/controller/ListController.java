@@ -50,7 +50,9 @@ public class ListController {
 		if (userInfo == null) {
 			return "redirect:/form/login";
 		} else {
-
+			
+			postService.test();
+			
 			// selectPost()의 첫번째 인자는 쿼리결과의 시작점을 의미. 페이지마다 SIZE 갯수 만큼씩 건너뛰게 한다.
 			// 두번째 인자는 한페이지당 출력할 갯수를 의미.
 			int first = (page * SIZE);
