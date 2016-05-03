@@ -1,4 +1,4 @@
-package com.pilot.domain;
+package com.pilot.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,32 +7,27 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 
 @Entity
-@Table(name = "REPLY")
-public class Reply implements Serializable {	// Post와 유사한것이 대부분이라 상속받으려 했는데, 상속하니까 테이블이 안생김 -_-
+public class Post implements Serializable, Cloneable {
 
 	private Integer id;
-	private Integer depth;
 	private String image;
 	private String content;
 	private Date regdate;
 	private String password;
 	private User user;
-	private Post post;
+	private List<Reply> replies = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,15 +40,6 @@ public class Reply implements Serializable {	// Post와 유사한것이 대부�
 		this.id = id;
 	}
 
-	@Column(name = "depth", nullable = false, columnDefinition = "int default 1")
-	public Integer getDepth() {
-		return depth;
-	}
-
-	public void setDepth(Integer depth) {
-		this.depth = depth;
-	}
-	
 	@Column(name = "image", nullable = true)
 	public String getImage() {
 		return image;
@@ -63,8 +49,7 @@ public class Reply implements Serializable {	// Post와 유사한것이 대부�
 		this.image = image;
 	}
 
-	// 기본타입과 크기 varchar(6000)을 주어야한다 -> X 한글은 3, 영어는 2씩잡아먹으므로 틀림.
-	// length 를 통해 설정하도록.
+	// 기본타입과 크기 varchar(6000)을 주어야한다.
 	@Column(name = "content", nullable = false, columnDefinition = "varchar(6000)")
 	public String getContent() {
 		return content;
@@ -91,12 +76,10 @@ public class Reply implements Serializable {	// Post와 유사한것이 대부�
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	// 어째서인지 DB 테이블에 기본타입이 TINYBLOB으로 설정되는 이유로,
-	// Data truncation: Data too long for column 에러가 떴음.
-	// 기본타입으로 LONGBLOB 을 주어서 해결.
-	// OneToMany로 관계 설정.
-	@Column(name = "user", nullable = false, columnDefinition = "LONGBLOB")
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@Cascade(value = {CascadeType.SAVE_UPDATE})
+	@JoinColumn(name = "user_id")
 	public User getUser() {
 		return user;
 	}
@@ -105,15 +88,22 @@ public class Reply implements Serializable {	// Post와 유사한것이 대부�
 		this.user = user;
 	}
 
-	@ManyToOne
-//	@Fetch(FetchMode.JOIN)
-	@JoinColumn(name = "post_id")
-	public Post getPost() {
-		return post;
+	// 하나의 Post는 다수의 Reply를 작성할수 있지만, 어느 Post에 대한 Reply인지를 알아야하므로 Reply(변수명 parent)와 맵핑되어야함.
+	@OneToMany(mappedBy = "post", targetEntity = Reply.class)
+	// 안해주면 detached entity passed to persist: com.pilot.domain.Reply 자꾸 뿜음.
+	@Cascade(value = {CascadeType.SAVE_UPDATE})
+	public List<Reply> getReplies() {
+		return replies;
 	}
 
-	public void setPost(Post post) {
-		this.post = post;
+	public void setReplies(List<Reply> replies) {
+		this.replies.clear();
+		this.replies.addAll(replies);
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 }

@@ -7,14 +7,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.nhncorp.lucy.security.xss.XssPreventer;
 
-import lombok.Data;
-
 public class LoginForm {
-	
+
 	@NotNull
 	@Size(min = 10, max = 125)
 	private String email;
-	
+
 	@NotNull
 	@Size(min = 8, max = 1024)
 	private String password;

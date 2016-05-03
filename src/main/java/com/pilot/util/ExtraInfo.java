@@ -2,7 +2,7 @@ package com.pilot.util;
 
 import javax.servlet.http.HttpSession;
 
-import com.pilot.domain.User;
+import com.pilot.entity.User;
 
 import lombok.Data;
 

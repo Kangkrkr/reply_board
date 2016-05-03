@@ -4,19 +4,18 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
-import com.pilot.domain.User;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
+import com.pilot.entity.User;
 import com.pilot.repository.ReplyRepository;
-import com.pilot.util.SessionUtil;
 import com.pilot.validator.WriteForm;
 
 @Service
@@ -24,19 +23,13 @@ import com.pilot.validator.WriteForm;
 public class ReplyService {
 	
 	@Autowired
-	ReplyRepository replyRepository;
-	
-	@Autowired
-	private EntityManager persistenceEntityManager;
-	
-	@Autowired
-    private EntityManagerFactory entityManagerFactory;
+	private ReplyRepository replyRepository;
 	
 	@Autowired
 	private EntityManager entityManager;
 	
 	@Autowired
-	SessionUtil util;
+	private Session hibernateSession;
 	
 	public Reply findOne(Integer id){
 		return replyRepository.findOne(id);
@@ -63,7 +56,7 @@ public class ReplyService {
 	
 	public List<Reply> findRepliesByPost(Post post){
 		// Reply안의 post는 타입이 Post이기 때문에 비교할 대상 역시 클래스 객체여야한다.
-		return util.getSession().createCriteria(Reply.class).add(Restrictions.eq("post", post)).list();
+		return hibernateSession.createCriteria(Reply.class).add(Restrictions.eq("post", post)).list();
 	}
 	
 	public void delete(Reply reply){

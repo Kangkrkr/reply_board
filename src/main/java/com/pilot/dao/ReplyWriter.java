@@ -5,16 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
-import com.pilot.service.PostService;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
 import com.pilot.service.ReplyService;
 
 @Component
 public class ReplyWriter extends WriterImpl {
 
 	@Autowired
-	PostService postService;
+	PostDao postService;
 
 	@Autowired
 	ReplyService replyService;

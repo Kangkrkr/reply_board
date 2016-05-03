@@ -6,14 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pilot.domain.Post;
-import com.pilot.service.PostService;
+import com.pilot.entity.Post;
 
 @Component
 public class PostWriter extends WriterImpl {
 
 	@Autowired
-	PostService postService;
+	PostDao postService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PostWriter.class);
 	

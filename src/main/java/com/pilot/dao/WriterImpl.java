@@ -1,8 +1,8 @@
 package com.pilot.dao;
 
 
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
 import com.pilot.util.ExtraInfo;
 import com.pilot.validator.WriteForm;
 
