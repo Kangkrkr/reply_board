@@ -7,16 +7,15 @@ import org.springframework.stereotype.Component;
 
 import com.pilot.entity.Post;
 import com.pilot.entity.Reply;
-import com.pilot.service.ReplyService;
 
 @Component
 public class ReplyWriter extends WriterImpl {
 
 	@Autowired
-	PostDao postService;
+	PostDao postDao;
 
 	@Autowired
-	ReplyService replyService;
+	ReplyDao replyDao;
 	
 	@Override
 	public void write() {
@@ -28,12 +27,12 @@ public class ReplyWriter extends WriterImpl {
 		if (typeDistinction.equals("reply")) {
 
 			reply.setDepth(1);
-			reply.setPost(postService.findOne(targetId));
+			reply.setPost(postDao.findOne(targetId));
 		} else {
-			Reply originalReply = replyService.findOne(targetId);
+			Reply originalReply = replyDao.findOne(targetId);
 			Post parnetPost = originalReply.getPost();
 			
-			List<Reply> replies = replyService.findRepliesByPost(parnetPost);	// 일단 게시글의 댓글목록을 불러온다.
+			List<Reply> replies = replyDao.findRepliesByPost(parnetPost);	// 일단 게시글의 댓글목록을 불러온다.
 			
 			// 댓글을 달려고하는 원본 댓글의 index를 뽑아온다.
 			int originalIdx = 0;
@@ -49,15 +48,15 @@ public class ReplyWriter extends WriterImpl {
 			
 			replies.add(originalIdx + 1, reply);
 			
-			replyService.deleteAllByPost(parnetPost);
+			replyDao.deleteAllByPost(parnetPost);
 			for(Reply r : replies){
-				replyService.write(r);
+				replyDao.write(r);
 			}
 			
-			postService.write(parnetPost);
+			postDao.write(parnetPost);
 			return;
 		}
 		
-		replyService.write(reply);
+		replyDao.write(reply);
 	}
 }

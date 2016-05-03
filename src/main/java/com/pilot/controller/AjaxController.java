@@ -13,23 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartRequest;
 
 import com.pilot.dao.PostDao;
+import com.pilot.dao.ReplyDao;
 import com.pilot.dao.UserDao;
 import com.pilot.dao.WriterImpl;
 import com.pilot.dto.ListSizeDTO;
 import com.pilot.entity.Post;
 import com.pilot.entity.Reply;
-import com.pilot.service.ReplyService;
 import com.pilot.util.ExtraInfo;
 import com.pilot.util.ImageUploader;
-import com.pilot.util.SessionUtil;
 import com.pilot.validator.WriteForm;
 
 @RestController
 public class AjaxController {
 
-	@Autowired
-	SessionUtil util;
-	
 	@Autowired
 	UserDao userDao;
 	
@@ -37,7 +33,7 @@ public class AjaxController {
 	PostDao postService;
 	
 	@Autowired
-	ReplyService replyService;
+	ReplyDao replyService;
 	
 	@Autowired
 	WriterImpl postWriter;

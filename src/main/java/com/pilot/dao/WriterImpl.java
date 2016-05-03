@@ -6,7 +6,7 @@ import com.pilot.entity.Reply;
 import com.pilot.util.ExtraInfo;
 import com.pilot.validator.WriteForm;
 
-public abstract class WriterImpl implements Writer {
+public class WriterImpl implements Writer {
 
 	private WriteForm writeForm;
 	private ExtraInfo info;
@@ -46,6 +46,11 @@ public abstract class WriterImpl implements Writer {
 		reply.setUser(info.getUploader());
 		
 		return reply;
+	}
+
+	@Override
+	public void write() {
+		
 	}
 	
 }

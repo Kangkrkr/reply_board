@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pilot.dao.PostDao;
+import com.pilot.dao.ReplyDao;
 import com.pilot.dto.PostDTO;
 import com.pilot.entity.Post;
 import com.pilot.entity.Reply;
 import com.pilot.entity.User;
-import com.pilot.service.ReplyService;
-import com.pilot.util.SessionUtil;
 
 @Controller
 @RequestMapping("list")
@@ -28,13 +27,10 @@ public class ListController {
 	private static final int SIZE = 3;
 
 	@Autowired
-	ReplyService replyService;
+	ReplyDao replyService;
 	
 	@Autowired
 	PostDao postService;
-
-	@Autowired
-	SessionUtil util;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showList(@PathParam("page") Integer page, Model model, HttpSession session) {

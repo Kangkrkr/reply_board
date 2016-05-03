@@ -12,7 +12,7 @@ import com.pilot.entity.Post;
 public class PostWriter extends WriterImpl {
 
 	@Autowired
-	PostDao postService;
+	PostDao postDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PostWriter.class);
 	
@@ -21,6 +21,6 @@ public class PostWriter extends WriterImpl {
 		Post post = postConstructor();
 		
 		logger.info("사용자가 입력한 게시글의 내용 : {}, 사용자의 이름 : {}", post.getContent(), post.getUser().getName());
-		postService.write(post);
+		postDao.write(post);
 	}
 }

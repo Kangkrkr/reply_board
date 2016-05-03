@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 
 import org.hibernate.Criteria;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,7 @@ public class PostDao {
 	public static final int MAX_SIZE = 3;
 
 	@Autowired
-	Session hibernateSession;
+	SessionFactory sessionFactory;
 	
 	@Autowired
 	private PostRepository postRepository;
@@ -73,7 +73,7 @@ public class PostDao {
 	
 	public List<Post> selectPost(int currentPage, int pageSize){
 		try{
-			Criteria result = hibernateSession.createCriteria(Post.class);
+			Criteria result = sessionFactory.getCurrentSession().createCriteria(Post.class);
 			
 			return result.setFirstResult(currentPage).setMaxResults(pageSize).list();
 		}catch(Exception e){

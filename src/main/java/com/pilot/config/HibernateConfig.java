@@ -4,7 +4,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -63,12 +62,7 @@ public class HibernateConfig {
 	public HibernateTransactionManager transactionManager(SessionFactory s) {
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(s);
+		
 		return txManager;
-	}
-	
-	@Bean
-	@Autowired
-	public Session hibernateSession(SessionFactory s){
-		return s.getCurrentSession();
 	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -22,10 +22,10 @@ import com.pilot.validator.LoginForm;
 public class UserDao {
 
 	@Autowired
-	Session hibernateSession;
+	private SessionFactory sessionFactory;
 	
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	
 	static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 	
@@ -44,17 +44,17 @@ public class UserDao {
 	}
 	
 	public User findByUsername(String username){
-		User user = (User)hibernateSession.createCriteria(User.class).add(Restrictions.eq("name", username)).list().get(0);
+		User user = (User)sessionFactory.getCurrentSession().createCriteria(User.class).add(Restrictions.eq("name", username)).list().get(0);
 		return user;
 	}
 	
 	public List<User> findAll(){
-		return hibernateSession.createCriteria(User.class).list();
+		return sessionFactory.getCurrentSession().createCriteria(User.class).list();
 	}
 	
 	public User login(LoginForm loginData){
 		
-		Criteria userCR = hibernateSession.createCriteria(User.class);
+		Criteria userCR = sessionFactory.getCurrentSession().createCriteria(User.class);
 		
 		Criterion email = Restrictions.eq("email", loginData.getEmail());
 		Criterion password = Restrictions.eq("password", loginData.getPassword());
