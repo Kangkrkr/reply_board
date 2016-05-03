@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.pilot.domain.User;
-import com.pilot.service.UserService;
+import com.pilot.dao.UserDao;
+import com.pilot.entity.User;
 import com.pilot.validator.JoinForm;
 import com.pilot.validator.LoginForm;
 
@@ -22,17 +21,7 @@ import com.pilot.validator.LoginForm;
 public class FormController {
 
 	@Autowired
-	private UserService userService;
-
-	@ModelAttribute("loginForm")
-	public LoginForm setLoginForm() {
-		return new LoginForm();
-	}
-	
-	@ModelAttribute("joinForm")
-	public JoinForm setJoinForm() {
-		return new JoinForm();
-	}
+	private UserDao userDao;
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login(HttpSession session, HttpServletRequest req) {
@@ -50,7 +39,7 @@ public class FormController {
 			}
 
 			// 로그인 검증..
-			User user = userService.login(loginForm);
+			User user = userDao.login(loginForm);
 			
 			if (user == null) {
 				System.err.println("해당 사용자 정보가 없음.");
@@ -85,7 +74,7 @@ public class FormController {
 			User user = new User();
 			BeanUtils.copyProperties(joinForm, user);
 			
-			userService.join(user);
+			userDao.join(user);
 			
 			return "redirect:login";
 		}catch(Exception e){

@@ -2,9 +2,9 @@ package com.pilot.dto;
 
 import java.util.List;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
-import com.pilot.domain.User;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
+import com.pilot.entity.User;
 
 //겟터와 셋터가 있어야 타임리프에서 접근이 가능하다.
 public class PostDTO {

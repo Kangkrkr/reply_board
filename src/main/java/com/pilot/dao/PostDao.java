@@ -1,44 +1,35 @@
-package com.pilot.service;
+package com.pilot.dao;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.User;
+import com.pilot.entity.Post;
+import com.pilot.entity.User;
 import com.pilot.repository.PostRepository;
-import com.pilot.util.SessionUtil;
 import com.pilot.validator.WriteForm;
 
-@Service
 @Transactional
-public class PostService {
+@Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
+public class PostDao {
 	
 	public static final int MAX_SIZE = 3;
 
 	@Autowired
-	SessionUtil customUtil;
+	SessionFactory sessionFactory;
 	
 	@Autowired
 	private PostRepository postRepository;
-	
-	@Autowired
-	private EntityManager persistenceEntityManager;
-	
-	@Autowired
-    private EntityManagerFactory entityManagerFactory;
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -57,20 +48,6 @@ public class PostService {
 	
 	public void write(Post post){
 		postRepository.save(post);
-	}
-	
-	public void test(){
-
-		// 해당 게시글과 그에 따른 댓글 뽑아오기.
-		Criteria c = customUtil.getSession().createCriteria(Post.class).createCriteria("replies")
-											.add(Restrictions.eq("post.id", 17)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		
-		// 자식댓글의 부모 게시글을 뽑아온다.
-		System.err.println("부모 게시글 : " + c.createCriteria("post").setProjection(Projections.property("content")).list().get(0));
-		
-		// 댓글들의 내용을 뽑아낸다.
-		System.err.println("자식 댓글들 : " + c.setProjection(Projections.property("content")).list());
-		
 	}
 	
 	public void update(WriteForm writeForm, HttpSession session, String fixedPath){
@@ -96,7 +73,7 @@ public class PostService {
 	
 	public List<Post> selectPost(int currentPage, int pageSize){
 		try{
-			Criteria result = customUtil.getSession().createCriteria(Post.class);
+			Criteria result = sessionFactory.getCurrentSession().createCriteria(Post.class);
 			
 			return result.setFirstResult(currentPage).setMaxResults(pageSize).list();
 		}catch(Exception e){

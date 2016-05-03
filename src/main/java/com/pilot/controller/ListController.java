@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
-import com.pilot.domain.User;
+import com.pilot.dao.PostDao;
+import com.pilot.dao.ReplyDao;
 import com.pilot.dto.PostDTO;
-import com.pilot.service.PostService;
-import com.pilot.service.ReplyService;
-import com.pilot.service.UserService;
-import com.pilot.util.SessionUtil;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
+import com.pilot.entity.User;
 
 @Controller
 @RequestMapping("list")
@@ -29,16 +27,10 @@ public class ListController {
 	private static final int SIZE = 3;
 
 	@Autowired
-	ReplyService replyService;
+	ReplyDao replyService;
 	
 	@Autowired
-	PostService postService;
-
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	SessionUtil util;
+	PostDao postService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showList(@PathParam("page") Integer page, Model model, HttpSession session) {
@@ -50,8 +42,6 @@ public class ListController {
 		if (userInfo == null) {
 			return "redirect:/form/login";
 		} else {
-			
-			postService.test();
 			
 			// selectPost()의 첫번째 인자는 쿼리결과의 시작점을 의미. 페이지마다 SIZE 갯수 만큼씩 건너뛰게 한다.
 			// 두번째 인자는 한페이지당 출력할 갯수를 의미.

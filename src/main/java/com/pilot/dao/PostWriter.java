@@ -6,14 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pilot.domain.Post;
-import com.pilot.service.PostService;
+import com.pilot.entity.Post;
 
 @Component
 public class PostWriter extends WriterImpl {
 
 	@Autowired
-	PostService postService;
+	PostDao postDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PostWriter.class);
 	
@@ -22,6 +21,6 @@ public class PostWriter extends WriterImpl {
 		Post post = postConstructor();
 		
 		logger.info("사용자가 입력한 게시글의 내용 : {}, 사용자의 이름 : {}", post.getContent(), post.getUser().getName());
-		postService.write(post);
+		postDao.write(post);
 	}
 }

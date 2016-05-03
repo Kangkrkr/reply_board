@@ -1,42 +1,35 @@
-package com.pilot.service;
+package com.pilot.dao;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
-import com.pilot.domain.User;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
+import com.pilot.entity.User;
 import com.pilot.repository.ReplyRepository;
-import com.pilot.util.SessionUtil;
 import com.pilot.validator.WriteForm;
 
-@Service
 @Transactional
-public class ReplyService {
+@Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
+public class ReplyDao {
 	
 	@Autowired
-	ReplyRepository replyRepository;
-	
-	@Autowired
-	private EntityManager persistenceEntityManager;
-	
-	@Autowired
-    private EntityManagerFactory entityManagerFactory;
+	private ReplyRepository replyRepository;
 	
 	@Autowired
 	private EntityManager entityManager;
 	
 	@Autowired
-	SessionUtil util;
+	private SessionFactory sessionFactory;
 	
 	public Reply findOne(Integer id){
 		return replyRepository.findOne(id);
@@ -63,7 +56,7 @@ public class ReplyService {
 	
 	public List<Reply> findRepliesByPost(Post post){
 		// Reply안의 post는 타입이 Post이기 때문에 비교할 대상 역시 클래스 객체여야한다.
-		return util.getSession().createCriteria(Reply.class).add(Restrictions.eq("post", post)).list();
+		return sessionFactory.getCurrentSession().createCriteria(Reply.class).add(Restrictions.eq("post", post)).list();
 	}
 	
 	public void delete(Reply reply){

@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartRequest;
 
+import com.pilot.dao.PostDao;
+import com.pilot.dao.ReplyDao;
+import com.pilot.dao.UserDao;
 import com.pilot.dao.WriterImpl;
-import com.pilot.domain.Post;
-import com.pilot.domain.Reply;
 import com.pilot.dto.ListSizeDTO;
-import com.pilot.service.PostService;
-import com.pilot.service.ReplyService;
-import com.pilot.service.UserService;
-import com.pilot.util.SessionUtil;
+import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
 import com.pilot.util.ExtraInfo;
 import com.pilot.util.ImageUploader;
 import com.pilot.validator.WriteForm;
@@ -28,16 +27,13 @@ import com.pilot.validator.WriteForm;
 public class AjaxController {
 
 	@Autowired
-	SessionUtil util;
+	UserDao userDao;
 	
 	@Autowired
-	UserService userService;
+	PostDao postService;
 	
 	@Autowired
-	PostService postService;
-	
-	@Autowired
-	ReplyService replyService;
+	ReplyDao replyService;
 	
 	@Autowired
 	WriterImpl postWriter;
@@ -133,7 +129,7 @@ public class AjaxController {
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)
 	public ListSizeDTO getListSize(){
-		return new ListSizeDTO(postService.findAll().size(), PostService.MAX_SIZE);
+		return new ListSizeDTO(postService.findAll().size(), PostDao.MAX_SIZE);
 	}
 	
 	private int toInteger(String num){
