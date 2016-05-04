@@ -24,15 +24,14 @@ import com.pilot.entity.User;
 @RequestMapping("list")
 public class ListController {
 
+	@Autowired 
+	private ReplyDao replyDao;
+	@Autowired 
+	private PostDao postDao;
+
 	// 페이지당 보여질 갯수를 Post를 기준으로 하여 3개로 지정함.
 	private static final int SIZE = 3;
-
-	@Autowired
-	ReplyDao replyService;
 	
-	@Autowired
-	PostDao postService;
-
 	@RequestMapping(method = RequestMethod.GET)
 	public String showList(@PathParam("page") Integer page, Model model, HttpSession session) {
 
@@ -49,7 +48,7 @@ public class ListController {
 			int first = (page * SIZE);
 
 			// Data Transfer Object를 담을 Collection 객체 생성.
-			List<Post> posts = postService.selectPost(first, SIZE);
+			List<Post> posts = postDao.selectPost(first, SIZE);
 			List<PostDTO> postDTOs = new ArrayList<>();
 			
 			if(null != posts){
@@ -57,7 +56,7 @@ public class ListController {
 					PostDTO dto = new PostDTO();
 					dto.setPost(post);
 					
-					List<Reply> replies = replyService.findRepliesByPost(post);
+					List<Reply> replies = replyDao.findRepliesByPost(post);
 					dto.setReplies(replies);
 					
 					postDTOs.add(dto);
@@ -75,10 +74,10 @@ public class ListController {
 		try{
 			
 			if(type.equals("post")){
-				Post post = postService.findOne(postId);
+				Post post = postDao.findOne(postId);
 				model.addAttribute("post", post);
 			}else{
-				Reply reply = replyService.findOne(postId);
+				Reply reply = replyDao.findOne(postId);
 				model.addAttribute("reply", reply);
 			}
 			

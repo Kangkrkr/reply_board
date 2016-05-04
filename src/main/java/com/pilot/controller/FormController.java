@@ -19,7 +19,7 @@ import com.pilot.validator.LoginForm;
 @RequestMapping("/form")
 public class FormController {
 
-	@Autowired
+	@Autowired 
 	private UserDao userDao;
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pilot.entity.Post;
+import com.pilot.entity.Reply;
 import com.pilot.entity.User;
 import com.pilot.repository.PostRepository;
 import com.pilot.validator.WriteForm;
@@ -26,12 +27,19 @@ import com.pilot.validator.WriteForm;
 @Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
 public class PostDao {
 	
-	public static final int MAX_SIZE = 3;
 	private static final Logger logger = LoggerFactory.getLogger(PostDao.class);
 
-	@Autowired private SessionFactory sessionFactory;
-	@Autowired private PostRepository postRepository;
-	@PersistenceContext private EntityManager entityManager;
+	@Autowired 
+	private ReplyDao replyDao;
+	
+	@Autowired 
+	private SessionFactory sessionFactory;
+	
+	@Autowired 
+	private PostRepository postRepository;
+	
+	@PersistenceContext 
+	private EntityManager entityManager;
 
 	
 	public Post findOne(Integer id){
@@ -63,9 +71,13 @@ public class PostDao {
 		entityManager.merge(update);
 	}
 	
-	// 게시글의 id가 아니라, 게시글을 작성한 유저의 id여야함.
-	public void delete(Post post){
-		postRepository.delete(post.getId());
+	public void delete(Integer postId){
+		Post post = findOne(postId);
+		// 먼저 하위 댓글들을 모두 지운뒤, 게시글을 삭제한다.
+		for(Reply reply : replyDao.findRepliesByPost(post)){
+			replyDao.delete(reply);
+		}
+		postRepository.delete(post);
 	}
 	
 	public List<Post> selectPost(int currentPage, int pageSize){

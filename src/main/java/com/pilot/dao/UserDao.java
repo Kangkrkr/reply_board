@@ -21,8 +21,11 @@ import com.pilot.validator.LoginForm;
 @Repository
 public class UserDao {
 
-	@Autowired private SessionFactory sessionFactory;
-	@Autowired private UserRepository userRepository;
+	@Autowired 
+	private SessionFactory sessionFactory;
+	
+	@Autowired 
+	private UserRepository userRepository;
 	
 	static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 	

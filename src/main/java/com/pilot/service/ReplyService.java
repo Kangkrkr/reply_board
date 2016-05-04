@@ -5,22 +5,28 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pilot.dao.PostDao;
 import com.pilot.dao.ReplyDao;
-import com.pilot.dao.Writer;
 import com.pilot.entity.Post;
 import com.pilot.entity.Reply;
+import com.pilot.validator.WriteForm;
 
 @Service
 public class ReplyService extends Writer {
 
-	@Autowired PostDao postDao;
-	@Autowired ReplyDao replyDao;
-	@PersistenceContext(type = PersistenceContextType.TRANSACTION) EntityManager entityManager;
+	@Autowired 
+	private PostDao postDao;
+	
+	@Autowired 
+	private ReplyDao replyDao;
+	
+	@PersistenceContext(type = PersistenceContextType.TRANSACTION) 
+	private EntityManager entityManager;
 	
 	public void write() {
 		Reply reply = super.replyConstructor();
@@ -58,5 +64,13 @@ public class ReplyService extends Writer {
 			// 댓글목록을 갱신.
 			replyDao.refreshReplies(replies);
 		}
+	}
+	
+	public void update(WriteForm writeForm, HttpSession session, String fixedPath){
+		replyDao.update(writeForm, session, fixedPath);
+	}
+	
+	public void delete(Integer replyId){
+		replyDao.delete(replyDao.findOne(replyId));
 	}
 }

@@ -12,12 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.pilot.dao.PostDao;
-import com.pilot.dao.ReplyDao;
-import com.pilot.dao.UserDao;
 import com.pilot.dto.ListSizeDTO;
-import com.pilot.entity.Post;
-import com.pilot.entity.Reply;
 import com.pilot.service.PostService;
 import com.pilot.service.ReplyService;
 import com.pilot.util.ExtraInfo;
@@ -26,13 +21,12 @@ import com.pilot.validator.WriteForm;
 
 @RestController
 public class AjaxController {
-
-	@Autowired UserDao userDao;
-	@Autowired PostDao postDao;
-	@Autowired ReplyDao replyDao;
 	
-	@Autowired PostService postService;
-	@Autowired ReplyService replyService;
+	@Autowired 
+	private PostService postService;
+	
+	@Autowired 
+	private ReplyService replyService;
 	
 	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
@@ -52,18 +46,12 @@ public class AjaxController {
 	}
 	
 	@RequestMapping(value = "delete", method = RequestMethod.GET)
-	public String delete(@RequestParam("type") String type, @RequestParam("postId") Integer postId){
+	public String delete(@RequestParam("type") String type, @RequestParam("postId") Integer id){
 		try{
 			if(type.equals("post")){
-				// 먼저 하위 댓글들을 모두 지운뒤, 게시글을 삭제한다.
-				Post post = postDao.findOne(postId);
-				for(Reply reply : replyDao.findRepliesByPost(post)){
-					replyDao.delete(reply);
-				}
-				postDao.delete(post);
+				postService.delete(id);
 			}else if(type.contains("reply")){
-				// 먼저 하위 댓글들을 모두 지운뒤, 자신(댓글)을 삭제한다.
-				replyDao.delete(replyDao.findOne(postId));
+				replyService.delete(id);
 			}else{
 				
 			}
@@ -106,10 +94,10 @@ public class AjaxController {
 		}else{
 			if(type.contains("edit_post")){
 				// 게시물 수정처리
-				postDao.update(writeForm, session, fixedPath);
+				postService.update(writeForm, session, fixedPath);
 			}else{
 				// 댓글 수정처리
-				replyDao.update(writeForm, session, fixedPath);
+				replyService.update(writeForm, session, fixedPath);
 			}
 		}
 		
@@ -119,7 +107,7 @@ public class AjaxController {
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)
 	public ListSizeDTO getListSize(){
-		return new ListSizeDTO(postDao.findAll().size(), PostDao.MAX_SIZE);
+		return new ListSizeDTO(postService.count(), PostService.MAX_SIZE);
 	}
 	
 	private int toInteger(String num){

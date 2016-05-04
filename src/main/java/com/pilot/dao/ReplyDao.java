@@ -26,11 +26,14 @@ import com.pilot.validator.WriteForm;
 @Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
 public class ReplyDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ReplyDao.class);
+	@Autowired 
+	private ReplyRepository replyRepository;
+	@Autowired 
+	private SessionFactory sessionFactory;
+	@PersistenceContext(type = PersistenceContextType.TRANSACTION) 
+	private EntityManager entityManager;
 	
-	@Autowired private ReplyRepository replyRepository;
-	@Autowired private SessionFactory sessionFactory;
-	@PersistenceContext(type = PersistenceContextType.TRANSACTION) private EntityManager entityManager;
+	private static final Logger logger = LoggerFactory.getLogger(ReplyDao.class);
 	
 	public Reply findOne(Integer id){
 		return replyRepository.findOne(id);
