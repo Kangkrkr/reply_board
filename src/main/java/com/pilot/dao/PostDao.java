@@ -4,10 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +27,11 @@ import com.pilot.validator.WriteForm;
 public class PostDao {
 	
 	public static final int MAX_SIZE = 3;
+	private static final Logger logger = LoggerFactory.getLogger(PostDao.class);
 
 	@Autowired private SessionFactory sessionFactory;
 	@Autowired private PostRepository postRepository;
-	@Autowired private EntityManager entityManager;
+	@PersistenceContext private EntityManager entityManager;
 
 	
 	public Post findOne(Integer id){
@@ -43,13 +47,14 @@ public class PostDao {
 	}
 	
 	public void write(Post post){
-		postRepository.save(post);
+		entityManager.merge(post);
 	}
 	
 	public void update(WriteForm writeForm, HttpSession session, String fixedPath){
-		Post post = postRepository.findOne(Integer.parseInt(writeForm.getType().split("#")[1]));
 		
-		Post update = entityManager.find(Post.class, post.getId());
+		Integer postId = Integer.parseInt(writeForm.getType().split("#")[1]);
+		
+		Post update = entityManager.find(Post.class, postId);
 		update.setImage(fixedPath);
 		update.setContent(writeForm.getContent());
 		update.setRegdate(new Date());
@@ -69,7 +74,7 @@ public class PostDao {
 			
 			return result.setFirstResult(currentPage).setMaxResults(pageSize).list();
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		
 		return null;

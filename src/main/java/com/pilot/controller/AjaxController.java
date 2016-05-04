@@ -15,10 +15,11 @@ import org.springframework.web.multipart.MultipartRequest;
 import com.pilot.dao.PostDao;
 import com.pilot.dao.ReplyDao;
 import com.pilot.dao.UserDao;
-import com.pilot.dao.WriterImpl;
 import com.pilot.dto.ListSizeDTO;
 import com.pilot.entity.Post;
 import com.pilot.entity.Reply;
+import com.pilot.service.PostService;
+import com.pilot.service.ReplyService;
 import com.pilot.util.ExtraInfo;
 import com.pilot.util.ImageUploader;
 import com.pilot.validator.WriteForm;
@@ -26,20 +27,12 @@ import com.pilot.validator.WriteForm;
 @RestController
 public class AjaxController {
 
-	@Autowired
-	UserDao userDao;
+	@Autowired UserDao userDao;
+	@Autowired PostDao postDao;
+	@Autowired ReplyDao replyDao;
 	
-	@Autowired
-	PostDao postService;
-	
-	@Autowired
-	ReplyDao replyService;
-	
-	@Autowired
-	WriterImpl postWriter;
-	
-	@Autowired
-	WriterImpl replyWriter;
+	@Autowired PostService postService;
+	@Autowired ReplyService replyService;
 	
 	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
@@ -63,14 +56,14 @@ public class AjaxController {
 		try{
 			if(type.equals("post")){
 				// 먼저 하위 댓글들을 모두 지운뒤, 게시글을 삭제한다.
-				Post post = postService.findOne(postId);
-				for(Reply reply : replyService.findRepliesByPost(post)){
-					replyService.delete(reply);
+				Post post = postDao.findOne(postId);
+				for(Reply reply : replyDao.findRepliesByPost(post)){
+					replyDao.delete(reply);
 				}
-				postService.delete(post);
+				postDao.delete(post);
 			}else if(type.contains("reply")){
 				// 먼저 하위 댓글들을 모두 지운뒤, 자신(댓글)을 삭제한다.
-				replyService.delete(replyService.findOne(postId));
+				replyDao.delete(replyDao.findOne(postId));
 			}else{
 				
 			}
@@ -100,23 +93,23 @@ public class AjaxController {
 		String fixedPath = ImageUploader.uploadAndSavePath(mr, writeForm);
 		
 		if(type.equals("post")){
-			postWriter.setWriteForm(writeForm);
-			postWriter.setExtraInfo(new ExtraInfo(null, session, fixedPath));
-			postWriter.write();
+			postService.setWriteForm(writeForm);
+			postService.setExtraInfo(new ExtraInfo(null, session, fixedPath));
+			postService.write();
 		}else if(type.startsWith("reply")){
 			Integer targetId = toInteger(writeForm.getType().split("#")[1]);
 			
 			writeForm.setType(writeForm.getType().split("#")[0]);
-			replyWriter.setWriteForm(writeForm);
-			replyWriter.setExtraInfo(new ExtraInfo(targetId, session, fixedPath));
-			replyWriter.write();
+			replyService.setWriteForm(writeForm);
+			replyService.setExtraInfo(new ExtraInfo(targetId, session, fixedPath));
+			replyService.write();
 		}else{
 			if(type.contains("edit_post")){
 				// 게시물 수정처리
-				postService.update(writeForm, session, fixedPath);
+				postDao.update(writeForm, session, fixedPath);
 			}else{
 				// 댓글 수정처리
-				replyService.update(writeForm, session, fixedPath);
+				replyDao.update(writeForm, session, fixedPath);
 			}
 		}
 		
@@ -126,7 +119,7 @@ public class AjaxController {
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)
 	public ListSizeDTO getListSize(){
-		return new ListSizeDTO(postService.findAll().size(), PostDao.MAX_SIZE);
+		return new ListSizeDTO(postDao.findAll().size(), PostDao.MAX_SIZE);
 	}
 	
 	private int toInteger(String num){

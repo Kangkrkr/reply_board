@@ -31,7 +31,7 @@ public class UserDao {
 	}
 	
 	public User join(User user){
-		logger.info("#### Success Save User : UserName is  {}, Email is {} " ,user.getName(), user.getEmail());
+		logger.info("Success Save User : UserName is  {}, Email is {} " ,user.getName(), user.getEmail());
 		user.setPassword(DigestUtils.sha512Hex(user.getPassword()));
 		return userRepository.save(user);
 	}

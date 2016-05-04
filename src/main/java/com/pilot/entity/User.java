@@ -71,7 +71,7 @@ public class User implements Serializable{
 	}
 
 	@OneToMany(mappedBy = "user", targetEntity = Post.class)
-	@Cascade(value = {CascadeType.SAVE_UPDATE})
+	@Cascade(value = {CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public List<Post> getPosts() {
 		return posts;
 	}
