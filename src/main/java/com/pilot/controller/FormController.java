@@ -10,8 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.pilot.dao.UserDao;
 import com.pilot.entity.User;
+import com.pilot.service.UserService;
 import com.pilot.validator.JoinForm;
 import com.pilot.validator.LoginForm;
 
@@ -19,8 +19,8 @@ import com.pilot.validator.LoginForm;
 @RequestMapping("/form")
 public class FormController {
 
-	@Autowired 
-	private UserDao userDao;
+	@Autowired
+	UserService userService;
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login(HttpSession session, HttpServletRequest req) {
@@ -38,7 +38,7 @@ public class FormController {
 			}
 
 			// 로그인 검증..
-			User user = userDao.login(loginForm);
+			User user = userService.login(loginForm);
 			
 			if (user == null) {
 				System.err.println("해당 사용자 정보가 없음.");
@@ -74,7 +74,7 @@ public class FormController {
 			user.setName(joinForm.getName());
 			user.setPassword(joinForm.getPassword());
 			
-			userDao.join(user);
+			userService.join(user);
 			
 			return "redirect:login";
 		}catch(Exception e){

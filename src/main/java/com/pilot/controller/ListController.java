@@ -13,21 +13,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.pilot.dao.PostDao;
-import com.pilot.dao.ReplyDao;
 import com.pilot.dto.PostDTO;
 import com.pilot.entity.Post;
 import com.pilot.entity.Reply;
 import com.pilot.entity.User;
+import com.pilot.service.PostService;
+import com.pilot.service.ReplyService;
 
 @Controller
 @RequestMapping("list")
 public class ListController {
 
 	@Autowired 
-	private ReplyDao replyDao;
+	private ReplyService replyService;
 	@Autowired 
-	private PostDao postDao;
+	private PostService postService;
 
 	// 페이지당 보여질 갯수를 Post를 기준으로 하여 3개로 지정함.
 	private static final int SIZE = 3;
@@ -48,7 +48,7 @@ public class ListController {
 			int first = (page * SIZE);
 
 			// Data Transfer Object를 담을 Collection 객체 생성.
-			List<Post> posts = postDao.selectPost(first, SIZE);
+			List<Post> posts = postService.selectPost(first, SIZE);
 			List<PostDTO> postDTOs = new ArrayList<>();
 			
 			if(null != posts){
@@ -56,7 +56,7 @@ public class ListController {
 					PostDTO dto = new PostDTO();
 					dto.setPost(post);
 					
-					List<Reply> replies = replyDao.findRepliesByPost(post);
+					List<Reply> replies = replyService.findRepliesByPost(post);
 					dto.setReplies(replies);
 					
 					postDTOs.add(dto);
@@ -74,10 +74,10 @@ public class ListController {
 		try{
 			
 			if(type.equals("post")){
-				Post post = postDao.findOne(postId);
+				Post post = postService.findOne(postId);
 				model.addAttribute("post", post);
 			}else{
-				Reply reply = replyDao.findOne(postId);
+				Reply reply = replyService.findOne(postId);
 				model.addAttribute("reply", reply);
 			}
 			

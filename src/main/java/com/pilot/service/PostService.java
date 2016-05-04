@@ -1,6 +1,8 @@
 package com.pilot.service;
 
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -20,6 +22,10 @@ public class PostService extends Writer {
 	public static final int MAX_SIZE = 3;
 	private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 	
+	public Post findOne(Integer id){
+		return postDao.findOne(id);
+	}
+	
 	public void write() {
 		Post post = super.postConstructor();
 		
@@ -37,5 +43,9 @@ public class PostService extends Writer {
 	
 	public int count(){
 		return postDao.findAll().size();
+	}
+	
+	public List<Post> selectPost(int currentPage, int pageSize){
+		return postDao.selectPost(currentPage, pageSize);
 	}
 }

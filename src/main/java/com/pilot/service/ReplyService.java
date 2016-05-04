@@ -28,6 +28,10 @@ public class ReplyService extends Writer {
 	@PersistenceContext(type = PersistenceContextType.TRANSACTION) 
 	private EntityManager entityManager;
 	
+	public Reply findOne(Integer id){
+		return replyDao.findOne(id);
+	}
+	
 	public void write() {
 		Reply reply = super.replyConstructor();
 
@@ -64,6 +68,10 @@ public class ReplyService extends Writer {
 			// 댓글목록을 갱신.
 			replyDao.refreshReplies(replies);
 		}
+	}
+	
+	public List<Reply> findRepliesByPost(Post post){
+		return replyDao.findRepliesByPost(post);
 	}
 	
 	public void update(WriteForm writeForm, HttpSession session, String fixedPath){

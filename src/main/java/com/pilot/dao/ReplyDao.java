@@ -28,8 +28,10 @@ public class ReplyDao {
 	
 	@Autowired 
 	private ReplyRepository replyRepository;
+	
 	@Autowired 
 	private SessionFactory sessionFactory;
+	
 	@PersistenceContext(type = PersistenceContextType.TRANSACTION) 
 	private EntityManager entityManager;
 	
