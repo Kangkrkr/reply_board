@@ -22,11 +22,9 @@ import com.pilot.validator.WriteForm;
 @Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
 public class ReplyDao {
 	
-	@Autowired
-	private ReplyRepository replyRepository;
-	
-	@Autowired
-	private EntityManager entityManager;
+	@Autowired private ReplyRepository replyRepository;
+	@Autowired private EntityManager entityManager;
+
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -42,12 +40,9 @@ public class ReplyDao {
 	public void update(WriteForm writeForm, HttpSession session, String fixedPath){
 		Reply reply = replyRepository.findOne(Integer.parseInt(writeForm.getType().split("#")[1]));
 		
-		Reply r = replyRepository.findOne(reply.getId());
-		
 		Reply update = entityManager.find(Reply.class, reply.getId());
 		update.setImage(fixedPath);
 		update.setContent(writeForm.getContent());
-		update.setPassword(writeForm.getPassword());
 		update.setRegdate(new Date());
 		update.setUser((User)session.getAttribute("userInfo"));
 		
@@ -55,7 +50,6 @@ public class ReplyDao {
 	}
 	
 	public List<Reply> findRepliesByPost(Post post){
-		// Reply안의 post는 타입이 Post이기 때문에 비교할 대상 역시 클래스 객체여야한다.
 		return sessionFactory.getCurrentSession().createCriteria(Reply.class).add(Restrictions.eq("post", post)).list();
 	}
 	

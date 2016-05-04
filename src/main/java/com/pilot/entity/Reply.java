@@ -13,14 +13,13 @@ import javax.persistence.ManyToOne;
 
 
 @Entity
-public class Reply implements Serializable {	// Post와 유사한것이 대부분이라 상속받으려 했는데, 상속하니까 테이블이 안생김 -_-
+public class Reply implements Serializable {	// Post와 유사한 것이 대부분이라 상속처리가 가능한지 고려해봐야 겠다.
 
 	private Integer id;
 	private Integer depth;
 	private String image;
 	private String content;
 	private Date regdate;
-	private String password;
 	private User user;
 	private Post post;
 
@@ -72,20 +71,7 @@ public class Reply implements Serializable {	// Post와 유사한것이 대부�
 	public void setRegdate(Date regdate) {
 		this.regdate = regdate;
 	}
-
-	@Column(name = "password", nullable = false)
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	
-	// 어째서인지 DB 테이블에 기본타입이 TINYBLOB으로 설정되는 이유로,
-	// Data truncation: Data too long for column 에러가 떴음.
-	// 기본타입으로 LONGBLOB 을 주어서 해결.
-	// OneToMany로 관계 설정.
 	@Column(name = "user", nullable = false, columnDefinition = "LONGBLOB")
 	public User getUser() {
 		return user;

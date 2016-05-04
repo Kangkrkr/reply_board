@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://sonegy.wordpress.com/category/logback/ -->
+<!-- http://ddakker.tistory.com/294 -->
+
 <configuration scan="true" scanPeriod="30 seconds">
 
 	<property name="LOG_HOME" value="logs" />
-	<property name="LOG_PATTERN"
-		value="%logger{36} %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
-	<timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+	<property name="LOG_PATTERN" value="%logger{36} %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
+	<!-- <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/> -->
 	
 	<!-- 로그를 파일에 출력해주는 어펜더. -->
-	<appender name="FILE"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/log-${bySecond}.log</file>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- <file>${LOG_HOME}/log-${bySecond}.log</file> -->
+		<file>${LOG_HOME}/log.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- 일간 갱신. -->
 			<fileNamePattern>${LOG_HOME}/daily-log.log.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -24,9 +27,7 @@
 	<!-- 로그를 콘솔에 출력해주는 어펜더. -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>
-				${LOG_PATTERN}
-			</pattern>
+			<pattern>${LOG_PATTERN}</pattern>
 		</encoder>
 	</appender>
 	

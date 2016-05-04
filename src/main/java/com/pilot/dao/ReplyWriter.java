@@ -11,11 +11,9 @@ import com.pilot.entity.Reply;
 @Component
 public class ReplyWriter extends WriterImpl {
 
-	@Autowired
-	PostDao postDao;
-
-	@Autowired
-	ReplyDao replyDao;
+	@Autowired PostDao postDao;
+	@Autowired ReplyDao replyDao;
+	
 	
 	@Override
 	public void write() {

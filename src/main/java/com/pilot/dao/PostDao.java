@@ -25,15 +25,11 @@ public class PostDao {
 	
 	public static final int MAX_SIZE = 3;
 
-	@Autowired
-	SessionFactory sessionFactory;
-	
-	@Autowired
-	private PostRepository postRepository;
-	
-	@Autowired
-	private EntityManager entityManager;
+	@Autowired private SessionFactory sessionFactory;
+	@Autowired private PostRepository postRepository;
+	@Autowired private EntityManager entityManager;
 
+	
 	public Post findOne(Integer id){
 		return postRepository.findOne(id);
 	}
@@ -53,13 +49,9 @@ public class PostDao {
 	public void update(WriteForm writeForm, HttpSession session, String fixedPath){
 		Post post = postRepository.findOne(Integer.parseInt(writeForm.getType().split("#")[1]));
 		
-		Post p = postRepository.findOne(post.getId());
-		System.err.println(p.getContent());
-		
 		Post update = entityManager.find(Post.class, post.getId());
 		update.setImage(fixedPath);
 		update.setContent(writeForm.getContent());
-		update.setPassword(writeForm.getPassword());
 		update.setRegdate(new Date());
 		update.setUser((User)session.getAttribute("userInfo"));
 		

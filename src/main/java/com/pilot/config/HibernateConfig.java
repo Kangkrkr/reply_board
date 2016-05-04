@@ -19,15 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan
 public class HibernateConfig {
 
-	// 스프링 인액션 - 372P
-	// setPackagesToScan 메소드는 패키지들을 검사하여 퍼시스턴스 어노테이션이 적용된 도메인 클래스를 찾는다.(다수의 도메인
-	// 클래스가 존재)
-	// 여기에는 JPA의 @Entity나 @MappedSuperclass 그리고 하이버네이트의 자체적인 @Entity 어노테이션이 적용된
-	// 클래스가 포함된다.
-
-	// 소수의 도메인 클래스가 존재할 때는 다음처럼 지정할 수도 있다.
-	// sessionFactory.setAnnotatedClasses(new Class<?>[]{User.class, Post.class,
-	// Reply.class});
 	@Bean(name = "sessionFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -36,6 +27,8 @@ public class HibernateConfig {
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("use_outer_join", "true");
 		hibernateProperties.setProperty("dialect", "org.hibernate.dialect.MySQLDialect");
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+		hibernateProperties.setProperty("show_sql", "true");
 
 		sessionFactory.setDataSource(dataSource());
 		sessionFactory.setPackagesToScan("com.pilot.entity");	// 2016-05-03 도메인들의 패키지명을 com.pilot.entity로 변경했었음.
@@ -44,7 +37,6 @@ public class HibernateConfig {
 		return sessionFactory;
 	}
 
-	// 데이터소스 설정은 스프링 인액션 - 350P
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -56,7 +48,6 @@ public class HibernateConfig {
 		return dataSource;
 	}
 
-	// 현재 클래스에 있는 sessionFactory라는 이름의 빈이 파라미터로 자동 주입된다.
 	@Bean
 	@Autowired
 	public HibernateTransactionManager transactionManager(SessionFactory s) {

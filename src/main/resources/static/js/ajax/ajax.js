@@ -9,16 +9,15 @@ var footerSetter = function() {
 			/* <![CDATA[ */
 			for (var i = 1; i <= Math.ceil(totalSize / maxPageSize); i++) {
 				$('#next').before(
-						'<li><a href="/list?page=' + (i - 1) + '">' + i
-								+ ' </a></li>');
+						'<li><a href="/list?page=' + (i - 1) + '">' + i + ' </a></li>');
 			}
 			/* ]]> */
 		},
-		error : function(e) {
+		error : function() {	// xhr을 인자로 받아 에러코드 별로 오류내역을 출력해주도록 한다.
 			alert('조회 중 오류가 발생했습니다.');
 		}
 	});
-}
+};
 
 var doEdit = function(type, postId) {
 	$.ajax({
@@ -32,11 +31,11 @@ var doEdit = function(type, postId) {
 			alert(result);
 			window.location.reload();
 		},
-		error : function(e) {
-			alert('삭제중 중 오류가 발생했습니다.');
+		error : function() {
+			alert('수정중 중 오류가 발생했습니다.');
 		}
 	});
-}
+};
 
 var doDelete = function(type, postId) {
 	$.ajax({
@@ -50,11 +49,11 @@ var doDelete = function(type, postId) {
 			alert(result);
 			window.location.reload();
 		},
-		error : function(e) {
+		error : function() {
 			alert('삭제중 중 오류가 발생했습니다.');
 		}
 	});
-}
+};
 
 var logout = function() {
 	$.ajax({
@@ -64,8 +63,8 @@ var logout = function() {
 			alert(result);
 			location.href = '/form/login';
 		},
-		error : function(e) {
+		error : function() {
 			alert('로그아웃 중 오류가 발생했습니다.');
 		}
 	});
-}
+};

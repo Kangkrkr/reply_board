@@ -70,7 +70,6 @@ public class AjaxController {
 				postService.delete(post);
 			}else if(type.contains("reply")){
 				// 먼저 하위 댓글들을 모두 지운뒤, 자신(댓글)을 삭제한다.
-				// Reply 테이블을 새로 설계해야 될듯 ...
 				replyService.delete(replyService.findOne(postId));
 			}else{
 				
@@ -91,8 +90,6 @@ public class AjaxController {
 		if(result.hasErrors()){
 			if(result.hasFieldErrors("content")){
 				return "글 작성 실패 - 글자수는 2000자 이하여야합니다.";
-			}else if(result.hasFieldErrors("password")){
-				return "글 작성 실패 - 비밀번호는 8자 이상 20자 이하여야합니다.";
 			}else{
 				// type 에러
 				return "글 게시 중 에러가 발생하였습니다.";

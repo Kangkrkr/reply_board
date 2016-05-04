@@ -11,8 +11,7 @@ import com.pilot.entity.Post;
 @Component
 public class PostWriter extends WriterImpl {
 
-	@Autowired
-	PostDao postDao;
+	@Autowired PostDao postDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PostWriter.class);
 	

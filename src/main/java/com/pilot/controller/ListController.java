@@ -24,6 +24,7 @@ import com.pilot.entity.User;
 @RequestMapping("list")
 public class ListController {
 
+	// 페이지당 보여질 갯수를 Post를 기준으로 하여 3개로 지정함.
 	private static final int SIZE = 3;
 
 	@Autowired

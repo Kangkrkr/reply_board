@@ -3,7 +3,6 @@ package com.pilot.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -46,7 +45,6 @@ public class FormController {
 				return "redirect:login";
 			}
 			
-			// 보안 관련 기능이 추가되지 않은 관계로, 임시로 세션을 이용함.
 			session.setAttribute("userInfo", user);
 			
 			return "redirect:/list";
@@ -72,7 +70,9 @@ public class FormController {
 			}
 			
 			User user = new User();
-			BeanUtils.copyProperties(joinForm, user);
+			user.setEmail(joinForm.getEmail());
+			user.setName(joinForm.getName());
+			user.setPassword(joinForm.getPassword());
 			
 			userDao.join(user);
 			

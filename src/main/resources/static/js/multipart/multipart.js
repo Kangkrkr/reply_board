@@ -16,7 +16,7 @@ var setMultiformConfig = function() {
 			toobig : "$file 은 크기가 매우 큽니다. (max $size)"
 		}
 	});
-}
+};
 
 var setCallbackToUploadForm = function(){
 	$('#upload').ajaxForm({
@@ -32,11 +32,6 @@ var setCallbackToUploadForm = function(){
         		return false;
         	}
         	
-        	if('' === password || undefined === password){
-        		alert("비밀번호를 설정해 주세요.");
-        		return false;
-        	}
-            
             return true;
         },
         success: function(response,status){
@@ -50,5 +45,5 @@ var setCallbackToUploadForm = function(){
             console.log(e);
         }                               
     });
-}
+};
 

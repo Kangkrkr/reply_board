@@ -1,17 +1,14 @@
 var initContent = function() {
 	$('#content').val('');
-	$('#password').val('');
 }
 
 var openModal = function() {
 
-	var args = arguments;
+	var args = arguments;	// openModel함수에 넘어온 인자를 담고 있는 arguments를 받아서 처리하는 방식.
 
 	if (args[0] === 'post') {
-		//writePost(args[1]);
 		$('input[type=hidden]').val('post');
 	} else if (args[0] === 'reply') {
-		//reply(args[1], args[2], $('#content').val(), $('#password').val());
 		$('input[type=hidden]').val('reply#' + args[1]);
 	} else if (args[0] === 'reply_on_reply') {
 		$('input[type=hidden]').val('reply_on_reply#' + args[1]);
@@ -31,7 +28,6 @@ var openModal = function() {
 	// 입력 폼 초기화 후 보여주기.
 	initContent();
 	$('#postModal').modal('show');
-	$('#upload').find('#content').focus();
 
 	// 클릭시 수행될 콜백함수 지정.
 	$('#postModal #sendButton').click(callback);
@@ -40,7 +36,7 @@ var openModal = function() {
 	$('#postModal').on('hidden.bs.modal', function(e) {
 		$('#postModal #sendButton').unbind();
 	});
-}
+};
 
 var editArticle = function(type, postId, currentUser, uploader) {
 
@@ -50,12 +46,7 @@ var editArticle = function(type, postId, currentUser, uploader) {
 	}
 	
 	openModal(type, postId);
-
-	console.log("뭐지");
-	
-	//location.href="/list/edit?type=" + type + "&" + "postId=" + postId;
-	//doEdit(type, postId);
-}
+};
 
 var deleteArticle = function(type, currentUser, uploader, postId) {
 
@@ -65,7 +56,7 @@ var deleteArticle = function(type, currentUser, uploader, postId) {
 	}
 
 	doDelete(type, postId);
-}
+};
 
 var setScrollEvent = function() {
 	$(window).scroll(function() {
@@ -81,7 +72,7 @@ var setScrollEvent = function() {
 			$('#footer').fadeIn('fast');
 		}
 	});
-}
+};
 
 $(function(){
 	footerSetter();

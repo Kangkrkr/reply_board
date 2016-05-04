@@ -9,7 +9,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 @Configuration
 public class JavaConfig {
 
-	// ServerProperties 클래스 참고
+	// ServerProperties 클래스 문서를 참고함.
 	@Bean
 	public ServerProperties serverProperties() {
 		ServerProperties properties = new ServerProperties();

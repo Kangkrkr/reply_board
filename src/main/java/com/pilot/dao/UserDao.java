@@ -18,14 +18,11 @@ import com.pilot.repository.UserRepository;
 import com.pilot.validator.LoginForm;
 
 @Transactional
-@Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
+@Repository
 public class UserDao {
 
-	@Autowired
-	private SessionFactory sessionFactory;
-	
-	@Autowired
-	private UserRepository userRepository;
+	@Autowired private SessionFactory sessionFactory;
+	@Autowired private UserRepository userRepository;
 	
 	static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 	

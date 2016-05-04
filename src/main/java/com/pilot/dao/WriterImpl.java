@@ -31,7 +31,6 @@ public class WriterImpl implements Writer {
 		Post post = new Post();
 		post.setImage(info.getFixedPath());
 		post.setContent(writeForm.getContent());
-		post.setPassword(writeForm.getPassword());
 		// 게시일자는 write 시점에서 생성해준다.
 		post.setUser(info.getUploader());
 		
@@ -42,7 +41,6 @@ public class WriterImpl implements Writer {
 		Reply reply = new Reply();
 		reply.setImage(info.getFixedPath());
 		reply.setContent(writeForm.getContent());
-		reply.setPassword(writeForm.getPassword());
 		reply.setUser(info.getUploader());
 		
 		return reply;
