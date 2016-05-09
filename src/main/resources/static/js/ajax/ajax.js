@@ -9,7 +9,7 @@ var footerSetter = function() {
 			/* <![CDATA[ */
 			for (var i = 1; i <= Math.ceil(totalSize / maxPageSize); i++) {
 				$('#next').before(
-						'<li><a href="/list?page=' + (i - 1) + '">' + i + ' </a></li>');
+						'<li><a href="/list?page=' + i + '">' + i + ' </a></li>');
 			}
 			/* ]]> */
 		},
@@ -19,31 +19,12 @@ var footerSetter = function() {
 	});
 };
 
-var doEdit = function(type, postId) {
-	$.ajax({
-		type : "GET",
-		url : "/list/edit",
-		data : {
-			type : type,
-			postId : postId
-		},
-		success : function(result) {
-			alert(result);
-			window.location.reload();
-		},
-		error : function() {
-			alert('수정중 중 오류가 발생했습니다.');
-		}
-	});
-};
-
-var doDelete = function(type, postId) {
+var doDelete = function(id) {
 	$.ajax({
 		type : "GET",
 		url : "/delete",
 		data : {
-			type : type,
-			postId : postId
+			id : id
 		},
 		success : function(result) {
 			alert(result);

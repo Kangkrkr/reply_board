@@ -19,14 +19,17 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity
-public class Post implements Serializable{
+public class Post implements Serializable {
 
-	private Integer id;
+	private int id;
+	private int depth;
+	private String type;
 	private String image;
 	private String content;
 	private Date regdate;
 	private User user;
-	private List<Reply> replies = new ArrayList<>();
+	private Post rootPost;
+	private List<Post> branchPosts = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,6 +40,24 @@ public class Post implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Column(name = "depth", columnDefinition = "int default 0")
+	public Integer getDepth() {
+		return depth;
+	}
+
+	public void setDepth(Integer depth) {
+		this.depth = depth;
+	}
+
+	@Column(name = "type")
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@Column(name = "image", nullable = true)
@@ -67,7 +88,7 @@ public class Post implements Serializable{
 		this.regdate = regdate;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = User.class)
 	@Cascade(value = {CascadeType.SAVE_UPDATE})
 	@JoinColumn(name = "user_id")
 	public User getUser() {
@@ -78,16 +99,26 @@ public class Post implements Serializable{
 		this.user = user;
 	}
 
-	// 하나의 Post는 다수의 Reply를 작성할수 있지만, 어느 Post에 대한 Reply인지를 알아야하므로 Reply(변수명 parent)와 맵핑되어야함.
-	@OneToMany(mappedBy = "post", targetEntity = Reply.class)
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Post.class)
 	@Cascade(value = {CascadeType.SAVE_UPDATE})
-	public List<Reply> getReplies() {
-		return replies;
+	@JoinColumn(name = "root_post_id")
+	public Post getRootPost() {
+		return rootPost;
 	}
 
-	public void setReplies(List<Reply> replies) {
-		this.replies.clear();
-		this.replies.addAll(replies);
+	public void setRootPost(Post rootPost) {
+		this.rootPost = rootPost;
+	}
+
+	@OneToMany(targetEntity = Post.class, mappedBy = "rootPost")
+	@Cascade(value = {CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	public List<Post> getBranchPosts() {
+		return branchPosts;
+	}
+
+	public void setBranchPosts(List<Post> branchPosts) {
+		this.branchPosts.clear();
+		this.branchPosts.addAll(branchPosts);
 	}
 
 }

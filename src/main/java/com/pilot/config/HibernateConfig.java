@@ -25,7 +25,7 @@ public class HibernateConfig {
 
 		// 다음과 같이 Properties클래스를 사용하여 sessionFactory의 설정도 가능하다.
 		Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty("use_outer_join", "true");
+		//hibernateProperties.setProperty("use_outer_join", "true");
 		hibernateProperties.setProperty("dialect", "org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 		hibernateProperties.setProperty("show_sql", "true");
