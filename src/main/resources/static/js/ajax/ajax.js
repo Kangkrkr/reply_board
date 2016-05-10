@@ -8,7 +8,7 @@ var footerSetter = function() {
 
 			/* <![CDATA[ */
 			for (var i = 1; i <= Math.ceil(totalSize / maxPageSize); i++) {
-				$('#next').before(
+				$('.pagination').append(
 						'<li><a href="/list?page=' + i + '">' + i + ' </a></li>');
 			}
 			/* ]]> */
