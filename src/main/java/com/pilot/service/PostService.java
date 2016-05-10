@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ public class PostService {
 	private PostDao postDao;
 	
 	public static final int MAX_SIZE = 10;
-	private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 	
 	public Post findOne(Integer id){
 		return postDao.findOne(id);
@@ -57,9 +54,9 @@ public class PostService {
 		
 		if(null != posts && posts.size() > 0){
 			for (Post post : posts) {
-				PostDTO dto = new PostDTO();
-				dto.setPost(post);
-				postDTOs.add(dto);
+				//PostDTO dto = new PostDTO();
+				//dto.setPost(post);
+				postDTOs.add(PostDTO.create(post));
 			}
 		}
 		return postDTOs;
@@ -73,7 +70,7 @@ public class PostService {
 		for(int start = originalIdx + 1; start < posts.size(); start++){	
 			Post post = posts.get(start);
 			postDao.detach(post);	// 해당 엔티티를 영속성 컨텍스트에서 때어낸다.
-			removedList.add(post);
+			removedList.add(posts.get(start));
 		}
 		
 		if(null != posts && posts.size() > 0){

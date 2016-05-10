@@ -24,11 +24,11 @@ var openModal = function() {
 	$('#postModal').modal('show');
 
 	// 클릭시 수행될 콜백함수 지정.
-	$('#postModal #sendButton').click(callback);
+	$('#sendButton').click(callback);
 
 	// 모달이 화면에서 사라졌을 때 이벤트 지정. 버튼에 지정해둔 모든 콜백함수를 제거한다.
 	$('#postModal').on('hidden.bs.modal', function(e) {
-		$('#postModal #sendButton').unbind();
+		$('#sendButton').unbind();
 	});
 };
 

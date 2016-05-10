@@ -18,7 +18,7 @@ import com.pilot.entity.Post;
 import com.pilot.repository.PostRepository;
 
 @Transactional
-@Repository		// 또 다른 스프링의 스테레오 타입 어노테이션 중 하나로, 스프링의 컴포넌트 스캐닝에 의해 스캔됨.
+@Repository
 public class PostDao {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PostDao.class);
@@ -48,7 +48,6 @@ public class PostDao {
 		entityManager.persist(post);
 	}
 	
-	// 수정 필요. dao 클래스에서 get, set이 있으면 안된다. 로직이나 계산이 있으면 안된다. service에서 처리해야된다.
 	public void update(Post update){
 		entityManager.merge(update);
 	}

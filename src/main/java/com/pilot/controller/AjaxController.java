@@ -3,6 +3,8 @@ package com.pilot.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartRequest;
 import com.pilot.dto.ListSizeDTO;
 import com.pilot.service.PostService;
 import com.pilot.service.UploadService;
+import com.pilot.util.Message;
 import com.pilot.valid.WriteForm;
 
 @RestController
@@ -29,6 +32,7 @@ public class AjaxController {
 	@Autowired
 	private HttpSession session;
 	
+	private static final Logger logger = LoggerFactory.getLogger(AjaxController.class);
 	
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
 	public String logout(){
@@ -37,13 +41,13 @@ public class AjaxController {
 			if(null != session.getAttribute("userInfo")){
 				session.invalidate();
 				session = null;
-				return "로그아웃에 성공하였습니다.";
+				return Message.LOGOUT_SUCCESS;
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error("logout errror", e.toString());
 		}
 		
-		return "로그아웃에 실패하였습니다.";
+		return Message.LOGOUT_FAILED;
 	}
 	
 	@RequestMapping(value = "delete", method = RequestMethod.GET)
@@ -51,10 +55,10 @@ public class AjaxController {
 		
 		try{
 			postService.delete(id);
-			return "글 삭제에 성공하였습니다.";
+			return Message.DELETE_SUCCESS;
 		}catch(Exception e){
-			e.printStackTrace();
-			return "글 삭제에 실패하였습니다.";
+			logger.error("delete error", e.toString());
+			return Message.DELETE_FAILED;
 		}
 	}
 	
@@ -63,17 +67,10 @@ public class AjaxController {
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public String upload(MultipartRequest mr, @Validated WriteForm writeForm, BindingResult result){
 		if(result.hasErrors()){
-			if(result.hasFieldErrors("content")){
-				return "글 작성 실패 - 글자수는 2000자 이하여야합니다.";
-			}else{
-				// type 에러
-				return "글 게시 중 에러가 발생하였습니다.";
-			}
+			return (result.hasFieldErrors("content")) ? Message.NOTIFY_WRITE : Message.ALERT_ERROR;
 		}
 		
-		uploadService.upload(mr, writeForm);
-		
-		return "글 게시에 성공하였습니다.";
+		return uploadService.upload(mr, writeForm);
 	}
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)
