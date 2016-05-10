@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ public class PostDao {
 	@PersistenceContext 
 	private EntityManager entityManager;
 
-	
 	public Post findOne(Integer id){
 		return postRepository.findOne(id);
 	}
@@ -42,16 +40,12 @@ public class PostDao {
 		return postRepository.findAll();
 	}
 	
-	public List<Post> findAllByRootPost(Post rootPost){
-		return postRepository.findAllByRootPost(rootPost);
-	}
-	
 	public Post save(Post post){
 		return postRepository.save(post);
 	}
 	
-	public void detach(Post post){
-		entityManager.detach(post);
+	public void persist(Post post){
+		entityManager.persist(post);
 	}
 	
 	// 수정 필요. dao 클래스에서 get, set이 있으면 안된다. 로직이나 계산이 있으면 안된다. service에서 처리해야된다.
@@ -59,25 +53,16 @@ public class PostDao {
 		entityManager.merge(update);
 	}
 	
-	public void delete(Integer postId){
-		// Post의 Cascade에는 DELETE가 걸려있기 때문에, 해당 게시글만 삭제해도 하위 댓글들이 모두 삭제 된다.
-		// Post는 OneToMany(fetch타입은 LAZY)로 다수의 Reply를 가지고 있기 때문이다.
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Post.class);
-		criteria.add(Restrictions.eq("rootPost.id", postId));
-		criteria.createCriteria("branchPosts");
-		
-		criteria.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-		
-		System.err.println(criteria.list().size());
-		
-		postRepository.delete(findOne(postId));
+	public void detach(Post post){
+		entityManager.detach(post);
 	}
 	
-	public void deleteAll(){
-		List<Post> posts = postRepository.findAll();
-		for(Post post : posts){
-			postRepository.delete(post);
-		}
+	public void delete(Post post){
+		postRepository.delete(post);
+	}
+	
+	public void delete(Integer postId){
+		postRepository.delete(findOne(postId));
 	}
 	
 	public List<Post> selectPost(int currentPage, int pageSize){

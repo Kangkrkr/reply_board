@@ -49,22 +49,24 @@ public class UploadService {
 			Integer targetId = toInteger(writeForm.getType().split("#")[1]);
 
 			// 글을 쓰고자 하는 대상(부모)을 가져온다.
-			Post rootPost = postService.findOne(targetId);
+			//Post rootPost = postService.findOne(targetId);
 
 			// 전체 게시물을 가져온다.
 			List<Post> posts = postService.findAll();
 
 			// 게시글을 삽입할 인덱스를 뽑아낸다.
 			int originalIdx = 0;
+			
 			for (int i = 0; i < posts.size(); i++) {
-				if (posts.get(i).getId() == rootPost.getId()) {
+				
+				if (String.valueOf(posts.get(i).getId()).equals(String.valueOf(targetId))) {
 					break;
 				}
-				++originalIdx;
+				originalIdx++;
 			}
 
 			// 테이블을 갱신하는 작업. 전체 게시물과 삽입할 위치, 삽입될 게시물이 인자로 들어간다.
-			postService.refreshReplies(posts, originalIdx, post);
+			postService.addPost(posts, originalIdx, post);
 			
 		} else if ((type.equals("edit"))) {
 			

@@ -1,7 +1,5 @@
 package com.pilot.service;
 
-import java.util.List;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,14 +26,6 @@ public class UserService {
 	
 	public User findOne(Integer id){
 		return userDao.findOne(id);
-	}
-	
-	public User findByUsername(String username){
-		return userDao.findByUsername(username);
-	}
-	
-	public List<User> findAll(){
-		return userDao.findAll();
 	}
 	
 	public User login(LoginForm loginData){

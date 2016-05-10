@@ -70,52 +70,57 @@ public class PostService {
 			for (Post post : posts) {
 				PostDTO dto = new PostDTO();
 				dto.setPost(post);
-				
 				postDTOs.add(dto);
 			}
 		}
-		
 		return postDTOs;
 	}
 	
-	public void refreshReplies(List<Post> posts, int originalIdx, Post toAdd){
-		
+	public void addPost(List<Post> posts, int originalIdx, Post toAdd){
 		// 영속성 컨텍스트에서 제거된 엔티티들을 담을 리스트.
 		List<Post> removedList = new ArrayList<>();
 		
 		// 전체 게시물 중 새로운 게시물이 삽입될 위치부터 끝까지 영속성 컨텍스트에서 제거(준영속상태로 만듦).
 		for(int start = originalIdx + 1; start < posts.size(); start++){	
-			postDao.detach(posts.get(start));	// 해당 엔티티를 영속성 컨텍스트에서 때어낸다.
+			Post post = posts.get(start);
+			postDao.detach(post);	// 해당 엔티티를 영속성 컨텍스트에서 때어낸다.
 			removedList.add(posts.get(start));
 		}
-		
-		/*
-		 * 게시글을 2개 이상 달면 다른쪽 게시글에 댓글이 달리지않는 현상 - 2016.05.09 fixed
-		 * 댓글을 삭제한 부분이 있는 게시글에서, 댓글을 재게시할 때 삽입위치의 이전 글이 다시 게시되는 현상 발생.
-		 */
 		
 		if(null != posts && posts.size() > 0){
 			
 			// 부모 게시글을 가져온다.
 			Post rootPost = posts.get(originalIdx);
 			
-			//postDao.delete(posts.get(originalIdx).getId() + 1);
+			System.err.println("부모 엔티티 : " + rootPost.getContent());
 			
 			// 남은 게시물 뒤에 새 게시물을 삽입한다.
-			toAdd.setId(posts.get(originalIdx).getId() + 1);
+			toAdd.setId(rootPost.getId() + 1);
 			toAdd.setDepth(rootPost.getDepth() + 1);
 			toAdd.setRootPost(rootPost);
 			
-			postDao.save(toAdd);			// 영속 상태로 만듦.
+			postDao.persist(postDao.save(toAdd));			// 영속 상태로 만듦.
 			
 			
 			Iterator<Post> it = removedList.iterator();
 			while(it.hasNext()){
-				Post post = it.next();
+				Post post = it.next(); 
 				
 				post.setId(post.getId() + 1);
-				postDao.save(post);
+				postDao.persist(postDao.save(post));
 			}
+		}
+	}
+	
+	public void recursiveSearch(List<Post> branchPosts, int[] sum){
+		if(null == branchPosts || branchPosts.size() <= 0){
+			return;
+		}
+		
+		for(Post post : branchPosts){
+			sum[0]++;
+			System.err.println(post.getContent());
+			recursiveSearch(post.getBranchPosts(), sum);
 		}
 	}
 }

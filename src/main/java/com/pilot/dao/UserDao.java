@@ -1,7 +1,5 @@
 package com.pilot.dao;
 
-import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -28,25 +26,12 @@ public class UserDao {
 	
 	static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 	
-	public long count(){
-		return userRepository.findAll().size();
-	}
-	
 	public User save(User user){
 		return userRepository.save(user);
 	}
 	
 	public User findOne(Integer id){
 		return userRepository.findOne(id);
-	}
-	
-	public User findByUsername(String username){
-		User user = (User)sessionFactory.getCurrentSession().createCriteria(User.class).add(Restrictions.eq("name", username)).list().get(0);
-		return user;
-	}
-	
-	public List<User> findAll(){
-		return sessionFactory.getCurrentSession().createCriteria(User.class).list();
 	}
 	
 	public User login(LoginForm loginData){

@@ -32,6 +32,7 @@ public class ListController {
 		if (session.getAttribute("userInfo") == null) {
 			return "redirect:/form/login";
 		} else {
+			
 			List<Post> posts = postService.selectPost(page);
 			List<PostDTO> postDTOs = postService.createPostDTOs(posts);
 

@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -99,7 +98,7 @@ public class Post implements Serializable {
 		this.user = user;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Post.class)
+	@ManyToOne(targetEntity = Post.class)
 	@Cascade(value = {CascadeType.SAVE_UPDATE})
 	@JoinColumn(name = "root_post_id")
 	public Post getRootPost() {

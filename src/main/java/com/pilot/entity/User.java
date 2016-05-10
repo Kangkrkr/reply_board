@@ -77,7 +77,6 @@ public class User implements Serializable {
 	}
 
 	public void setPosts(List<Post> posts){
-		this.posts.clear();
-		this.posts.addAll(posts);
+		this.posts = posts;
 	}
 }
