@@ -15,5 +15,5 @@ public class Message {
 	
 	// delete
 	public static final String DELETE_SUCCESS = "글 삭제에 성공하였습니다.";
-	public static final String DELETE_FAILED = "글 삭제에 실패하였습니다.";
+	public static final String DELETE_FAILED = "글 삭제에 실패하였습니다."; 
 }
