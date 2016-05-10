@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +19,6 @@ public class PostService {
 
 	@Autowired 
 	private PostDao postDao;
-	
-	@Autowired
-	private EntityManager entityManager;
-	
-	@Autowired
-	private SessionFactory sessionFactory;
 	
 	public static final int MAX_SIZE = 10;
 	private static final Logger logger = LoggerFactory.getLogger(PostService.class);
@@ -45,8 +36,6 @@ public class PostService {
 	}
 	
 	public void delete(Integer postId){
-				//postDao.findAllByRootPost(postDao.findOne(postId));
-		
 		postDao.delete(postId);
 	}
 	
@@ -84,7 +73,7 @@ public class PostService {
 		for(int start = originalIdx + 1; start < posts.size(); start++){	
 			Post post = posts.get(start);
 			postDao.detach(post);	// 해당 엔티티를 영속성 컨텍스트에서 때어낸다.
-			removedList.add(posts.get(start));
+			removedList.add(post);
 		}
 		
 		if(null != posts && posts.size() > 0){
@@ -92,15 +81,12 @@ public class PostService {
 			// 부모 게시글을 가져온다.
 			Post rootPost = posts.get(originalIdx);
 			
-			System.err.println("부모 엔티티 : " + rootPost.getContent());
-			
 			// 남은 게시물 뒤에 새 게시물을 삽입한다.
 			toAdd.setId(rootPost.getId() + 1);
 			toAdd.setDepth(rootPost.getDepth() + 1);
 			toAdd.setRootPost(rootPost);
 			
 			postDao.persist(postDao.save(toAdd));			// 영속 상태로 만듦.
-			
 			
 			Iterator<Post> it = removedList.iterator();
 			while(it.hasNext()){
@@ -112,6 +98,7 @@ public class PostService {
 		}
 	}
 	
+	/*
 	public void recursiveSearch(List<Post> branchPosts, int[] sum){
 		if(null == branchPosts || branchPosts.size() <= 0){
 			return;
@@ -123,4 +110,5 @@ public class PostService {
 			recursiveSearch(post.getBranchPosts(), sum);
 		}
 	}
+	*/
 }
