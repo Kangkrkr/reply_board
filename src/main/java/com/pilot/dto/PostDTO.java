@@ -19,7 +19,7 @@ public class PostDTO {
 	
 	private int id;
 	private String content;
-	private int depth;
+	private int indent;
 	private String image;
 	private Date regdate;
 	private String type;

@@ -24,8 +24,8 @@ public class PostService {
 		return postDao.findOne(id);
 	}
 	
-	public void write(Post post) {
-		postDao.save(post);
+	public Post write(Post post) {
+		return postDao.save(post);
 	}
 	
 	public void update(Post update){
@@ -80,7 +80,7 @@ public class PostService {
 			
 			// 남은 게시물 뒤에 새 게시물을 삽입한다.
 			toAdd.setId(rootPost.getId() + 1);
-			toAdd.setDepth(rootPost.getDepth() + 1);
+			toAdd.setIndent(rootPost.getIndent() + 1);
 			toAdd.setRootPost(rootPost);
 			
 			postDao.persist(postDao.save(toAdd));			// 영속 상태로 만듦.

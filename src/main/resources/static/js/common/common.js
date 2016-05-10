@@ -69,7 +69,7 @@ var setScrollEvent = function() {
 };
 
 $(function(){
-	footerSetter();
+	setFooter();
 	setScrollEvent();
 	setMultiformConfig();
 	setCallbackToUploadForm();

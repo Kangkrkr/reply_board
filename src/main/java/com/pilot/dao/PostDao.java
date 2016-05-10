@@ -68,7 +68,7 @@ public class PostDao {
 		try{
 			Criteria result = sessionFactory.getCurrentSession().createCriteria(Post.class);
 			
-			return result.setFirstResult(currentPage).setMaxResults(pageSize).addOrder(Order.asc("id")).list();
+			return result.setFirstResult(currentPage).setMaxResults(pageSize).addOrder(Order.asc("path")).list();
 		}catch(Exception e){
 			logger.error(e.toString());
 		}

@@ -1,4 +1,4 @@
-var footerSetter = function() {
+var setFooter = function() {
 	$.ajax({
 		type : "GET",
 		url : "/list_size",
@@ -7,7 +7,11 @@ var footerSetter = function() {
 			var maxPageSize = result.maxPageSize;
 
 			/* <![CDATA[ */
-			for (var i = 1; i <= Math.ceil(totalSize / maxPageSize); i++) {
+			var start = 1;
+			var end = Math.ceil(totalSize / maxPageSize);
+			
+			// 게시글이 31개라면 maxPageSize에 따라 페이지버튼은 4개
+			for (var i = start; i <= end; i++) {
 				$('.pagination').append(
 						'<li><a href="/list?page=' + i + '">' + i + ' </a></li>');
 			}

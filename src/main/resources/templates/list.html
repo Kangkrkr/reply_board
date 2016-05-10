@@ -25,9 +25,7 @@
 				<!-- 다음과 같이 session을 통하여 세션객체에 접근할 수 있다 -->
 				<li><a th:text="'환영합니다 ' + ${session.userInfo.name} + '님'"></a></li>
 				<!-- onclick()에서 false를 반환받게 되면 앵커태그는 주소를 이동하지 않는다. -->
-				<li><a href="#"
-					th:onclick="'openModal(\'post\', \''+${session.userInfo.email}+'\'); return false;'">
-						글쓰기 </a></li>
+				<li><a href="#" th:onclick="'openModal(\'post\', \''+${session.userInfo.email}+'\'); return false;'">글쓰기 </a></li>
 				<li><a href="#" onclick="logout(); return false;"> 로그아웃 </a></li>
 			</ul>
 		</div>
@@ -47,14 +45,10 @@
 								<div>
 									<div>
 										<span class="badge" th:text="${post.user.name}">작성자</span>
-										<span class="badge"
-											th:text="${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
-										<a
-											th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-										<a
-											th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
-										<a
-											th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
+										<span class="badge" th:text="${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
+										<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
+										<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
+										<a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
 									</div>
 								</div>
 							</div>
@@ -62,40 +56,31 @@
 								<div class="col-xs-6 col-md-3">
 									<div th:switch="${post.image}">
 										<div th:case="null"></div>
-										<a th:case="*" href="#" class="thumbnail"
-											onclick="return false;"
-											style="margin-left: 15px; margin-top: 10px;"> <img
-											class="img-thumbnail"
-											th:src="@{/images/} + ${post.image}" alt="..." />
+										<a th:case="*" href="#" class="thumbnail" onclick="return false;" style="margin-left: 15px; margin-top: 10px;"> 
+											<img class="img-thumbnail" th:src="@{/images/} + ${post.image}" alt="..." />
 										</a>
 									</div>
 								</div>
 							</div>
-							<div class="panel-body" th:text="${post.content}">게시글
-								내용</div>
+							<div class="panel-body" th:text="${post.content}">게시글 내용</div>
 						</div>
 
 						<div th:case="reply">
 							<!-- 댓글 폼 -->
 							<div class="panel-footer">
 								<div
-									th:style="'margin-left:' + (20 * ${post.depth}) + 'px;'">
+									th:style="'margin-left:' + (25 * ${post.indent}) + 'px;'">
 									<div>
-										<span class="glyphicon glyphicon-menu-right"
-											aria-hidden="true"></span> <b
-											th:text="${post.user.name}">댓글 게시자</b> <small
-											th:text="'(' + ${#dates.format(post.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글
-											게시일자</small> <a
-											th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-										<a
-											th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
-										<a
-											th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
+										<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
+										<b th:text="${post.user.name}">댓글 게시자</b> 
+										<small th:text="'(' + ${#dates.format(post.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글 게시일자</small> 
+										<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
+										<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
+										<a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
 									</div>
 									<div th:switch="${post.image}">
 										<div th:case="null"></div>
-										<img th:case="*" class="img-thumbnail"
-											th:src="@{/images/} + ${post.image}" alt="..." />
+										<img th:case="*" class="img-thumbnail" th:src="@{/images/} + ${post.image}" alt="..." />
 									</div>
 									<p th:text="${post.content}" style="margin: 15px;">답글 내용</p>
 								</div>
@@ -120,23 +105,19 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 					<h4 class="modal-title">입력창</h4>
 				</div>
-				<form name="upload" id="upload" action="/upload" method="POST"
-					enctype="multipart/form-data">
+				<form name="upload" id="upload" action="/upload" method="POST" enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="content">글 쓰기</label>
 							<!-- 이미지 업로드 태그의 name은 photo -->
-							<input type="file" class="photo_uploader with-preview"
-								accept="gif|jpg|png" name="photo" maxlength="1" />
+							<input type="file" class="photo_uploader with-preview" accept="gif|jpg|png" name="photo" maxlength="1" />
 							<!-- 글 내용의 태그 name은 content -->
-							<textarea class="form-control" id="content" name="content"
-								placeholder="글을 입력하세요" rows="6" style="margin-top: 10px;"></textarea>
+							<textarea class="form-control" id="content" name="content" placeholder="글을 입력하세요" rows="6" style="margin-top: 10px;"></textarea>
 							<input type="hidden" name="type" value="" />
 						</div>
 					</div>

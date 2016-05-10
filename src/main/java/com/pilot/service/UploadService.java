@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -48,17 +47,26 @@ public class UploadService {
 
 		
 		if (type.equals("post")) {
-			postService.write(post);
+			Post saved = postService.write(post);	// path를 지정하기 위해 엔티티를 저장 후 그 저장된 정보를 받아온다.
+			saved.setPath(saved.getId() + "/");		// path를 다음과 같이 수정한다.
+			postService.update(saved);				// 수정된 정보 재반영.
 			return Message.POST_UPLOAD_SUCCESS;
 		} else if (type.equals("reply")) {
 
-			Integer targetId = toInteger(writeForm.getType().split("#")[1]);
+			Post saved = postService.write(post);	// 삽입할 엔티티를 저장후 역시 정보를 받아옴.
 			
-			// 전체 게시물을 가져온다.
-			List<Post> posts = postService.findAll();
-
-			// 게시글을 삽입할 인덱스를 뽑아낸다.
-			int originalIdx = 0;
+			// 게시글을 삽입할 대상의 id를 가져옴.
+			Integer targetId = toInteger(writeForm.getType().split("#")[1]);
+			Post rootPost = postService.findOne(targetId);
+			
+			saved.setIndent(rootPost.getIndent() + 1);
+			saved.setRootPost(rootPost);
+			saved.setPath(rootPost.getPath() + saved.getId() + "/");
+			
+			postService.update(saved);
+			/*
+			List<Post> posts = postService.findAll();	// 전체 게시물을 가져온다.
+			int originalIdx = 0;	// 게시글을 삽입할 인덱스를 뽑아낸다.
 			
 			for (int i = 0; i < posts.size(); i++) {
 				
@@ -70,6 +78,7 @@ public class UploadService {
 
 			// 테이블을 갱신하는 작업. 전체 게시물과 삽입할 위치, 삽입될 게시물이 인자로 들어간다.
 			postService.addPost(posts, originalIdx, post);
+			*/
 			
 			return Message.REPLY_UPLOAD_SUCCESS;
 			

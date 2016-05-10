@@ -23,5 +23,6 @@ public class ReplyBoardApplication implements CommandLineRunner {
 		if(!rootPath.exists()){
 			rootPath.mkdir();
 		}
+		
 	}
 }

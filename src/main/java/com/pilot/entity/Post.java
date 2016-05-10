@@ -20,7 +20,8 @@ import org.hibernate.annotations.CascadeType;
 public class Post {
 
 	private int id;
-	private int depth;
+	private int indent;
+	private String path;
 	private String type;
 	private String image;
 	private String content;
@@ -41,13 +42,22 @@ public class Post {
 		this.id = id;
 	}
 
-	@Column(name = "depth", columnDefinition = "int default 0")
-	public Integer getDepth() {
-		return depth;
+	@Column(name = "indent", columnDefinition = "int default 0")
+	public Integer getIndent() {
+		return indent;
 	}
 
-	public void setDepth(Integer depth) {
-		this.depth = depth;
+	public void setIndent(Integer indent) {
+		this.indent = indent;
+	}
+	
+	@Column(name = "path", columnDefinition = "varchar(10000)")
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	@Column(name = "type")
