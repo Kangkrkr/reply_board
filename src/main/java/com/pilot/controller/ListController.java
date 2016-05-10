@@ -33,6 +33,7 @@ public class ListController {
 			return "redirect:/form/login";
 		} else {
 			
+			// service에서 바로 PostDTO List를 반환.
 			List<Post> posts = postService.selectPost(page);
 			List<PostDTO> postDTOs = postService.createPostDTOs(posts);
 

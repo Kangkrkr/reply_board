@@ -40,39 +40,38 @@
 			<td class="col-md-1">
 				<div class="panel panel-default">
 
-					<div th:switch="${post.post.type}">
+					<div th:switch="${post.type}">
 						<div th:case="post">
 							<!-- 게시글 폼 -->
 							<div class="panel-heading">
 								<div>
 									<div>
-										<span class="badge" th:text="${post.post.user.name}">작성자</span>
-										<!-- <span class="badge" th:text="'댓글 ' + ${post.replySize} + '개'">댓글 갯수</span> -->
+										<span class="badge" th:text="${post.user.name}">작성자</span>
 										<span class="badge"
-											th:text="${#dates.format(post.post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
+											th:text="${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
 										<a
-											th:onclick="'openModal(\'reply\', \''+${post.post.id}+'\');'">답글</a>
+											th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
 										<a
-											th:onclick="'editArticle(\'edit\', \''+${post.post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\');'">수정</a>
+											th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
 										<a
-											th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\', \''+${post.post.id}+'\');'">삭제</a>
+											th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-6 col-md-3">
-									<div th:switch="${post.post.image}">
+									<div th:switch="${post.image}">
 										<div th:case="null"></div>
 										<a th:case="*" href="#" class="thumbnail"
 											onclick="return false;"
 											style="margin-left: 15px; margin-top: 10px;"> <img
 											class="img-thumbnail"
-											th:src="@{/images/} + ${post.post.image}" alt="..." />
+											th:src="@{/images/} + ${post.image}" alt="..." />
 										</a>
 									</div>
 								</div>
 							</div>
-							<div class="panel-body" th:text="${post.post.content}">게시글
+							<div class="panel-body" th:text="${post.content}">게시글
 								내용</div>
 						</div>
 
@@ -80,25 +79,25 @@
 							<!-- 댓글 폼 -->
 							<div class="panel-footer">
 								<div
-									th:style="'margin-left:' + (20 * ${post.post.depth}) + 'px;'">
+									th:style="'margin-left:' + (20 * ${post.depth}) + 'px;'">
 									<div>
 										<span class="glyphicon glyphicon-menu-right"
 											aria-hidden="true"></span> <b
-											th:text="${post.post.user.name}">댓글 게시자</b> <small
-											th:text="'(' + ${#dates.format(post.post.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글
+											th:text="${post.user.name}">댓글 게시자</b> <small
+											th:text="'(' + ${#dates.format(post.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글
 											게시일자</small> <a
-											th:onclick="'openModal(\'reply\', \''+${post.post.id}+'\');'">답글</a>
+											th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
 										<a
-											th:onclick="'editArticle(\'edit\', \''+${post.post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\');'">수정</a>
+											th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
 										<a
-											th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.post.user.id}+'\', \''+${post.post.id}+'\');'">삭제</a>
+											th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
 									</div>
-									<div th:switch="${post.post.image}">
+									<div th:switch="${post.image}">
 										<div th:case="null"></div>
 										<img th:case="*" class="img-thumbnail"
-											th:src="@{/images/} + ${post.post.image}" alt="..." />
+											th:src="@{/images/} + ${post.image}" alt="..." />
 									</div>
-									<p th:text="${post.post.content}" style="margin: 15px;">답글 내용</p>
+									<p th:text="${post.content}" style="margin: 15px;">답글 내용</p>
 								</div>
 							</div>
 						</div>

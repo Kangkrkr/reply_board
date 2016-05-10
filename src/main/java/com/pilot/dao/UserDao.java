@@ -34,6 +34,7 @@ public class UserDao {
 		return userRepository.findOne(id);
 	}
 	
+	// 로그인 검증
 	public User login(LoginForm loginData){
 		
 		Criteria userCR = sessionFactory.getCurrentSession().createCriteria(User.class);

@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartRequest;
 import com.pilot.ReplyBoardApplication;
 import com.pilot.entity.Post;
 import com.pilot.entity.User;
+import com.pilot.util.Message;
 import com.pilot.valid.WriteForm;
 
 @Service
@@ -28,8 +31,10 @@ public class UploadService {
 
 	@Autowired
 	PostService postService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
-	public void upload(MultipartRequest mr, WriteForm writeForm) {
+	public String upload(MultipartRequest mr, WriteForm writeForm) {
 
 		Post post = new Post();
 
@@ -44,13 +49,11 @@ public class UploadService {
 		
 		if (type.equals("post")) {
 			postService.write(post);
+			return Message.POST_UPLOAD_SUCCESS;
 		} else if (type.equals("reply")) {
 
 			Integer targetId = toInteger(writeForm.getType().split("#")[1]);
-
-			// 글을 쓰고자 하는 대상(부모)을 가져온다.
-			//Post rootPost = postService.findOne(targetId);
-
+			
 			// 전체 게시물을 가져온다.
 			List<Post> posts = postService.findAll();
 
@@ -68,6 +71,8 @@ public class UploadService {
 			// 테이블을 갱신하는 작업. 전체 게시물과 삽입할 위치, 삽입될 게시물이 인자로 들어간다.
 			postService.addPost(posts, originalIdx, post);
 			
+			return Message.REPLY_UPLOAD_SUCCESS;
+			
 		} else if ((type.equals("edit"))) {
 			
 			Integer postId = toInteger(writeForm.getType().split("#")[1]);
@@ -79,7 +84,11 @@ public class UploadService {
 			update.setUser((User)session.getAttribute("userInfo"));
 			
 			postService.update(update);
+			
+			return Message.EDIT_SUCCESS;
 		}
+		
+		return Message.ALERT_ERROR;
 	}
 
 	private Integer toInteger(String target) {
@@ -88,11 +97,12 @@ public class UploadService {
 
 	public String imageUploadAndSavePath(MultipartRequest mr) {
 
-		MultipartFile photo = (MultipartFile) mr.getFile("photo");
+		MultipartFile photo = mr.getFile("photo");
 
 		BufferedOutputStream stream = null;
 		String fixedPath = null;
 
+		// 같은 파일의 이름이 업로드 되려고할 때의 처리로직 추가 필요.
 		if (null != photo && !photo.isEmpty()) {
 			try {
 				File imageFile = new File(ReplyBoardApplication.ROOT + "/" + photo.getOriginalFilename());
@@ -104,15 +114,16 @@ public class UploadService {
 				stream = new BufferedOutputStream(new FileOutputStream(imageFile));
 				FileCopyUtils.copy(photo.getInputStream(), stream);
 
+			} catch (Exception e) {
+				logger.error("upload error", e.toString());
+			} finally {
 				if (stream != null) {
 					try {
 						stream.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error("BufferedOutputStream close error.", e.toString());
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 

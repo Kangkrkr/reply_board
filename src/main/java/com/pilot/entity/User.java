@@ -1,6 +1,5 @@
 package com.pilot.entity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class User implements Serializable {
+public class User {
 
 	private Integer id;
 	private String email;

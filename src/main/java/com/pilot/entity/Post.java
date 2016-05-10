@@ -1,6 +1,5 @@
 package com.pilot.entity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity
-public class Post implements Serializable {
+public class Post {
 
 	private int id;
 	private int depth;
@@ -27,6 +26,7 @@ public class Post implements Serializable {
 	private String content;
 	private Date regdate;
 	private User user;
+	
 	private Post rootPost;
 	private List<Post> branchPosts = new ArrayList<>();
 
@@ -68,7 +68,6 @@ public class Post implements Serializable {
 		this.image = image;
 	}
 
-	// 기본타입과 크기 varchar(6000)을 주어야한다.
 	@Column(name = "content", nullable = false, columnDefinition = "varchar(6000)")
 	public String getContent() {
 		return content;

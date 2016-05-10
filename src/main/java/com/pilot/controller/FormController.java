@@ -2,6 +2,8 @@ package com.pilot.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,7 @@ public class FormController {
 	@Autowired
 	private HttpSession session;
 	
+	private static final Logger logger = LoggerFactory.getLogger(FormController.class);
 	
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login() {
@@ -38,8 +41,7 @@ public class FormController {
 			
 			return "redirect:/list?page=1";
 		}catch(Exception e){
-			// printStackTrace를 하지말고 로그에 남겨두기..
-			e.printStackTrace();
+			logger.error(e.toString());
 			return "error/login_error";
 		}
 	}
@@ -56,6 +58,7 @@ public class FormController {
 			userService.join(joinForm);
 			return "redirect:login";
 		}catch(Exception e){
+			logger.error(e.toString());
 			return "error/join_error";
 		}
 	}
