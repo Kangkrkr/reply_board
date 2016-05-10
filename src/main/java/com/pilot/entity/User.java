@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class User implements Serializable{
+public class User implements Serializable {
 
 	private Integer id;
 	private String email;
@@ -71,13 +71,12 @@ public class User implements Serializable{
 	}
 
 	@OneToMany(mappedBy = "user", targetEntity = Post.class)
-	@Cascade(value = {CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Cascade(value = {CascadeType.SAVE_UPDATE})
 	public List<Post> getPosts() {
 		return posts;
 	}
 
 	public void setPosts(List<Post> posts){
-		this.posts.clear();
-		this.posts.addAll(posts);
+		this.posts = posts;
 	}
 }

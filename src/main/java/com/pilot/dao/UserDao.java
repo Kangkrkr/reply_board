@@ -1,8 +1,5 @@
 package com.pilot.dao;
 
-import java.util.List;
-
-import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -15,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pilot.entity.User;
 import com.pilot.repository.UserRepository;
-import com.pilot.validator.LoginForm;
+import com.pilot.valid.LoginForm;
 
 @Transactional
 @Repository
@@ -29,27 +26,12 @@ public class UserDao {
 	
 	static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 	
-	public long count(){
-		return userRepository.findAll().size();
-	}
-	
-	public User join(User user){
-		logger.info("Success Save User : UserName is  {}, Email is {} " ,user.getName(), user.getEmail());
-		user.setPassword(DigestUtils.sha512Hex(user.getPassword()));
+	public User save(User user){
 		return userRepository.save(user);
 	}
 	
 	public User findOne(Integer id){
 		return userRepository.findOne(id);
-	}
-	
-	public User findByUsername(String username){
-		User user = (User)sessionFactory.getCurrentSession().createCriteria(User.class).add(Restrictions.eq("name", username)).list().get(0);
-		return user;
-	}
-	
-	public List<User> findAll(){
-		return sessionFactory.getCurrentSession().createCriteria(User.class).list();
 	}
 	
 	public User login(LoginForm loginData){

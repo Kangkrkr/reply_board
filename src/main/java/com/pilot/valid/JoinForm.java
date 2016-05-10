@@ -1,4 +1,4 @@
-package com.pilot.validator;
+package com.pilot.valid;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
