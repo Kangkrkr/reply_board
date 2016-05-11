@@ -2,12 +2,14 @@ package com.pilot.service;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.pilot.ReplyBoardApplication;
 import com.pilot.entity.Post;
 import com.pilot.entity.User;
 import com.pilot.util.Message;
@@ -30,6 +31,8 @@ public class UploadService {
 
 	@Autowired
 	PostService postService;
+	
+	private final String UPLOAD_PATH = "/upload/";
 	
 	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
@@ -46,9 +49,9 @@ public class UploadService {
 		post.setUser((User) session.getAttribute("userInfo"));
 
 		
-		if (type.equals("post")) {
+		if (type.equals("post")) { 
 			Post saved = postService.write(post);	// path를 지정하기 위해 엔티티를 저장 후 그 저장된 정보를 받아온다.
-			saved.setPath(saved.getId() + "/");		// path를 다음과 같이 수정한다.
+			saved.setPath((999999 - saved.getId()) + "/");		// path를 다음과 같이 수정한다.
 			postService.update(saved);				// 수정된 정보 재반영.
 			return Message.POST_UPLOAD_SUCCESS;
 		} else if (type.equals("reply")) {
@@ -61,24 +64,9 @@ public class UploadService {
 			
 			saved.setIndent(rootPost.getIndent() + 1);
 			saved.setRootPost(rootPost);
-			saved.setPath(rootPost.getPath() + saved.getId() + "/");
+			saved.setPath(rootPost.getPath() + (999999 - saved.getId()) + "/");
 			
 			postService.update(saved);
-			/*
-			List<Post> posts = postService.findAll();	// 전체 게시물을 가져온다.
-			int originalIdx = 0;	// 게시글을 삽입할 인덱스를 뽑아낸다.
-			
-			for (int i = 0; i < posts.size(); i++) {
-				
-				if (String.valueOf(posts.get(i).getId()).equals(String.valueOf(targetId))) {
-					break;
-				}
-				originalIdx++;
-			}
-
-			// 테이블을 갱신하는 작업. 전체 게시물과 삽입할 위치, 삽입될 게시물이 인자로 들어간다.
-			postService.addPost(posts, originalIdx, post);
-			*/
 			
 			return Message.REPLY_UPLOAD_SUCCESS;
 			
@@ -106,24 +94,44 @@ public class UploadService {
 
 	public String imageUploadAndSavePath(MultipartRequest mr) {
 
+		final String path = "/nginx/root/images";
+		
 		MultipartFile photo = mr.getFile("photo");
 
 		BufferedOutputStream stream = null;
-		String fixedPath = null;
+		String filename = null;
 
-		// 같은 파일의 이름이 업로드 되려고할 때의 처리로직 추가 필요.
 		if (null != photo && !photo.isEmpty()) {
 			try {
-				File imageFile = new File(ReplyBoardApplication.ROOT + "/" + photo.getOriginalFilename());
-				String filePath = imageFile.getPath();
-
-				// 순수 파일이름만 DB에 저장하는 방식을 취함.
-				fixedPath = imageFile.getPath().substring(filePath.lastIndexOf('\\') + 1, filePath.length());
-
+				filename = photo.getOriginalFilename();
+				File imageFile = new File(path + "/" + filename);
+				
+				// 사용자가 업로드한 파일을 암호화한 값을 얻어온다.
+				String uploadedCode = DigestUtils.shaHex(photo.getInputStream());
+				
+				// 이미 같은 이름의 파일이 존재한다면 존재하는 파일의 암호값을 구한다.
+				if(imageFile.exists()){
+					FileInputStream fis = new FileInputStream(imageFile);
+					String savedCode = DigestUtils.shaHex(fis);
+					
+					// 두개의 암호값을 비교.
+					if(uploadedCode.equals(savedCode)){
+						logger.info("이미 존재하는 파일입니다.");
+						return filename;
+					}else{
+						logger.info("파일이름이 같지만 다른 파일입니다.");
+						
+						filename = System.currentTimeMillis() + "_" + filename;
+						imageFile = new File(path + "/" + filename);
+					}
+				}
+				
 				stream = new BufferedOutputStream(new FileOutputStream(imageFile));
 				FileCopyUtils.copy(photo.getInputStream(), stream);
-
+				
+				return filename;
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.error("upload error", e.toString());
 			} finally {
 				if (stream != null) {
@@ -136,6 +144,6 @@ public class UploadService {
 			}
 		}
 
-		return fixedPath;
+		return filename;
 	}
 }
