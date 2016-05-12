@@ -99,15 +99,17 @@ public class UploadService {
 		MultipartFile photo = mr.getFile("photo");
 
 		BufferedOutputStream stream = null;
-		String filename = photo.getOriginalFilename();
+		String filename = null;
 
-		// 크롬에선 파일원본명이 그대로 나오지만 익스플로러나 엣지에서는 전체경로가 붙어나오기 때문에 다음과 같이 처리.
-		if(filename.contains("\\")){
-			filename = filename.substring(filename.lastIndexOf('\\') + 1);
-		}
-		
 		if (null != photo && !photo.isEmpty()) {
 			try {
+				filename = photo.getOriginalFilename();
+				
+				// 크롬에선 파일원본명이 그대로 나오지만 익스플로러나 엣지에서는 전체경로가 붙어나오기 때문에 다음과 같이 처리.
+				if(filename.contains("\\")){
+					filename = filename.substring(filename.lastIndexOf('\\') + 1);
+				}
+				
 				File imageFile = new File(path + "/" + filename);
 				
 				// 사용자가 업로드한 파일을 암호화한 값을 얻어온다.

@@ -3,10 +3,10 @@ var setMultiformConfig = function() {
 	
 	$('.photo_uploader').MultiFile({
 		max : 1, //업로드 최대 파일 갯수 (지정하지 않으면 무한대)
-		accept : 'jpg|png|gif', //허용할 확장자(지정하지 않으면 모든 확장자 허용)
+		accept : 'jpg|png|gif', //허용할 확장자 (지정하지 않으면 모든 확장자 허용)
 		maxfile : 1024, //각 파일 최대 업로드 크기
 		maxsize : 3024, //전체 파일 최대 업로드 크기
-		STRING : { //Multi-lingual support : 메시지 수정 가능
+		STRING : { // 액션별 메시지 커스터마이징
 			remove : "제거", //추가한 파일 제거 문구, 이미태그를 사용하면 이미지사용가능
 			duplicate : "$file 은 이미 선택된 파일입니다.",
 			denied : "$ext 는(은) 업로드 할수 없는 파일 확장자입니다.",
@@ -25,7 +25,6 @@ var setCallbackToUploadForm = function(){
             //validation체크 
             var photo = $('input[type=file]').val();
         	var content = $('#content').val();
-        	var password = $('#password').val();
         	
         	if('' === content || undefined === content){
         		alert("글을 작성해 주세요.");
