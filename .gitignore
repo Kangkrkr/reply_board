@@ -1,2 +1,11 @@
 /bin/
 /build/
+/logs/
+/images/
+
+*.jpg
+*.JPG
+*.png
+*.PNG
+*.gif
+*.GIF

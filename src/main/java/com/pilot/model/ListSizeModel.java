@@ -1,9 +1,9 @@
-package com.pilot.dto;
+package com.pilot.model;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ListSizeDTO {
+public class ListSizeModel {
 	private Integer totalSize;
 	private Integer maxPageSize;
 

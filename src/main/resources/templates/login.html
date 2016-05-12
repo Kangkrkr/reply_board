@@ -11,6 +11,18 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" th:href="@{/css/loginTemplate.css}"/>
+<script th:inline="javascript">
+$(function(){
+	/*<![CDATA[*/
+
+	var message = /*[[${message}]]*/
+
+	if(message != null){
+		alert(message);
+	}
+	/*]]>*/
+});
+</script>
 </head>
 <body>
 	<div class="container">

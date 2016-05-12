@@ -7,13 +7,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.pilot.form.JoinForm;
+import com.pilot.form.LoginForm;
 import com.pilot.service.UserService;
-import com.pilot.valid.JoinForm;
-import com.pilot.valid.LoginForm;
+import com.pilot.util.Message;
 
 @Controller
 @RequestMapping("/form")
@@ -33,16 +36,17 @@ public class FormController {
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String loginProcess(@Validated LoginForm loginForm, Model model) {
+	public String loginProcess(@Validated LoginForm loginForm, Model model, RedirectAttributes reAttr) {
 
 		try{
 			// 로그인 처리..
 			session.setAttribute("userInfo", userService.login(loginForm));
-			
+			reAttr.addFlashAttribute("message", Message.LOGIN_SUCCESS);
 			return "redirect:/list?page=1";
 		}catch(Exception e){
 			logger.error(e.toString());
-			return "error/login_error";
+			model.addAttribute("message", Message.LOGIN_FAILED);
+			return "login";
 		}
 	}
 
@@ -52,14 +56,21 @@ public class FormController {
 	}
 	
 	@RequestMapping(value = "join", method = RequestMethod.POST)
-	public String joinProcess(@Validated JoinForm joinForm) {
+	public String joinProcess(@Validated JoinForm joinForm, BindingResult result, Model model, RedirectAttributes reAttr) {
 		
 		try{
+			if(result.hasErrors()){
+				model.addAttribute("message", Message.JOIN_INVALID_INFO);
+				return "join";
+			}
+			
 			userService.join(joinForm);
+			reAttr.addFlashAttribute("message", Message.JOIN_SUCCESS);
 			return "redirect:login";
 		}catch(Exception e){
 			logger.error(e.toString());
-			return "error/join_error";
+			model.addAttribute("message", Message.JOIN_FAILED);
+			return "join";
 		}
 	}
 }

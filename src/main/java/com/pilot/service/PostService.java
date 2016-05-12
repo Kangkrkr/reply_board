@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pilot.dao.PostDao;
-import com.pilot.dto.PostDTO;
 import com.pilot.entity.Post;
+import com.pilot.model.PostModel;
 
 @Service
 public class PostService {
@@ -47,13 +47,13 @@ public class PostService {
 		return postDao.selectPost((offset - 1) * MAX_SIZE, MAX_SIZE);
 	}
 	
-	public List<PostDTO> createPostDTOs(List<Post> posts){
+	public List<PostModel> createPostDTOs(List<Post> posts){
 		
-		List<PostDTO> postDTOs = new ArrayList<>();
+		List<PostModel> postDTOs = new ArrayList<>();
 		
 		if(null != posts && posts.size() > 0){
 			for (Post post : posts) {
-				postDTOs.add(PostDTO.create(post));
+				postDTOs.add(PostModel.create(post));
 			}
 		}
 		return postDTOs;

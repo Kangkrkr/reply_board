@@ -4,33 +4,23 @@
 <meta charset="utf-8" />
 <title>글 리스트</title>
 <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-<script src="../../../static/js/jquery.form.js"
-	th:src="@{/js/jquery.form.js}"></script>
-<script src="../../../static/js/jquery.MultiFile.js"
-	th:src="@{/js/jquery.MultiFile.js}"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+<script th:inline="javascript">
+/*<![CDATA[*/
+
+var message = /*[[${message}]]*/
+
+if(message != null){
+	alert(message);
+}
+/*]]>*/
+</script>
 </head>
 <body>
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#"> Pilot Project </a>
-			</div>
-			<ul class="nav navbar-nav navbar-right">
-				<!-- 다음과 같이 session을 통하여 세션객체에 접근할 수 있다 -->
-				<li><a th:text="'환영합니다 ' + ${session.userInfo.name} + '님'"></a></li>
-				<!-- onclick()에서 false를 반환받게 되면 앵커태그는 주소를 이동하지 않는다. -->
-				<li><a href="#" th:onclick="'openModal(\'post\', \''+${session.userInfo.email}+'\'); return false;'">글쓰기 </a></li>
-				<li><a href="#" onclick="logout(); return false;"> 로그아웃 </a></li>
-			</ul>
-		</div>
-	</nav>
-	<!-- 네비게이션 헤더 -->
+	
+	<div th:replace="nav/header :: nav"></div>
 
 	<table>
 		<tr th:each="post: ${posts}">
@@ -39,104 +29,21 @@
 				<div class="panel panel-default">
 
 					<div th:switch="${post.type}">
-						<div th:case="post">
-							<!-- 게시글 폼 -->
-							<div class="panel-heading">
-								<div>
-									<div>
-										<span class="badge" th:text="${post.user.name}">작성자</span>
-										<span class="badge" th:text="${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
-										<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-										<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
-										<a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-6 col-md-3">
-									<div th:switch="${post.image}">
-										<div th:case="null"></div>
-										<a th:case="*" href="#" class="thumbnail" onclick="return false;" style="margin-left: 15px; margin-top: 10px;"> 
-											<img class="img-thumbnail" th:src="@{/images/} + ${post.image}" alt="..." />
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="panel-body" th:text="${post.content}">게시글 내용</div>
-						</div>
-
-						<div th:case="reply">
-							<!-- 댓글 폼 -->
-							<div class="panel-footer">
-								<div
-									th:style="'margin-left:' + (25 * ${post.indent}) + 'px;'">
-									<div>
-										<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
-										<b th:text="${post.user.name}">댓글 게시자</b> 
-										<small th:text="'(' + ${#dates.format(post.regdate, 'yyyy년 MM월 dd일 hh시 mm분 ss초') + ')'}">댓글 게시일자</small> 
-										<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-										<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
-										<a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
-									</div>
-									<div th:switch="${post.image}">
-										<div th:case="null"></div>
-										<img th:case="*" class="img-thumbnail" th:src="@{/images/} + ${post.image}" alt="..." />
-									</div>
-									<p th:text="${post.content}" style="margin: 15px;">답글 내용</p>
-								</div>
-							</div>
-						</div>
+						<div th:replace="type/post :: div"></div>
+						<div th:replace="type/reply :: div"></div>
 					</div>
 				</div>
 			</td>
 		</tr>
 	</table>
 
-	<nav class="navbar navbar-default navbar-fixed-bottom" id="footer">
-		<div class="container" style="text-align: center;">
-			<ul class="pagination">
-			</ul>
-		</div>
-	</nav>
-	<!-- 네비게이션 풋터 -->
+	<div th:replace="nav/footer :: nav"></div>
+	<div th:replace="modal/modal :: div"></div>
 
-	<!-- <div class="modal fade" th:include="inputModal :: [//div[@id='modal']]" id="myModal"></div> -->
-	<div class="modal fade" id="postModal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title">입력창</h4>
-				</div>
-				<form name="upload" id="upload" action="/upload" method="POST" enctype="multipart/form-data">
-					<div class="modal-body">
-						<div class="form-group">
-							<label for="content">글 쓰기</label>
-							<!-- 이미지 업로드 태그의 name은 photo -->
-							<input type="file" class="photo_uploader with-preview" accept="gif|jpg|png" name="photo" maxlength="1" />
-							<!-- 글 내용의 태그 name은 content -->
-							<textarea class="form-control" id="content" name="content" placeholder="글을 입력하세요" rows="6" style="margin-top: 10px;"></textarea>
-							<input type="hidden" name="type" value="" />
-						</div>
-					</div>
-					<div class="modal-footer">
-						<!-- th:onclick="'writePost(\''+${session.userInfo.email}+'\');'" -->
-						<button type="submit" class="btn btn-primary" id="upload_button">확인</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- 글 입력 모달 -->
-
-	<script src="../../../static/js/ajax/ajax.js"
-		th:src="@{/js/ajax/ajax.js}"></script>
-	<script src="../../../static/js/common/common.js"
-		th:src="@{/js/common/common.js}"></script>
-	<script src="../../../static/js/multipart/multipart.js"
-		th:src="@{/js/multipart/multipart.js}"></script>
+	<script th:src="@{/js/jquery.form.js}"></script>
+	<script th:src="@{/js/jquery.MultiFile.js}"></script>
+	<script th:src="@{/js/ajax/ajax.js}"></script>
+	<script th:src="@{/js/common/common.js}"></script>
+	<script th:src="@{/js/multipart/multipart.js}"></script>
 </body>
 </html>

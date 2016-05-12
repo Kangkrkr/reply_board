@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartRequest;
 
-import com.pilot.dto.ListSizeDTO;
+import com.pilot.form.WriteForm;
+import com.pilot.model.ListSizeModel;
 import com.pilot.service.PostService;
 import com.pilot.service.UploadService;
 import com.pilot.util.Message;
-import com.pilot.valid.WriteForm;
 
 @RestController
 public class AjaxController {
@@ -40,11 +40,11 @@ public class AjaxController {
 		try{
 			if(null != session.getAttribute("userInfo")){
 				session.invalidate();
-				session = null;
 				return Message.LOGOUT_SUCCESS;
 			}
 		}catch(Exception e){
 			logger.error("logout errror", e.toString());
+			e.printStackTrace();
 		}
 		
 		return Message.LOGOUT_FAILED;
@@ -74,7 +74,7 @@ public class AjaxController {
 	}
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)
-	public ListSizeDTO getListSize(){
-		return new ListSizeDTO(postService.count(), PostService.MAX_SIZE);
+	public ListSizeModel getListSize(){
+		return new ListSizeModel(postService.count(), PostService.MAX_SIZE);
 	}
 }

@@ -20,8 +20,8 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import com.pilot.entity.Post;
 import com.pilot.entity.User;
+import com.pilot.form.WriteForm;
 import com.pilot.util.Message;
-import com.pilot.valid.WriteForm;
 
 @Service
 public class UploadService {

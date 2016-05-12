@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pilot.entity.User;
+import com.pilot.form.LoginForm;
 import com.pilot.repository.UserRepository;
-import com.pilot.valid.LoginForm;
 
 @Transactional
 @Repository

@@ -1,4 +1,4 @@
-package com.pilot.dto;
+package com.pilot.model;
 
 
 import java.util.Date;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+public class PostModel {
 	
 	private int id;
 	private String content;
@@ -25,9 +25,9 @@ public class PostDTO {
 	private String type;
 	private User user;
 	
-	public static PostDTO create(Post post) {
+	public static PostModel create(Post post) {
 
-		PostDTO postDTO = new PostDTO();
+		PostModel postDTO = new PostModel();
 		BeanUtils.copyProperties(post, postDTO);
 		
 		return postDTO;

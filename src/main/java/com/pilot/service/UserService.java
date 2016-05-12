@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.pilot.dao.UserDao;
 import com.pilot.entity.User;
-import com.pilot.valid.JoinForm;
-import com.pilot.valid.LoginForm;
+import com.pilot.form.JoinForm;
+import com.pilot.form.LoginForm;
 
 @Service
 public class UserService {

@@ -58,9 +58,9 @@ var setScrollEvent = function() {
 		var curScrollbarPos = Math.ceil($(window).scrollTop());
 
 		// footer가 사라지게 할 타겟 지점.
-		var targetPos = $(document).height() - $(window).height();
+		var targetPos = ($(document).height() - $(window).height());
 
-		if (curScrollbarPos >= targetPos - 10) {
+		if (curScrollbarPos >= targetPos) {
 			$('#footer').fadeOut('fast');
 		} else {
 			$('#footer').fadeIn('fast');

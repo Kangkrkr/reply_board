@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#"> Pilot Project </a>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+			<!-- 다음과 같이 session을 통하여 세션객체에 접근할 수 있다 -->
+			<li><a th:text="'환영합니다 ' + ${session.userInfo.name} + '님'"></a></li>
+			<!-- onclick()에서 false를 반환받게 되면 앵커태그는 주소를 이동하지 않는다. -->
+			<li><a href="#" th:onclick="'openModal(\'post\', \''+${session.userInfo.email}+'\'); return false;'">글쓰기</a></li>
+			<li><a href="#" onclick="logout(); return false;"> 로그아웃 </a></li>
+		</ul>
+	</div>
+</nav>
+<!-- 네비게이션 헤더 -->
