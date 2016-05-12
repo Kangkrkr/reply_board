@@ -1,23 +1,22 @@
+
 var initContent = function() {
 	$('#content').val('');
 }
 
-var openModal = function() {
+//전송 역할을 하는 모달내의 버튼 클릭시 발생할 콜백 함수. 
+var callback = function() {
+	$('#postModal').modal('hide');
+};
 
-	var args = arguments;	// openModel함수에 넘어온 인자를 담고 있는 arguments를 받아서 처리하는 방식.
+var openModal = function(type, targetId) {
 
-	if (args[0] === 'post') {
+	if (type === 'post') {
 		$('input[type=hidden]').val('post');
-	} else if (args[0] === 'reply') {
-		$('input[type=hidden]').val('reply#' + args[1]);
-	} else if (args[0] === 'edit'){
-		$('input[type=hidden]').val('edit#' + args[1]);
+	} else if (type === 'reply') {
+		$('input[type=hidden]').val('reply#' + targetId);
+	} else if (type === 'edit'){
+		$('input[type=hidden]').val('edit#' + targetId);
 	}
-
-	// 전송 역할을 하는 모달내의 버튼 클릭시 발생할 콜백 함수. 
-	var callback = function() {
-		$('#postModal').modal('hide');
-	};
 
 	// 입력 폼 초기화 후 보여주기.
 	initContent();
@@ -30,26 +29,6 @@ var openModal = function() {
 	$('#postModal').on('hidden.bs.modal', function(e) {
 		$('#sendButton').unbind();
 	});
-};
-
-var editArticle = function(type, postId, currentUser, uploader) {
-
-	if (currentUser !== uploader) {
-		alert('자신의 게시물만 수정할 수 있습니다.');
-		return;
-	}
-	
-	openModal(type, postId);
-};
-
-var deleteArticle = function(currentUser, uploader, id) {
-
-	if (currentUser !== uploader) {
-		alert('자신의 게시물만 삭제할 수 있습니다.');
-		return;
-	}
-
-	doDelete(id);
 };
 
 var setScrollEvent = function() {

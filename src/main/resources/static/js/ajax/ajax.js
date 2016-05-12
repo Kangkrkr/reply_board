@@ -74,12 +74,28 @@ var setFooter = function() {
 	});
 };
 
-var doDelete = function(id) {
+var editArticle = function(type, targetId, currentUser, uploader) {
+
+	if (currentUser !== uploader) {
+		alert('자신의 게시물만 수정할 수 있습니다.');
+		return;
+	}
+	
+	openModal(type, targetId);
+};
+
+var deleteArticle = function(currentUser, uploader, targetId) {
+
+	if (currentUser !== uploader) {
+		alert('자신의 게시물만 삭제할 수 있습니다.');
+		return;
+	}
+	
 	$.ajax({
 		type : "GET",
 		url : "/delete",
 		data : {
-			id : id
+			id : targetId
 		},
 		success : function(result) {
 			alert(result);
