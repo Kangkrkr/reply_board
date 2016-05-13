@@ -64,11 +64,11 @@ public class PostDao {
 		postRepository.delete(findOne(postId));
 	}
 	
-	public List<Post> selectPost(int currentPage, int pageSize){
+	public List<Post> selectPost(int currentPage, int maxPostSize){
 		try{
 			Criteria result = sessionFactory.getCurrentSession().createCriteria(Post.class);
 			
-			return result.setFirstResult(currentPage).setMaxResults(pageSize).addOrder(Order.asc("path")).list();
+			return result.setFirstResult(currentPage).setMaxResults(maxPostSize).addOrder(Order.asc("path")).list();
 		}catch(Exception e){
 			logger.error(e.toString());
 		}

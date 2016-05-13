@@ -16,7 +16,9 @@
 			<div th:switch="${post.image}">
 				<div th:case="null"></div>
 				<a th:case="*" href="#" class="thumbnail" onclick="return false;" style="margin-left: 15px; margin-top: 10px;"> 
-					<img class="img-thumbnail" th:src="'http://192.168.192.132/images/' + ${post.image}" alt="..." />
+					<img class="img-thumbnail" 
+						 th:src="'http://192.168.192.132/images/' + ${post.image}" 
+						 alt="..." />
 				</a>
 			</div>
 		</div>

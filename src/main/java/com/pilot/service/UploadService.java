@@ -32,8 +32,6 @@ public class UploadService {
 	@Autowired
 	PostService postService;
 	
-	private final String UPLOAD_PATH = "/upload/";
-	
 	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
 	public String upload(MultipartRequest mr, WriteForm writeForm) {
@@ -54,7 +52,8 @@ public class UploadService {
 			saved.setPath((999999 - saved.getId()) + "/");		// path를 다음과 같이 수정한다.
 			postService.update(saved);				// 수정된 정보 재반영.
 			return Message.POST_UPLOAD_SUCCESS;
-		} else if (type.equals("reply")) {
+		} 
+		else if (type.equals("reply")) {
 
 			Post saved = postService.write(post);	// 삽입할 엔티티를 저장후 역시 정보를 받아옴.
 			
@@ -70,7 +69,8 @@ public class UploadService {
 			
 			return Message.REPLY_UPLOAD_SUCCESS;
 			
-		} else if ((type.equals("edit"))) {
+		} 
+		else if ((type.equals("edit"))) {
 			
 			Integer postId = toInteger(writeForm.getType().split("#")[1]);
 			
@@ -95,6 +95,18 @@ public class UploadService {
 	public String imageUploadAndSavePath(MultipartRequest mr) {
 
 		final String path = "/nginx/root/images";
+		
+		File storePath = new File(path);
+		if(!storePath.exists()){
+			boolean result = storePath.mkdir();
+			if(result){
+				logger.info(path + " 생성에 성공하였습니다.");
+			}else{
+				logger.info(path + " 생성에 실패하였습니다.");
+			}
+		}else{
+			logger.info(path + "는 이미 존재하는 경로입니다.");
+		}
 		
 		MultipartFile photo = mr.getFile("photo");
 
