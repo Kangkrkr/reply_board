@@ -1,23 +1,25 @@
 package com.pilot.service;
 
 import java.net.URI;
-import java.util.List;
 
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.pilot.model.TokenModel;
+import com.pilot.entity.User;
+import com.pilot.model.TokenJsonModel;
 import com.pilot.model.UserModel;
 import com.pilot.util.TeamUp;
 
 @Service
 public class AuthorizeService {
-
+	
+	@Autowired
+	UserService userService;
+	
 	public URI getAuthorizationPageUri() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("response_type", "code");
@@ -57,7 +59,7 @@ public class AuthorizeService {
 		// {"access_token":"22b7e7b13dfebe7508622af81808b3a65c841ba040a289d62e1c872f6e0bbe4b","expires_in":86399,"token_type":"bearer","refresh_token":"1efc73193c6b901ec3a14453dcb2f99fbbf5c91b338b11b6d69982649f89ff7f"}
 		// 얻은 json string을 model 객체에 담는다.
 		RestTemplate restTemplate = new RestTemplate();
-		TokenModel token = restTemplate.getForObject(tokenUri, TokenModel.class);
+		TokenJsonModel token = restTemplate.getForObject(tokenUri, TokenJsonModel.class);
 		
 		return token.getAccessToken();
 	}
@@ -73,6 +75,20 @@ public class AuthorizeService {
 		UserModel user = restTemplate.getForObject(userUri, UserModel.class);
 		
 		return user;
+	}
+	
+	public void checkUser(String token){
+		
+		UserModel user = getMyInform(token);
+		
+		if(null == userService.findByEmail(user.getEmail())){
+			User newer = new User();
+			newer.setEmail(user.getEmail());
+			newer.setName(user.getName());
+			newer.setProfileImage(user.getProfileImage());
+			
+			userService.join(newer);
+		}
 	}
 	
 	public String logout(){

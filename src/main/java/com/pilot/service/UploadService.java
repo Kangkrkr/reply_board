@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -49,6 +48,10 @@ public class UploadService {
 		String fixedPath = imageUploadAndSavePath(mr);
 
 		User uploader = userService.findByEmail(authorizeService.getMyInform(token).getEmail());
+		
+		if(uploader == null){
+			return "유효하지 않은 사용자 입니다.";
+		}
 		
 		post.setType(type);
 		post.setImage(fixedPath);
@@ -87,7 +90,7 @@ public class UploadService {
 			update.setImage(fixedPath);
 			update.setContent(writeForm.getContent());
 			update.setRegdate(new Date());
-			update.setUser((User)session.getAttribute("userInfo"));
+			update.setUser(uploader);
 			
 			postService.update(update);
 			

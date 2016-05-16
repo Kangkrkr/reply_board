@@ -13,7 +13,7 @@ public class JavaConfig {
 	@Bean
 	public ServerProperties serverProperties() {
 		ServerProperties properties = new ServerProperties();
-		properties.setPort(8010);
+		properties.setPort(80);
 
 		return properties;
 	}

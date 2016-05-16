@@ -22,6 +22,7 @@ public class User {
 	private Integer id;
 	private String email;
 	private String name;
+	private String nickname;
 	private String profileImage;
 	private String password;
 	private List<Post> posts = new ArrayList<>();
@@ -61,6 +62,15 @@ public class User {
 		this.name = name;
 	}
 
+	@Column(name = "nickname", nullable = true)
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	
 	@Column(name = "profile_image", nullable = true)
 	public String getProfileImage() {
 		return profileImage;

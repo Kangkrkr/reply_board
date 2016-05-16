@@ -16,12 +16,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.pilot.entity.Post;
 import com.pilot.model.PostModel;
 import com.pilot.service.AuthorizeService;
+import com.pilot.service.ChatService;
 import com.pilot.service.PostService;
+import com.pilot.service.UserService;
 
 @Controller
 @RequestMapping("list")
 public class ListController {
 
+	@Autowired
+	private UserService userService;
+	
 	@Autowired 
 	private PostService postService;
 	
@@ -29,25 +34,14 @@ public class ListController {
 	private HttpSession session;
 	
 	@Autowired
-	AuthorizeService authorizeService;
+	private AuthorizeService authorizeService;
+	
+	@Autowired
+	private ChatService chatService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String showList(@RequestParam("page") Integer page, @CookieValue(value = "token", required = false) String token, Model model, RedirectAttributes reAttr) {
 
-		
-		/*
-		Cookie[] cookies = request.getCookies();
-		
-		if(cookies != null && cookies.length > 0) {
-			for(Cookie cookie : cookies) {
-				if(cookie.getName() != null){
-					System.err.println(" 사용자 이메일 : " + cookie.getValue());
-				}
-			}
-		}
-		*/
-		
-		// 첫 로그인시 쿠키는 5초간 살아있게 해놨음(시뮬레이션)
 		if(null == token){
 			System.err.println("사용자정보가 없음.");
 		}
@@ -58,7 +52,7 @@ public class ListController {
 		List<Post> posts = postService.selectPost(page);
 		List<PostModel> postDTOs = postService.createPostDTOs(posts);
 
-		model.addAttribute("userInfo", authorizeService.getMyInform(token));
+		model.addAttribute("userInfo", userService.findByEmail(authorizeService.getMyInform(token).getEmail()));
 		model.addAttribute("posts", postDTOs);
 
 		return "list";

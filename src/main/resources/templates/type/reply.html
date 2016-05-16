@@ -10,16 +10,17 @@
 					<img th:case="*" style="margin-top: 5px;" th:src="${post.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
 				</div>
 				
-				<b th:text="${post.user.name}">게시자</b> 
+				<!-- <b th:text="${post.user.name}">게시자</b> --> 
+				<span class="badge" th:text="'닉네임 - ' + ${post.user.nickname}">게시자닉네임</span>
 				<b th:text="${post.user.email}">이메일</b> 
 				<small th:text="'(' + ${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초') + ')'}">작성일</small> 
 				<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-				<!-- <a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">�닔�젙</a>  -->
-				<!-- <a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">�궘�젣</a>  -->
+				<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
+				<a th:onclick="'deleteArticle(\''+${userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
 			</div>
 			<div th:switch="${post.image}">
 				<div th:case="null"></div>
-				<img th:case="*" class="img-thumbnail" th:src="'http://192.168.192.132/images/' + ${post.image}" alt="..." />
+				<img th:case="*" class="img-thumbnail" th:src="'http://192.168.192.132:8010/images/' + ${post.image}" alt="..." />
 			</div>
 			<p th:text="${post.content}" style="margin: 15px;">게시물 내용</p>
 		</div>
