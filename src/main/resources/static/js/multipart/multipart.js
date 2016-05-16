@@ -19,6 +19,7 @@ var setMultiformConfig = function() {
 };
 
 var setCallbackToUploadForm = function(){
+	
 	$('#upload').ajaxForm({
         beforeSubmit: function (data,form,option) {
         	
@@ -44,5 +45,6 @@ var setCallbackToUploadForm = function(){
             console.log(e);
         }                               
     });
+	
 };
 

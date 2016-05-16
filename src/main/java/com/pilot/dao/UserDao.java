@@ -34,6 +34,10 @@ public class UserDao {
 		return userRepository.findOne(id);
 	}
 	
+	public User findByEmail(String email){
+		return userRepository.findByEmail(email);
+	}
+	
 	// 로그인 검증
 	public User login(LoginForm loginData){
 		

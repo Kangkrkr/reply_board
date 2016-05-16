@@ -22,6 +22,7 @@ public class User {
 	private Integer id;
 	private String email;
 	private String name;
+	private String profileImage;
 	private String password;
 	private List<Post> posts = new ArrayList<>();
 	
@@ -60,7 +61,16 @@ public class User {
 		this.name = name;
 	}
 
-	@Column(name = "password", nullable = false)
+	@Column(name = "profile_image", nullable = true)
+	public String getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
+	}
+	
+	@Column(name = "password", nullable = true)
 	public String getPassword() {
 		return password;
 	}
@@ -78,4 +88,5 @@ public class User {
 	public void setPosts(List<Post> posts){
 		this.posts = posts;
 	}
+	
 }

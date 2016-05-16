@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pilot.form.JoinForm;
 import com.pilot.form.LoginForm;
+import com.pilot.service.AuthorizeService;
 import com.pilot.service.UserService;
 import com.pilot.util.Message;
 
@@ -26,19 +27,39 @@ public class FormController {
 	private UserService userService;
 	
 	@Autowired
+	private AuthorizeService authorizeService;
+	
+	@Autowired
 	private HttpSession session;
 	
 	private static final Logger logger = LoggerFactory.getLogger(FormController.class);
 	
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login() {
-		return (session.getAttribute("useInfo") != null) ? "redirect:/list" : "login";
+		return "redirect:" + authorizeService.getAuthorizationPageUri().toString();
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String loginProcess(@Validated LoginForm loginForm, Model model, RedirectAttributes reAttr) {
 
 		try{
+			/*
+			List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
+			converters.add(new FormHttpMessageConverter());
+			converters.add(new StringHttpMessageConverter());
+			
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.setMessageConverters(converters);
+			
+			MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+			map.add("response_type", "code");
+			map.add("client_id", client_id);
+			map.add("redirect_uri", redirect_uri);
+			
+			String result = restTemplate.postForObject("https://auth.tmup.com/oauth2/authorize", map, String.class);
+			System.err.println(result);
+			*/
+			
 			// 로그인 처리..
 			session.setAttribute("userInfo", userService.login(loginForm));
 			reAttr.addFlashAttribute("message", Message.LOGIN_SUCCESS);

@@ -22,7 +22,10 @@ var setFooter = function() {
 			}
 			
 			// 파라미터 리스트에서 page 파라미터에 대한 값 가져오기.
-			var curPage = paramsList['page'];
+			var curPage = parseInt(paramsList['page']);
+			
+			if(curPage <= 1) curPage = 1;
+			if(maxEnd !== 0 && curPage >= maxEnd) curPage = maxEnd;
 			
 			// 현재 페이지에 대한 start block index 설정.
 			var start = (Math.floor((curPage - 1) / 5) * 5) + 1;
@@ -30,7 +33,7 @@ var setFooter = function() {
 			var end = Math.ceil(curPage / 5) * 5;
 
 			// 만약 위에서 설정한 end가 설정할 수 있는 최대 block index를 넘는다면 maxEnd로 설정한다.
-			end = (end > maxEnd) ? maxEnd : end;
+			end = (end >= maxEnd) ? maxEnd : end;
 			
 			// 현재 페이지가 제일 처음(1)의 block index와 같다면 '이전 버튼'은 클릭할 수 없게 만든다. 
 			if(curPage == 1){
@@ -45,14 +48,14 @@ var setFooter = function() {
 			// '이전'이나 '다음'버튼이 'disabled'가 된 상태가 아니어야 이전이나 다음페이지로 넘어가게 설정.
 			$('#previous').on('click', function(){
 				if($(this).attr('class') !== 'disabled'){
-					curPage = (parseInt(curPage) > 1) ? parseInt(curPage) - 1 : parseInt('1');
+					curPage = (parseInt(curPage) > 1) ? curPage - 1 : 1;
 					location.href = '/list?page=' + curPage;
 				}
 			});
 			
 			$('#next').on('click', function(){
 				if($(this).attr('class') !== 'disabled'){
-					curPage = (parseInt(curPage) < maxEnd) ? parseInt(curPage) + 1 : parseInt(maxEnd);
+					curPage = (parseInt(curPage) < maxEnd) ? curPage + 1 : maxEnd;
 					location.href = '/list?page=' + curPage;
 				}
 			});

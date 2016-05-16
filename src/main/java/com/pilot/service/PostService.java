@@ -38,6 +38,10 @@ public class PostService {
 	public int count(){
 		return postDao.findAll().size();
 	}
+	
+	public int getMaxEnd(){
+		return (int)Math.ceil((double)count() / MAX_SIZE);
+	}
 
 	public List<Post> findAll(){
 		return postDao.findAll();

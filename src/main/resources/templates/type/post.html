@@ -1,13 +1,18 @@
 <div th:case="post">
-	<!-- 게시글 폼 -->
+	<!-- 寃뚯떆湲� �뤌 -->
 	<div class="panel-heading">
 		<div>
 			<div>
-				<span class="badge" th:text="${post.user.name}">작성자</span>
+				<div th:switch="${post.profileImage}">
+					<img th:case="null" style="margin-top: 5px;" th:src="@{/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
+					<img th:case="*" style="margin-top: 5px;" th:src="${post.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
+				</div>
+				<span class="badge" th:text="${post.user.name}">게시자</span>
+				<span class="badge" th:text="${post.user.email}">이메일</span>
 				<span class="badge" th:text="${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초')}">작성일</span>
 				<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-				<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${session.userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
-				<a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
+				<!-- <a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${cookie.token.value}+'\', \''+${post.user.id}+'\');'">�닔�젙</a> -->
+				<!-- <a th:onclick="'deleteArticle(\''+${session.userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">�궘�젣</a> -->
 			</div>
 		</div>
 	</div>
@@ -16,10 +21,12 @@
 			<div th:switch="${post.image}">
 				<div th:case="null"></div>
 				<a th:case="*" href="#" class="thumbnail" onclick="return false;" style="margin-left: 15px; margin-top: 10px;"> 
-					<img class="img-thumbnail" th:src="'http://192.168.192.132/images/' + ${post.image}" alt="..." />
+					<img class="img-thumbnail" 
+						 th:src="${post.image}" 
+						 alt="..." />
 				</a>
 			</div>
 		</div>
 	</div>
-	<div class="panel-body" th:text="${post.content}">게시글 내용</div>
+	<div class="panel-body" th:text="${post.content}">글내용</div>
 </div>

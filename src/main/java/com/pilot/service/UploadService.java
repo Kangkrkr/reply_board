@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -30,31 +31,38 @@ public class UploadService {
 	HttpSession session;
 
 	@Autowired
+	UserService userService;
+	
+	@Autowired
 	PostService postService;
 	
-	private final String UPLOAD_PATH = "/upload/";
+	@Autowired
+	AuthorizeService authorizeService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
-	public String upload(MultipartRequest mr, WriteForm writeForm) {
+	public String upload(MultipartRequest mr, WriteForm writeForm, String token) {
 
 		Post post = new Post();
 
 		String type = writeForm.getType().split("#")[0];
 		String fixedPath = imageUploadAndSavePath(mr);
 
+		User uploader = userService.findByEmail(authorizeService.getMyInform(token).getEmail());
+		
 		post.setType(type);
 		post.setImage(fixedPath);
 		post.setContent(writeForm.getContent());
-		post.setUser((User) session.getAttribute("userInfo"));
+		post.setUser(uploader);
+		post.setProfileImage(uploader.getProfileImage());
 
-		
 		if (type.equals("post")) { 
 			Post saved = postService.write(post);	// path를 지정하기 위해 엔티티를 저장 후 그 저장된 정보를 받아온다.
 			saved.setPath((999999 - saved.getId()) + "/");		// path를 다음과 같이 수정한다.
 			postService.update(saved);				// 수정된 정보 재반영.
 			return Message.POST_UPLOAD_SUCCESS;
-		} else if (type.equals("reply")) {
+		} 
+		else if (type.equals("reply")) {
 
 			Post saved = postService.write(post);	// 삽입할 엔티티를 저장후 역시 정보를 받아옴.
 			
@@ -70,7 +78,8 @@ public class UploadService {
 			
 			return Message.REPLY_UPLOAD_SUCCESS;
 			
-		} else if ((type.equals("edit"))) {
+		} 
+		else if ((type.equals("edit"))) {
 			
 			Integer postId = toInteger(writeForm.getType().split("#")[1]);
 			
@@ -95,6 +104,18 @@ public class UploadService {
 	public String imageUploadAndSavePath(MultipartRequest mr) {
 
 		final String path = "/nginx/root/images";
+		
+		File storePath = new File(path);
+		if(!storePath.exists()){
+			boolean result = storePath.mkdir();
+			if(result){
+				logger.info(path + " 생성에 성공하였습니다.");
+			}else{
+				logger.info(path + " 생성에 실패하였습니다.");
+			}
+		}else{
+			logger.info(path + "는 이미 존재하는 경로입니다.");
+		}
 		
 		MultipartFile photo = mr.getFile("photo");
 
