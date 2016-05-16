@@ -15,6 +15,10 @@ public class UserService {
 	@Autowired
 	UserDao userDao;
 	
+	public User join(User user){
+		return userDao.save(user);
+	}
+	
 	public User join(JoinForm joinForm){
 		User user = new User();
 		user.setEmail(joinForm.getEmail());
@@ -26,6 +30,10 @@ public class UserService {
 	
 	public User findOne(Integer id){
 		return userDao.findOne(id);
+	}
+	
+	public User findByEmail(String email){
+		return userDao.findByEmail(email);
 	}
 	
 	public User login(LoginForm loginData){

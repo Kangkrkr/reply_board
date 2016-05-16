@@ -24,6 +24,7 @@ public class Post {
 	private String path;
 	private String type;
 	private String image;
+	private String profileImage;
 	private String content;
 	private Date regdate;
 	private User user;
@@ -76,6 +77,15 @@ public class Post {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+	
+	@Column(name = "profile_image", nullable = true)
+	public String getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 
 	@Column(name = "content", nullable = false, columnDefinition = "varchar(6000)")

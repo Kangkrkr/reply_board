@@ -21,6 +21,7 @@ public class PostModel {
 	private String content;
 	private int indent;
 	private String image;
+	private String profileImage;
 	private Date regdate;
 	private String type;
 	private User user;

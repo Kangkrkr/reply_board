@@ -1,7 +1,10 @@
 package com.pilot.service;
 
 import java.net.URI;
+import java.util.List;
 
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -70,5 +73,10 @@ public class AuthorizeService {
 		UserModel user = restTemplate.getForObject(userUri, UserModel.class);
 		
 		return user;
+	}
+	
+	public String logout(){
+		
+		return "";
 	}
 }

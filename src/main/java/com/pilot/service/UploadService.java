@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -30,23 +31,31 @@ public class UploadService {
 	HttpSession session;
 
 	@Autowired
+	UserService userService;
+	
+	@Autowired
 	PostService postService;
+	
+	@Autowired
+	AuthorizeService authorizeService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
-	public String upload(MultipartRequest mr, WriteForm writeForm) {
+	public String upload(MultipartRequest mr, WriteForm writeForm, String token) {
 
 		Post post = new Post();
 
 		String type = writeForm.getType().split("#")[0];
 		String fixedPath = imageUploadAndSavePath(mr);
 
+		User uploader = userService.findByEmail(authorizeService.getMyInform(token).getEmail());
+		
 		post.setType(type);
 		post.setImage(fixedPath);
 		post.setContent(writeForm.getContent());
-		post.setUser((User) session.getAttribute("userInfo"));
+		post.setUser(uploader);
+		post.setProfileImage(uploader.getProfileImage());
 
-		
 		if (type.equals("post")) { 
 			Post saved = postService.write(post);	// path를 지정하기 위해 엔티티를 저장 후 그 저장된 정보를 받아온다.
 			saved.setPath((999999 - saved.getId()) + "/");		// path를 다음과 같이 수정한다.

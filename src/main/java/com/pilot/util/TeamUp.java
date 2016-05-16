@@ -15,4 +15,8 @@ public class TeamUp {
 	
 	// user
 	public static final String USER = "https://auth.tmup.com/v1/user";
+	
+	// logout
+	public static final String LOGOUT = "http://tmup.com/signout";
+	
 }
