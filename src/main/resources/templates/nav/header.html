@@ -6,14 +6,14 @@
 		<ul class="nav navbar-nav navbar-right">
 			<li><a th:text="'환영합니다 ' + ${userInfo.name} + '님'"></a></li>
 			<li>
-				<div th:switch="${userInfo.profileImage}" onclick="alert('hello?');">
+				<div th:switch="${userInfo.profileImage}" th:onclick="'openNickModal(\''+${userInfo.email}+'\');'">
 					<img th:case="null" style="margin-top: 5px;" th:src="@{/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
 					<img th:case="*" style="margin-top: 5px;" th:src="${userInfo.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
 				</div>
 			</li>
 			
 			<li><a href="#" th:onclick="'openModal(\'post\', \''+${userInfo.email}+'\'); return false;'"> 글쓰기</a></li>
-			<li><a href="#" onclick="logout(); return false;"> 로그아웃</a></li>
+			<li><a href="#" onclick="location.href='/logout'; return false;"> 로그아웃</a></li>
 		</ul>
 	</div>
 </nav>

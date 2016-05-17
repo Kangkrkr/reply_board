@@ -22,9 +22,11 @@ if(message != null){
 	
 	<div th:replace="nav/header :: nav"></div>
 
+	<!-- 
 	<div th:each="cookie : ${#httpServletRequest.cookies}">
 		<p th:text="${cookie.getValue()}"></p>
 	</div>
+	 -->
 
 	<table>
 		<tr th:each="post: ${posts}">
@@ -42,7 +44,9 @@ if(message != null){
 
 	<div th:replace="nav/footer :: nav"></div>
 	<div th:replace="modal/post_modal :: div"></div>
+	<div th:replace="modal/nickname_modal :: div"></div>
 
+	<script th:src="@{/js/jquery.cookie.js}"></script>
 	<script th:src="@{/js/jquery.form.js}"></script>
 	<script th:src="@{/js/jquery.MultiFile.js}"></script>
 	<script th:src="@{/js/ajax/ajax.js}"></script>

@@ -110,16 +110,3 @@ var deleteArticle = function(currentUser, uploader, targetId) {
 	});
 };
 
-var logout = function() {
-	$.ajax({
-		type : "POST",
-		url : "/logout",
-		success : function(result) {
-			alert(result);
-			location.href = '/form/login';
-		},
-		error : function() {
-			alert('로그아웃 중 오류가 발생했습니다.');
-		}
-	});
-};

@@ -1,5 +1,6 @@
 package com.pilot.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,15 +14,18 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class User {
+public class User implements Serializable {
 
 	private Integer id;
 	private String email;
 	private String name;
+	private String nickname;
 	private String profileImage;
 	private String password;
 	private List<Post> posts = new ArrayList<>();
@@ -61,6 +65,15 @@ public class User {
 		this.name = name;
 	}
 
+	@Column(name = "nickname", nullable = true)
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	
 	@Column(name = "profile_image", nullable = true)
 	public String getProfileImage() {
 		return profileImage;
@@ -79,6 +92,7 @@ public class User {
 		this.password = password;
 	}
 
+	@JsonIgnore // json변환시 불필요한 필드임을 알리는 어노테이션(안해주니 redis에 담을때 무한재귀호출이 일어남)
 	@OneToMany(mappedBy = "user", targetEntity = Post.class)
 	@Cascade(value = {CascadeType.SAVE_UPDATE})
 	public List<Post> getPosts() {

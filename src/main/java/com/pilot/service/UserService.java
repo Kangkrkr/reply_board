@@ -40,4 +40,14 @@ public class UserService {
 		return userDao.login(loginData);
 	}
 	
+	public String setNickname(String nickname, User user){
+		if(user != null){
+			user.setNickname(nickname);
+			join(user);
+			return "닉네임 설정에 성공하였습니다.";
+		}
+		
+		return "닉네임 설정에 실패하였습니다.";
+	}
+	
 }

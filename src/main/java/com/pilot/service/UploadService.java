@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -39,16 +38,24 @@ public class UploadService {
 	@Autowired
 	AuthorizeService authorizeService;
 	
+	@Autowired
+	RedisService redisService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
-	public String upload(MultipartRequest mr, WriteForm writeForm, String token) {
+	public String upload(MultipartRequest mr, WriteForm writeForm, String tmid) {
 
 		Post post = new Post();
 
 		String type = writeForm.getType().split("#")[0];
 		String fixedPath = imageUploadAndSavePath(mr);
 
-		User uploader = userService.findByEmail(authorizeService.getMyInform(token).getEmail());
+		// cookie에 저장된 key(token)으로 유저 정보 불러오기.
+		User uploader = redisService.getUserInfoByKey(tmid);
+		
+		if(uploader == null){
+			return "유효하지 않은 사용자 입니다.";
+		}
 		
 		post.setType(type);
 		post.setImage(fixedPath);
@@ -87,7 +94,7 @@ public class UploadService {
 			update.setImage(fixedPath);
 			update.setContent(writeForm.getContent());
 			update.setRegdate(new Date());
-			update.setUser((User)session.getAttribute("userInfo"));
+			update.setUser(uploader);
 			
 			postService.update(update);
 			
@@ -107,14 +114,7 @@ public class UploadService {
 		
 		File storePath = new File(path);
 		if(!storePath.exists()){
-			boolean result = storePath.mkdir();
-			if(result){
-				logger.info(path + " 생성에 성공하였습니다.");
-			}else{
-				logger.info(path + " 생성에 실패하였습니다.");
-			}
-		}else{
-			logger.info(path + "는 이미 존재하는 경로입니다.");
+			storePath.mkdir();
 		}
 		
 		MultipartFile photo = mr.getFile("photo");
