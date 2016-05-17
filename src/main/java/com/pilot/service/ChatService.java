@@ -9,8 +9,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class ChatService {
 
-	public String getRoomList(){
+	public String getRoomList(String token){
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://edge.tmup.com/v1/rooms");
+		uriBuilder.queryParam("token", token);;
 		
 		URI roomUri = uriBuilder.build().encode().toUri();
 		

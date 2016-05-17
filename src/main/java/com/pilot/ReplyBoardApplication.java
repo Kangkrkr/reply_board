@@ -10,5 +10,4 @@ public class ReplyBoardApplication {
 		SpringApplication.run(ReplyBoardApplication.class, args);
 		System.out.println("server on");
 	}
-
 }

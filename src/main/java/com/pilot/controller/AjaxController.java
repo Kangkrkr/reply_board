@@ -1,7 +1,6 @@
 package com.pilot.controller;
 
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartRequest;
 import com.pilot.entity.User;
 import com.pilot.form.WriteForm;
 import com.pilot.model.ListSizeModel;
-import com.pilot.service.AuthorizeService;
 import com.pilot.service.PostService;
 import com.pilot.service.UploadService;
 import com.pilot.service.UserService;
@@ -38,32 +36,9 @@ public class AjaxController {
 	private UploadService uploadService;
 	
 	@Autowired
-	private AuthorizeService authorizeService; 
-	
-	@Autowired
-	private HttpSession session;
+	HttpSession session;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AjaxController.class);
-	
-	@RequestMapping(value = "logout", method = RequestMethod.POST)
-	public String logout(@CookieValue(value = "token", required = false) String token, HttpServletRequest request){
-		
-		// https://tmup.com/signout?token=토큰 접속시 로그아웃 가능.
-		
-		try{
-			if(null != token){
-				//session.invalidate();
-				// 세션에서 쿠키로 바뀜과 팀업 oauth 인증을 통한 로그인으로
-				// 바뀌었기 때문에 새로운 로그아웃 처리 필요.
-				return Message.LOGOUT_SUCCESS;
-			}
-		}catch(Exception e){
-			logger.error("logout errror", e.toString());
-			e.printStackTrace();
-		}
-		
-		return Message.LOGOUT_FAILED;
-	}
 	
 	@RequestMapping(value = "delete", method = RequestMethod.GET)
 	public String delete(@RequestParam("id") Integer id){
@@ -86,12 +61,12 @@ public class AjaxController {
 	
 	// 글 업로드
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String upload(MultipartRequest mr, @Validated WriteForm writeForm, BindingResult result, @CookieValue("token") String token){
+	public String upload(MultipartRequest mr, @Validated WriteForm writeForm, BindingResult result, @CookieValue("tmid") String tmid){
 		if(result.hasErrors()){
 			return (result.hasFieldErrors("content")) ? Message.NOTIFY_WRITE : Message.ALERT_ERROR;
 		}
 		
-		return uploadService.upload(mr, writeForm, token);
+		return uploadService.upload(mr, writeForm, tmid);
 	}
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)

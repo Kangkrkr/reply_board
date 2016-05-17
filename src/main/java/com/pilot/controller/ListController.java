@@ -2,8 +2,6 @@ package com.pilot.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,34 +14,29 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.pilot.entity.Post;
 import com.pilot.model.PostModel;
 import com.pilot.service.AuthorizeService;
-import com.pilot.service.ChatService;
 import com.pilot.service.PostService;
-import com.pilot.service.UserService;
+import com.pilot.service.RedisService;
 
 @Controller
-@RequestMapping("list")
+@RequestMapping("/list")
 public class ListController {
 
-	@Autowired
-	private UserService userService;
-	
 	@Autowired 
 	private PostService postService;
-	
-	@Autowired
-	private HttpSession session;
 	
 	@Autowired
 	private AuthorizeService authorizeService;
 	
 	@Autowired
-	private ChatService chatService;
+	private RedisService redisService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String showList(@RequestParam("page") Integer page, @CookieValue(value = "token", required = false) String token, Model model, RedirectAttributes reAttr) {
+	public String showList(@RequestParam("page") Integer page, @CookieValue(value = "tmid", required = false) String tmid, 
+							Model model, RedirectAttributes reAttr) {
 
-		if(null == token){
-			System.err.println("사용자정보가 없음.");
+		// 쿠키 만료시 다시 인증시키게 한다.
+		if(null == tmid){
+			return "redirect:" + authorizeService.getAuthorizationPageUri().toString();
 		}
 		
 		if(page <= 1) page = 1;
@@ -52,23 +45,10 @@ public class ListController {
 		List<Post> posts = postService.selectPost(page);
 		List<PostModel> postDTOs = postService.createPostDTOs(posts);
 
-		model.addAttribute("userInfo", userService.findByEmail(authorizeService.getMyInform(token).getEmail()));
+		// redis에서 tmid 키로 사용자 정보를 가져온다.
+		model.addAttribute("userInfo", redisService.getUserInfoByKey(tmid));
 		model.addAttribute("posts", postDTOs);
 
 		return "list";
-		
-		/*
-		if (session.getAttribute("userInfo") == null) {
-			reAttr.addFlashAttribute("message", Message.INVALID_ACCESS);
-			return "redirect:/form/login";
-		} else {
-			List<Post> posts = postService.selectPost(page);
-			List<PostModel> postDTOs = postService.createPostDTOs(posts);
-
-			model.addAttribute("posts", postDTOs);
-
-			return "list";
-		}
-		*/
 	}
 }

@@ -20,6 +20,9 @@ public class AuthorizeService {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	RedisService redisService;
+	
 	public URI getAuthorizationPageUri() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("response_type", "code");
@@ -33,8 +36,6 @@ public class AuthorizeService {
 		// https://auth.tmup.com/oauth2/authorize?response_type=code&client_id=teamup-testbot&redirect_uri=http://localhost:8010/oauth2_callback
 		// 위 uri로 접속하면 팀업 로그인 화면으로 접속된다. 이미 세션에 로그인정보가 담겨있다면 아래의 uri를 넘긴다.
 		URI redirectUri = uriBuilder.build().encode().toUri();
-
-		// RestTemplate restTemplate = new RestTemplate();
 
 		// 해당 uri로 접속하면 로그인 페이지가 뜨고, 로그인을 하게되면 다음의 redirect_uri로 아래 code가 붙여지며
 		// 지정한 redirect_uri로 redirecting 된다.
@@ -77,18 +78,24 @@ public class AuthorizeService {
 		return user;
 	}
 	
-	public void checkUser(String token){
+	public void checkUser(String tmId, String token){
 		
-		UserModel user = getMyInform(token);
+		// 팀업서버에서 토큰으로 사용자 정보를 얻어온다.
+		UserModel myInfo = getMyInform(token);
+		User user = userService.findByEmail(myInfo.getEmail());
 		
-		if(null == userService.findByEmail(user.getEmail())){
+		// local DB에 해당 사용자가 없다면,
+		if(null == user){
 			User newer = new User();
-			newer.setEmail(user.getEmail());
-			newer.setName(user.getName());
-			newer.setProfileImage(user.getProfileImage());
+			newer.setEmail(myInfo.getEmail());
+			newer.setName(myInfo.getName());
+			newer.setProfileImage(myInfo.getProfileImage());
 			
+			// local DB에 저장후 redis에 저장.
 			userService.join(newer);
 		}
+		
+		redisService.addInfo(tmId, token);
 	}
 	
 	public String logout(){
