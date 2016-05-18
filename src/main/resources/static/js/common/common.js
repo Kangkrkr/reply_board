@@ -14,12 +14,13 @@ var nick_callback = function() {
 
 var openModal = function(type, targetId) {
 
+	var inputElem = $('input[type=hidden]');
+	
 	if (type === 'post') {
-		$('input[type=hidden]').val('post');
-	} else if (type === 'reply') {
-		$('input[type=hidden]').val('reply#' + targetId);
-	} else if (type === 'edit'){
-		$('input[type=hidden]').val('edit#' + targetId);
+		$(inputElem).val(type);
+	} else {
+		// type이 reply나 edit 시.
+		$(inputElem).val(type + '#' + targetId);
 	}
 
 	// 입력 폼 초기화 후 보여주기.

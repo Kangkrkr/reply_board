@@ -7,7 +7,7 @@
 				</button>
 				<h4 class="modal-title">별명을 설정해주세요.</h4>
 			</div>
-			<form name="nick_form" id="nick_form" action="/nickname" method="POST">
+			<form name="nick_form" id="nick_form" th:action="@{/nickname}" method="POST">
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="content">닉네임설정</label>

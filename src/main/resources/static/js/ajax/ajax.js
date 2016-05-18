@@ -95,11 +95,8 @@ var deleteArticle = function(currentUser, uploader, targetId) {
 	}
 	
 	$.ajax({
-		type : "GET",
-		url : "/delete",
-		data : {
-			id : targetId
-		},
+		type : "DELETE",
+		url : "/delete/" + targetId,
 		success : function(result) {
 			alert(result);
 			window.location.reload();

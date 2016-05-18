@@ -1,0 +1,23 @@
+/*!  2016-05-18 */
+@CHARSET "UTF-8";
+
+input {
+	margin-bottom: 10px;
+}
+
+.form-signin-heading{
+	text-align: center;
+}
+@CHARSET "UTF-8";
+
+div .input-group{
+	margin-top: 20px;
+}
+
+.submit-form{
+	margin-top: 20px;
+}
+
+.form-signin-heading{
+	text-align: center;
+}

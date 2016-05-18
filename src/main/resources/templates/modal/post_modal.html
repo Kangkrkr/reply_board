@@ -7,7 +7,7 @@
 				</button>
 				<h4 class="modal-title">입력창</h4>
 			</div>
-			<form name="upload" id="upload" action="/upload" method="POST" enctype="multipart/form-data">
+			<form name="upload" id="upload" th:action="@{/upload}" method="POST" enctype="multipart/form-data">
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="content">글 쓰기</label>
