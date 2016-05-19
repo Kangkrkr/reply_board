@@ -28,6 +28,7 @@ public class Post {
 	private String content;
 	private Date regdate;
 	private User user;
+	private Integer room;
 	
 	private Post rootPost;
 	private List<Post> branchPosts = new ArrayList<>();
@@ -115,6 +116,15 @@ public class Post {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Column(name = "room", nullable = true)
+	public Integer getRoom() {
+		return room;
+	}
+
+	public void setRoom(Integer room) {
+		this.room = room;
 	}
 
 	@ManyToOne(targetEntity = Post.class)

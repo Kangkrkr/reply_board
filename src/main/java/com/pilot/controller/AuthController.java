@@ -32,12 +32,11 @@ public class AuthController {
 	
 	@RequestMapping("/oauth2_callback")
 	public String oauth(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response){
-
-		cookieService.createTeamIdCookie(request, response);
 		
 		String token = authorizeService.getToken(code);
 		authorizeService.checkUser(token, request);
 		
+		cookieService.createTeamIdCookie(request, response);
 		cookieService.createTokenCookie(response, token);
 		
 		return "redirect:/list?page=1";
@@ -48,10 +47,12 @@ public class AuthController {
 		
 		Cookie tmIdCookie = cookieService.getCookie(request, "tmid");
 		Cookie tokenCookie = cookieService.getCookie(request, "tk");
+		
+		String email = authorizeService.getMyInform(tokenCookie.getValue()).getEmail();
+		redisService.deleteUserInfoByEmail(email);
+		
 		cookieService.removeCookie(response, tmIdCookie);
 		cookieService.removeCookie(response, tokenCookie);
-		
-		redisService.deleteUserInfoByKey(tmIdCookie.getValue());
 		
 		return "redirect:/login";
 	}

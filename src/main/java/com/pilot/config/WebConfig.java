@@ -1,27 +1,14 @@
 package com.pilot.config;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.pilot.model.UserModel;
-import com.pilot.service.AuthorizeService;
-import com.pilot.service.CookieService;
-import com.pilot.util.IPUtil;
 
+// key탈취 대비 user-agent , ip 체크 등의 유효성 검사 필요	---->> 이 방법이 아니었음
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig extends WebMvcConfigurerAdapter {}
 
+	/*
 	@Autowired
 	private AuthorizeService authorizeService;
 	
@@ -30,8 +17,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	
 	@Autowired
 	private RedisTemplate<String, UserModel> template;
-	
-	private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
 	
 	// 모든 URL로의 request에 대해 다음의 Intercepter를 적용한다.
 	@Override
@@ -71,11 +56,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 			return true;
 		}
 		
-		/* 컨트롤러로 요청이 보내지고 난 후.
+		// 컨트롤러로 요청이 보내지고 난 후.
 		@Override
 		public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 		}
-		*/
 		
 		public boolean compareIP(String src, String dest) {
 			return dest.equals(src);
@@ -84,5 +68,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		public boolean compareUA(String src, String dest) {
 			return dest.equals(src);
 		}
+		
 	}
 }
+	*/

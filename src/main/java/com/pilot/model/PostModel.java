@@ -28,9 +28,9 @@ public class PostModel {
 	
 	public static PostModel create(Post post) {
 
-		PostModel postDTO = new PostModel();
-		BeanUtils.copyProperties(post, postDTO);
+		PostModel postModel = new PostModel();
+		BeanUtils.copyProperties(post, postModel);
 		
-		return postDTO;
+		return postModel;
 	}
 }

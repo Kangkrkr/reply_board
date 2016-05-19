@@ -13,6 +13,10 @@ public class LoginController {
 	@Autowired
 	private AuthorizeService authorizeService;
 	
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String index() {
+		return login();
+	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {

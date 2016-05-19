@@ -4,22 +4,25 @@
 			th:style="'margin-left:' + (25 * ${post.indent}) + 'px;'">
 			<div>
 				<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
-				<div th:switch="${post.profileImage}">
-					<img th:case="null" style="margin-top: 5px;" th:src="@{/public/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
-					<img th:case="*" style="margin-top: 5px;" th:src="${post.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
-				</div>
+				<span th:switch="${post.profileImage}">
+					<img th:case="null" style="margin-top: 2px; margin-right: 6px;" th:src="@{/public/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
+					<img th:case="*" style="margin-top: 2px; margin-right: 6px;" th:src="${post.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
+				</span>
 				
-				<!-- <b th:text="${post.user.name}">게시자</b> --> 
-				<span class="badge" th:text="'닉네임 - ' + ${post.user.nickname}">게시자닉네임</span>
-				<b th:text="${post.user.email}">이메일</b> 
+				<span th:switch="${post.user.nickname}" style="margin-left: 4px;">
+					<span th:case="null" class="badge" th:text="닉네임없음 ">닉네임없음</span>
+					<span th:case="*" class="badge" th:text="'닉네임 - ' + ${post.user.nickname}">사용자닉네임</span>
+				</span>
+				<b th:text="${post.user.email}" style="margin-left: 3px;">이메일</b> 
 				<small th:text="'(' + ${#dates.format(post.regdate, 'yyyy년 MM월 dd일 - hh시 mm분 ss초') + ')'}">작성일</small> 
-				<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'">답글</a>
-				<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${userInfo.id}+'\', \''+${post.user.id}+'\');'">수정</a>
-				<a th:onclick="'deleteArticle(\''+${userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'">삭제</a>
+				<a th:onclick="'openModal(\'reply\', \''+${post.id}+'\');'" style="margin-left: 6px;"><b>답글</b></a>
+				<a th:onclick="'editArticle(\'edit\', \''+${post.id}+'\', \''+${userInfo.id}+'\', \''+${post.user.id}+'\');'"><b>수정</b></a>
+				<a th:onclick="'deleteArticle(\''+${userInfo.id}+'\', \''+${post.user.id}+'\', \''+${post.id}+'\');'"><b>삭제</b></a>
 			</div>
 			<div th:switch="${post.image}">
 				<div th:case="null"></div>
-				<img th:case="*" class="img-thumbnail" th:src="'http://local.tmup.com:8010/images/' + ${post.image}" alt="..." />
+				<img th:case="*" class="img-thumbnail" width="200px" height="160px"
+					 th:src="'http://local.tmup.com:8010/images/' + ${post.image}" alt="..." />
 			</div>
 			<p th:text="${post.content}" style="margin: 15px;">게시물 내용</p>
 		</div>

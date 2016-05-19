@@ -1,6 +1,7 @@
 package com.pilot.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,6 +27,8 @@ public class UserModel implements Serializable {
 	@JsonProperty("profile_image")
 	private String profileImage;
 	
-	private String userAgent;
-	private String clientIp;
+	@JsonProperty("teams")
+	private List<TeamModel> teams;
+	
+	private String token;
 }

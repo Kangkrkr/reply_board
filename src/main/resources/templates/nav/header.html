@@ -4,7 +4,7 @@
 			<a class="navbar-brand" href="#"> Pilot Project </a>
 		</div>
 		<ul class="nav navbar-nav navbar-right">
-			<li><a th:text="'환영합니다 ' + ${userInfo.name} + '님'"></a></li>
+			<li><a th:text="'환영합니다 ' + ${userInfo?.name} + '님'"></a></li>
 			<li>
 				<div th:switch="${userInfo.profileImage}" th:onclick="'openNickModal(\''+${userInfo.email}+'\');'">
 					<img th:case="null" style="margin-top: 5px;" th:src="@{/public/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>

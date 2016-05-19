@@ -17,7 +17,12 @@ public class TeamUp {
 	// user
 	public static final String USER = "https://auth.tmup.com/v1/user";
 	
-	// signin
-	public static final String SIGN_IN = "https://tmup.com/signin?return_to=";
+	// edge
+	public static final String EDGE = "https://edge.tmup.com/v1";
 	
+	// room
+	public static final String ROOM = EDGE + "/room/";
+	
+	// message
+	public static final String MESSAGE = EDGE + "/message/";
 }

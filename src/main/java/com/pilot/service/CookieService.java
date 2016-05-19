@@ -64,7 +64,7 @@ public class CookieService {
 			
 			return cookieMap.get(key);
 		}catch(NullPointerException e){
-			logger.error("null pointer exception", e.toString());
+			logger.error("찾으려는 쿠키가 존재하지 않습니다.", e.toString());
 			return null;
 		}
 	}

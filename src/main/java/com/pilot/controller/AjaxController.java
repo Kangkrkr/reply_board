@@ -1,7 +1,6 @@
 package com.pilot.controller;
 
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +66,7 @@ public class AjaxController {
 			return (result.hasFieldErrors("content")) ? Message.NOTIFY_WRITE : Message.ALERT_ERROR;
 		}
 		
-		return uploadService.upload(mr, writeForm, DigestUtils.sha256Hex(authorizeService.getMyInform(tk).getEmail()));
+		return uploadService.upload(mr, writeForm, tk);
 	}
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)
