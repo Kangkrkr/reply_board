@@ -2,6 +2,7 @@ package com.pilot.controller;
 
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,11 +32,10 @@ public class ListController {
 	private RedisService redisService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String showList(@RequestParam("page") Integer page, @CookieValue(value = "tmid", required = false) String tmid, 
-							Model model, RedirectAttributes reAttr) {
+	public String showList(@RequestParam("page") Integer page, @CookieValue(value = "tk", required = false) String tk, Model model, RedirectAttributes reAttr) {
 
 		// 쿠키 만료시 다시 인증시키게 한다.
-		if(null == tmid){
+		if(null == tk){
 			return "redirect:" + authorizeService.getAuthorizationPageUri().toString();
 		}
 		
@@ -46,7 +46,7 @@ public class ListController {
 		List<PostModel> postDTOs = postService.createPostDTOs(posts);
 
 		// redis에서 tmid 키로 사용자 정보를 가져온다.
-		model.addAttribute("userInfo", redisService.getUserInfoByKey(tmid));
+		model.addAttribute("userInfo", redisService.getUserInfoByKey(DigestUtils.sha256Hex(authorizeService.getMyInform(tk).getEmail())));
 		model.addAttribute("posts", postDTOs);
 
 		return "list";

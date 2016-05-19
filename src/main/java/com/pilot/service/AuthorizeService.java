@@ -2,6 +2,9 @@ package com.pilot.service;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -10,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pilot.entity.User;
-import com.pilot.model.TokenJsonModel;
+import com.pilot.model.TokenModel;
 import com.pilot.model.UserModel;
 import com.pilot.util.TeamUp;
 
@@ -60,7 +63,7 @@ public class AuthorizeService {
 		// {"access_token":"22b7e7b13dfebe7508622af81808b3a65c841ba040a289d62e1c872f6e0bbe4b","expires_in":86399,"token_type":"bearer","refresh_token":"1efc73193c6b901ec3a14453dcb2f99fbbf5c91b338b11b6d69982649f89ff7f"}
 		// 얻은 json string을 model 객체에 담는다.
 		RestTemplate restTemplate = new RestTemplate();
-		TokenJsonModel token = restTemplate.getForObject(tokenUri, TokenJsonModel.class);
+		TokenModel token = restTemplate.getForObject(tokenUri, TokenModel.class);
 		
 		return token.getAccessToken();
 	}
@@ -78,7 +81,7 @@ public class AuthorizeService {
 		return user;
 	}
 	
-	public void checkUser(String tmId, String token){
+	public void checkUser(String token, HttpServletRequest request){
 		
 		// 팀업서버에서 토큰으로 사용자 정보를 얻어온다.
 		UserModel myInfo = getMyInform(token);
@@ -95,11 +98,7 @@ public class AuthorizeService {
 			userService.join(newer);
 		}
 		
-		redisService.addInfo(tmId, token);
-	}
-	
-	public String logout(){
-		
-		return "";
+		String key = DigestUtils.sha256Hex(myInfo.getEmail());
+		redisService.addInfo(key, myInfo, request);
 	}
 }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pilot.service.AuthorizeService;
+import com.pilot.service.CookieService;
 import com.pilot.service.RedisService;
-import com.pilot.util.CookieUtil;
 
 @Controller
 public class AuthController {
@@ -24,51 +24,41 @@ public class AuthController {
 	
 	@Autowired
 	private RedisService redisService;
+
+	@Autowired
+	private CookieService cookieService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 	
-	// 실제 인증을 수행하게 되는 곳.
-	// Authorization Server에서 authorization code를 담아 여기로 redirecting 하게됨.
-	// 여기서 code를 받아 다시 Authorization Server로 부터 code를 기반으로 token을 얻는다.
 	@RequestMapping("/oauth2_callback")
 	public String oauth(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response){
-		
-		// key탈취 대비 user-agent , ip 체크 등의 유효성 검사 필요
-		// PROXY SERVER 또는 LOAD BALANCER를 거쳐나온 클라이언트의 IP
-		String ipAddress = request.getHeader("X-FORWARDED-FOR");
-		if (ipAddress == null) {
-			// 보편적인 클라이언트 IP를 수집하는 방법
-			ipAddress = request.getRemoteAddr();
-		}
-		
-		Cookie tmIdCookie = CookieUtil.getCookie(request, "tmid");
-		tmIdCookie.setHttpOnly(true);
-		tmIdCookie.setMaxAge(60 * 60);
-		tmIdCookie.setDomain(".tmup.com");
-		tmIdCookie.setPath("/");
-		response.addCookie(tmIdCookie);
+
+		cookieService.createTeamIdCookie(request, response);
 		
 		String token = authorizeService.getToken(code);
-		authorizeService.checkUser(tmIdCookie.getValue(), token);
+		authorizeService.checkUser(token, request);
 		
-		logger.info("token : " + token);
-
+		cookieService.createTokenCookie(response, token);
+		
 		return "redirect:/list?page=1";
 	}
-	
+
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request, HttpServletResponse response){
 		
-		// 로그아웃시 다음의 쿠키를 삭제한다. 삭제시 Domain과 Path를 지정해주지 않으면 삭제가 되지 않는다.
-		Cookie tmIdCookie = CookieUtil.getCookie(request, "tmid");
-		tmIdCookie.setMaxAge(0);
-		tmIdCookie.setDomain(".tmup.com");
-		tmIdCookie.setPath("/");          
-		response.addCookie(tmIdCookie);
+		Cookie tmIdCookie = cookieService.getCookie(request, "tmid");
+		Cookie tokenCookie = cookieService.getCookie(request, "tk");
+		cookieService.removeCookie(response, tmIdCookie);
+		cookieService.removeCookie(response, tokenCookie);
 		
 		redisService.deleteUserInfoByKey(tmIdCookie.getValue());
 		
 		return "redirect:/login";
-		
 	}
+	
+	@RequestMapping(value = "/auth/error", method = RequestMethod.GET)
+	public String error(){
+		return "error/error";
+	}
+	
 }

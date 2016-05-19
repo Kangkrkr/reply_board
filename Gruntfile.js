@@ -9,17 +9,17 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       basic: {
-        src: 'src/main/resources/static/css/*',
-        dest: 'src/main/resources/static/css/tmup_board.css'
+        src: 'src/main/resources/static/public/css/*',
+        dest: 'src/main/resources/static/public/css/tmup_board.css'
       },
       extras: {
-    	  src: ['src/main/resources/static/js/ajax/ajax.js',
-    	        'src/main/resources/static/js/common/common.js',
-    	        'src/main/resources/static/js/multipart/multipart.js',
-    	        'src/main/resources/static/js/multipart/jquery.form.js',
-    	        'src/main/resources/static/js/multipart/jquery.MultiFile.js'
+    	  src: ['src/main/resources/static/public/js/ajax/ajax.js',
+    	        'src/main/resources/static/public/js/common/common.js',
+    	        'src/main/resources/static/public/js/multipart/multipart.js',
+    	        'src/main/resources/static/public/js/multipart/jquery.form.js',
+    	        'src/main/resources/static/public/js/multipart/jquery.MultiFile.js'
     	        ],
-    	  dest: 'src/main/resources/static/js/tmup_board.js'
+    	  dest: 'src/main/resources/static/public/js/tmup_board.js'
       }
     },
     uglify: {	// src에 명시한 파일의 소스를 uglify 시킨다. 소스는 공백이 제거되어 압축됨.
@@ -27,8 +27,8 @@ module.exports = function(grunt) {
     		banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
     	},
     	build: {
-    		src: 'src/main/resources/static/js/tmup_board.js',
-    		dest: 'src/main/resources/static/js/tmup_board.min.js'
+    		src: 'src/main/resources/static/public/js/tmup_board.js',
+    		dest: 'src/main/resources/static/public/js/tmup_board.min.js'
     	}
     }
   });

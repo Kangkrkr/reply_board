@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
-import com.pilot.entity.User;
+import com.pilot.model.UserModel;
 
 @Configuration
 @EnableCaching
@@ -31,8 +31,8 @@ public class RedisConfig {
 	public RedisTemplate<?, ?> redisTemplate(){
 		RedisTemplate<?, ?> redis = new RedisTemplate<Object, Object>();
 		redis.setConnectionFactory(jedisConnectionFactory());
-		redis.setKeySerializer(new GenericToStringSerializer<>(User.class));
-		redis.setValueSerializer(new Jackson2JsonRedisSerializer<>(User.class));
+		redis.setKeySerializer(new GenericToStringSerializer<>(String.class));
+		redis.setValueSerializer(new Jackson2JsonRedisSerializer<>(UserModel.class));
 		
 		return redis;
 	}

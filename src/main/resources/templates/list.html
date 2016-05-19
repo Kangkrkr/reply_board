@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <title>글 리스트</title>
-<script th:src="@{/bower_components/jQuery/dist/jquery.min.js}"></script>
-<script th:src="@{/bower_components/bootstrap/dist/js/bootstrap.min.js}"></script>
-<link rel="stylesheet" th:href="@{/bower_components/bootstrap/dist/css/bootstrap.min.css}" />
-<link rel="stylesheet" th:href="@{/bower_components/bootstrap/dist/css/bootstrap-theme.min.css}" />
+<script th:src="@{/public/bower_components/jQuery/dist/jquery.min.js}"></script>
+<script th:src="@{/public/bower_components/bootstrap/dist/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/public/bower_components/bootstrap/dist/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css}" />
 <script th:inline="javascript">
 /*<![CDATA[*/
 
@@ -40,6 +40,6 @@ if(message != null){
 	<div th:replace="modal/post_modal :: div"></div>
 	<div th:replace="modal/nickname_modal :: div"></div>
 
-	<script th:src="@{/js/tmup_board.min.js}"></script>
+	<script th:src="@{/public/js/tmup_board.min.js}"></script>
 </body>
 </html>

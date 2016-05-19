@@ -1,8 +1,7 @@
 package com.pilot.controller;
 
 
-import javax.servlet.http.HttpSession;
-
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartRequest;
 
 import com.pilot.entity.User;
-import com.pilot.form.WriteForm;
 import com.pilot.model.ListSizeModel;
+import com.pilot.model.WriteModel;
+import com.pilot.service.AuthorizeService;
 import com.pilot.service.PostService;
 import com.pilot.service.UploadService;
 import com.pilot.service.UserService;
@@ -37,7 +37,7 @@ public class AjaxController {
 	private UploadService uploadService;
 	
 	@Autowired
-	HttpSession session;
+	private AuthorizeService authorizeService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AjaxController.class);
 	
@@ -62,12 +62,12 @@ public class AjaxController {
 	
 	// 글 업로드
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String upload(MultipartRequest mr, @Validated WriteForm writeForm, BindingResult result, @CookieValue("tmid") String tmid){
+	public String upload(MultipartRequest mr, @Validated WriteModel writeForm, BindingResult result, @CookieValue("tk") String tk){
 		if(result.hasErrors()){
 			return (result.hasFieldErrors("content")) ? Message.NOTIFY_WRITE : Message.ALERT_ERROR;
 		}
 		
-		return uploadService.upload(mr, writeForm, tmid);
+		return uploadService.upload(mr, writeForm, DigestUtils.sha256Hex(authorizeService.getMyInform(tk).getEmail()));
 	}
 	
 	@RequestMapping(value = "list_size", method = RequestMethod.GET)

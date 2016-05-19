@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>에러 페이지</title>
+<script th:src="@{/public/bower_components/jQuery/dist/jquery.min.js}"></script>
+<script th:src="@{/public/bower_components/bootstrap/dist/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/public/bower_components/bootstrap/dist/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css}" />
+</head>
+<body>
+<div style="margin: 20px;">
+	<div class="col-md-4"></div>
+	<div class="col-md-8">
+		<div class="jumbotron col-md-6">
+			<div class="col-md-12">
+				<h1>ERROR!</h1>
+				<p>올바르지 못한 시도가 감지되었습니다.</p>
+				<p>
+					<a class="btn btn-primary btn-lg" href="/login" role="button">로그인 화면으로</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,30 +18,21 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import com.pilot.entity.Post;
 import com.pilot.entity.User;
-import com.pilot.form.WriteForm;
+import com.pilot.model.WriteModel;
 import com.pilot.util.Message;
 
 @Service
 public class UploadService {
 
 	@Autowired
-	HttpSession session;
-
-	@Autowired
-	UserService userService;
+	private PostService postService;
 	
 	@Autowired
-	PostService postService;
-	
-	@Autowired
-	AuthorizeService authorizeService;
-	
-	@Autowired
-	RedisService redisService;
+	private RedisService redisService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
-	public String upload(MultipartRequest mr, WriteForm writeForm, String tmid) {
+	public String upload(MultipartRequest mr, WriteModel writeForm, String tk) {
 
 		Post post = new Post();
 
@@ -51,7 +40,7 @@ public class UploadService {
 		String fixedPath = imageUploadAndSavePath(mr);
 
 		// cookie에 저장된 key(token)으로 유저 정보 불러오기.
-		User uploader = redisService.getUserInfoByKey(tmid);
+		User uploader = redisService.getUserInfoByKey(tk);
 		
 		if(uploader == null){
 			return "유효하지 않은 사용자 입니다.";
@@ -64,14 +53,14 @@ public class UploadService {
 		post.setProfileImage(uploader.getProfileImage());
 
 		if (type.equals("post")) { 
-			Post saved = postService.write(post);	// path를 지정하기 위해 엔티티를 저장 후 그 저장된 정보를 받아온다.
-			saved.setPath((999999 - saved.getId()) + "/");		// path를 다음과 같이 수정한다.
-			postService.update(saved);				// 수정된 정보 재반영.
+			Post saved = postService.write(post);
+			saved.setPath((999999 - saved.getId()) + "/");
+			postService.update(saved);
 			return Message.POST_UPLOAD_SUCCESS;
 		} 
 		else if (type.equals("reply")) {
 
-			Post saved = postService.write(post);	// 삽입할 엔티티를 저장후 역시 정보를 받아옴.
+			Post saved = postService.write(post);
 			
 			// 게시글을 삽입할 대상의 id를 가져옴.
 			Integer targetId = toInteger(writeForm.getType().split("#")[1]);

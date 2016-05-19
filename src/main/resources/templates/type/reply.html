@@ -5,7 +5,7 @@
 			<div>
 				<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> 
 				<div th:switch="${post.profileImage}">
-					<img th:case="null" style="margin-top: 5px;" th:src="@{/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
+					<img th:case="null" style="margin-top: 5px;" th:src="@{/public/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
 					<img th:case="*" style="margin-top: 5px;" th:src="${post.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
 				</div>
 				
@@ -19,7 +19,7 @@
 			</div>
 			<div th:switch="${post.image}">
 				<div th:case="null"></div>
-				<img th:case="*" class="img-thumbnail" th:src="'http://192.168.192.132:8010/images/' + ${post.image}" alt="..." />
+				<img th:case="*" class="img-thumbnail" th:src="'http://local.tmup.com:8010/images/' + ${post.image}" alt="..." />
 			</div>
 			<p th:text="${post.content}" style="margin: 15px;">게시물 내용</p>
 		</div>

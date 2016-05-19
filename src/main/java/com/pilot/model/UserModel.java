@@ -25,4 +25,7 @@ public class UserModel implements Serializable {
 	
 	@JsonProperty("profile_image")
 	private String profileImage;
+	
+	private String userAgent;
+	private String clientIp;
 }
