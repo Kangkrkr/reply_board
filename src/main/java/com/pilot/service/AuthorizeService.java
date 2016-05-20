@@ -26,6 +26,7 @@ public class AuthorizeService {
 	private RedisService redisService;
 	
 	public URI getAuthorizationPageUri() {
+		
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("response_type", "code");
 		map.add("client_id", TeamUp.CLIENT_ID);

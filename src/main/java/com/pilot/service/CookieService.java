@@ -18,21 +18,25 @@ public class CookieService {
 	private static final Logger logger = LoggerFactory.getLogger(CookieService.class);
 	
 	public void createTokenCookie(HttpServletResponse response, String token) {
+		
 		Cookie tokenCookie = new Cookie("tk", token);
 		tokenCookie.setHttpOnly(true);
 		tokenCookie.setMaxAge(60 * 60);
 		tokenCookie.setDomain(".tmup.com");
 		tokenCookie.setPath("/");
 		response.addCookie(tokenCookie);
+		
 	}
 
 	public void createTeamIdCookie(HttpServletRequest request, HttpServletResponse response) {
+		
 		Cookie tmIdCookie = getCookie(request, "tmid");
 		tmIdCookie.setHttpOnly(true);
 		tmIdCookie.setMaxAge(60 * 60);
 		tmIdCookie.setDomain(".tmup.com");
 		tmIdCookie.setPath("/");
 		response.addCookie(tmIdCookie);
+		
 	}
 	
 	public void removeCookie(HttpServletResponse response, Cookie target) {

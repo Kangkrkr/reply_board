@@ -5,7 +5,8 @@
 				<div th:switch="${post.profileImage}">
 					<img th:case="null" style="margin-top: 2px; margin-right: 6px;" th:src="@{/public/images/default.PNG}" alt="..." width="40px" height="40px" class="img-circle"/>
 					<img th:case="*" style="margin-top: 2px; margin-right: 6px;" th:src="${post.profileImage}" alt="..." width="40px" height="40px" class="img-circle"/>
-					<span th:switch="${post.user.nickname}" style="margin-left: 4px;">
+					
+					<span th:switch="${post.user.nickname}">
 						<span th:case="null" class="badge" th:text="닉네임없음 ">닉네임없음</span>
 						<span th:case="*" class="badge" th:text="'닉네임 - ' + ${post.user.nickname}">사용자닉네임</span>
 					

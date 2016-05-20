@@ -41,9 +41,11 @@ public class HibernateConfig {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
 		dataSource.setUrl(
-				"jdbc:mysql://localhost:3306/reply_board?autoReconnect=true&useUnicode=false&characterEncoding=utf8&useSSL=false");
+				"jdbc:mysql://localhost:3306/" +
+				"reply_board?autoReconnect=true&" +
+				"useUnicode=false&characterEncoding=utf8&useSSL=false");
 		dataSource.setUsername("root");
-		dataSource.setPassword("tmddbs0723!@1!");
+		dataSource.setPassword("***********");
 		return dataSource;
 	}
 

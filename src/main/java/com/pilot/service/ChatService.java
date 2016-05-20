@@ -36,6 +36,7 @@ public class ChatService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 	
+	
 	public Integer createRoom(String email){
 		
 		UserModel creator = redisService.getUserModelByEmail(email);
@@ -47,17 +48,18 @@ public class ChatService {
 		
 		Integer room = null;
 		if(body != null) {
-			
 			// 김설현 bot이 있는 1번팀을 기준으로 ..
 			HttpEntity entity = new HttpEntity(body, configHeaders(bot));
-			ResponseEntity<RoomModel> result = restTemplate.postForEntity(buildURI(TeamUp.ROOM) + "{team}", entity, RoomModel.class, 1);
-			
+			ResponseEntity<RoomModel> result = 
+					restTemplate.postForEntity(buildURI(TeamUp.ROOM) + 
+										"{team}", entity, RoomModel.class, 1);
 			room = result.getBody().getRoom();
 		}
 		
 		return room;
 	}
 
+	
 	public int sendMessageToRoom(String message, int room) {
 
 		Map<String, Object> params = new HashMap<>();
@@ -68,7 +70,8 @@ public class ChatService {
 		ResponseEntity<MessageModel> result = null;
 		if(body != null) {
 			HttpEntity entity = new HttpEntity(body, configHeaders(bot));
-			result = restTemplate.postForEntity(buildURI(TeamUp.MESSAGE) + "{room}", entity, MessageModel.class, room);
+			result = restTemplate.postForEntity(buildURI(TeamUp.MESSAGE) +
+					"{room}", entity, MessageModel.class, room);
 		}
 		
 		return result.getBody().getMsg();
